@@ -82,18 +82,28 @@ message Query {
 }
 
 message QueryResponse {
-   // Nodes to load. The order specifies the load-order-importance of each node.
+  // Nodes to load. The order specifies the load-order-importance of each node.
   repeated Node nodes = 1;
   
   // Specifies the order of the features in the nodes (The order can be taken when accessing the files)
-  repeated string feature = 2;
+  repeated Feature feature = 2;
   
   message Node {
-     // The address specifies the Nodes position that should be loaded
+    // The address specifies the Nodes position that should be loaded
     repeated Oct address = 1;
-     // Optionally to allow for deduplication if different nodes have the same hash.
-    string hash = 2;
+
+    // Optionally to allow for deduplication if different nodes have the same hash.
+    // This can also be used by the service to note further information about the 
+    string info = 2;
   }
+
+  message Feature {
+    required string type;
+
+    // Different types of data have different length
+    required int32 byteCount;
+  }
+
   enum Oct {
     AAA = 1;
     AAB = 2;
@@ -110,7 +120,7 @@ message QueryResponse {
 ### Nodes lookup
 The lookup of the nodes should be based on a cachable ID basis. For a given ID, the API should return consistently the same data.
 
-`getNodes(nodes: NodeRequest): Node`
+`getNodes(nodes: NodeRequest): NodeData`
 
 ```protobuf
 message NodeRequest {
@@ -126,12 +136,13 @@ message NodeRequest {
   }
   message Node {
     repeated Oct address = 1;
-    string hash = 2;
+    string info = 2;
   }
   repeated Node nodes;
 }
-message Node {
-  
+message NodeData {
+  // Streams the data in byte sets in the length of the features given for each node.
+  repeated bytes data: 1; 
 }
 ```
 
