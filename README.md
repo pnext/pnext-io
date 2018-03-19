@@ -11,41 +11,140 @@ it and the necessary restrictions.
 
 ## API
 The API consists of a [Query](#query) API that allows the browser to select Nodes from an Oct-tree of
-Pointcloud data and a [Looku](#lookup) API that allows to receive one oct-tree node.
+Pointcloud data and a [Lookup](#lookup) API that allows to receive one oct-tree node.
 
 ### Query
 
-#### Input
-- [FOV](https://en.wikipedia.org/wiki/Field_of_view), Camera Position or [Frustum](https://en.wikipedia.org/wiki/Frustum): The currently viewed area of the pointcloud.
-- Range of relevant points: In order to limit based on the memory/cpu limits of the device it needs to be
-   able to limit towards the maximum amount of points renderable (max amount of points).
-   Once the browser did ask for a given max set though it should also be able to download further parts of the query
-   by limiting it also to exclude the first set of points.
-- PointCloud features (optional): In case the server is capable of reducing pointcloud features, the browser should be
-   specify which features are interesting to it.
-- Octree density range: The browser might be working on a small device that might be capable to render all the points
-   but it wouldn't matter because the user couldn't see more detail on the device (screen size). It has to be able to
-   define the density of nodes it is maximally interested in.
-- Bounding Box: One common problem of pointclouds is to create slices of data for profiles. By providing a bounding
-   box its possible for the browser to receive only a slice of data.
+`queryPoints(query: Query): QueryResponse`
 
-#### Output
-- more points available: Are more points available behind the range of relevant points?
-- available point features.
-- list of octree nodes to display. ordered by density.
+```protobuf
+message Query {
+
+  /*
+    [FOV][], Camera Position or [Frustum][]: The currently viewed area of the pointcloud.
+
+    [FOV]: https://en.wikipedia.org/wiki/Field_of_view
+    [Frustum]: https://en.wikipedia.org/wiki/Viewing_frustum
+  */
+  required PerspectiveCamera cam = 1;
+
+  /*
+    In order to limit based on the memory/cpu limits of the device it needs to be
+    able to limit towards the maximum amount of points renderable (max amount of points).
+    Once the browser did ask for a given max set though it should also be able to download further parts of the query
+    by limiting it also to exclude the first set of points.
+  */
+  required RelevanceRange relevance = 2;
+
+  /*
+    The browser might be working on a small device that might be capable to render all the points
+    but it wouldn't matter because the user couldn't see more detail on the device (screen size). It has to be able to
+    define the density of nodes it is maximally interested in.
+  */
+  DensityRange density = 3;
+
+  /*
+    One common problem of pointclouds is to create slices of data for profiles. By providing a bounding
+    box its possible for the browser to receive only a slice of data.
+  */
+  CutRange cut = 4;
+
+  /*
+    In case the server is capable of reducing pointcloud features, the client can specify which features are
+    interesting to it.
+  */
+  repeated string feature = 5;
+
+  message Point3 {
+    required float x = 1;
+    required float y = 2;
+    required float z = 3;
+  }
+  message PerspectiveCamera {
+    required Point3 pos = 1;
+    required float fov = 2;
+    required float aspect = 3;
+    required float near = 4;
+    required float far = 5;
+  }
+  message RelevanceRange {
+    int32 min = 1;
+    required int32 max = 2;
+  }
+  message DensityRange {
+    float min = 1;
+    required float max = 2;
+  }
+  message CutRange {
+    required Point3 min = 1;
+    required Point3 max = 2;
+  }
+}
+
+message QueryResponse {
+   // Nodes to load. The order specifies the load-order-importance of each node.
+  repeated Node nodes = 1;
+  
+  // Specifies the order of the features in the nodes (The order can be taken when accessing the files)
+  repeated string feature = 2;
+  
+  message Node {
+     // The address specifies the Nodes position that should be loaded
+    repeated Oct address = 1;
+     // Optionally to allow for deduplication if different nodes have the same hash.
+    string hash = 2;
+  }
+  enum Oct {
+    AAA = 1;
+    AAB = 2;
+    ABA = 3;
+    ABB = 4;
+    BAA = 5;
+    BAB = 6;
+    BBA = 7;
+    BBB = 8;
+  }
+}
+```
 
 ### Nodes lookup
 The lookup of the nodes should be based on a cachable ID basis. For a given ID, the API should return consistently the same data.
+
+`getNodes(nodes: NodeRequest): Node`
+
+```protobuf
+message NodeRequest {
+  enum Oct {
+    AAA = 1;
+    AAB = 2;
+    ABA = 3;
+    ABB = 4;
+    BAA = 5;
+    BAB = 6;
+    BBA = 7;
+    BBB = 8;
+  }
+  message Node {
+    repeated Oct address = 1;
+    string hash = 2;
+  }
+  repeated Node nodes;
+}
+message Node {
+  
+}
+```
 
 ## API but not just
 This is technically an API but it should be written with the goal in mind that the
 result-set can be computed with as little effort as possible by a precomputed data-set.
 
 ## Prior Art
-- [Potree File format][2] - The Potree File format works entirely without an API, which
+- [Potree File format][] - The Potree File format works entirely without an API, which
     means, the use of the Potree file format required some additional operation on the
     client side, essentially what this document describes
-- Entwine/Greyhound - Todo.
+- Greyhound - Greyhound has an extended [query language][Greyhound Query Format] that
+    has many of the same features of this query system.
 
-[1]: TODO
-[2]; TODO
+[Potree File format]: https://github.com/potree/potree/blob/0df4f0d0ef0abe87793dc56ad56cc3aac5633354/docs/potree-file-format.md
+[Greyhound Query Format]: https://github.com/hobu/greyhound/tree/4cd6ca0590df54f3cbf60151cdb509d289f0d587
