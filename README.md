@@ -13,6 +13,35 @@ it and the necessary restrictions.
 The API consists of a [Query](#query) API that allows the browser to select Nodes from an Oct-tree of
 Pointcloud data and a [Lookup](#lookup) API that allows to receive one oct-tree node.
 
+### Info Lookup
+
+`getTree(treeQuery: TreeQuery): Tree`
+
+```protobuf
+message TreeQuery {
+  required string id = 1;
+  repeated string metadataProperties = 2; // Optional filter for metadata properties to to be returned. Using minimatch patterns with ! support for negation. If missing, all metadata will be returned, "!*" specifies no metadata.
+}
+
+message Feature {
+  required string type = 1;
+
+  // Different types of data have different length
+  required int32 byteCount = 2;
+}
+
+message Tree {
+  required string id = 1; // ID of this tree
+  required Bounds bounds = 2; // cubic volume of the root of the octree
+  Point3 scale = 3; // scale for the points
+  Point3 offset = 4; // he offset applied to XYZ, if any (array of length 3)
+  int64 numPoints = 5; // total point count in the octree
+  Bounds boundsConforming = 6; // cubic volume around 
+  repeated Feature schema = 7; // array of point attributes and their types
+  map<String, google.protobuf.Any> metadata = 8;
+}
+```
+
 ### Query
 
 `queryPoints(query: Query): QueryResponse`
@@ -87,21 +116,27 @@ message QueryResponse {
   
   // Specifies the order of the features in the nodes (The order can be taken when accessing the files)
   repeated Feature feature = 2;
+
+  // All the tree Id's in the response
+  repeated string treeIds = 3;
   
   message Node {
+    // Tree ID to lookup the node for:
+    int32 treeIndex = 1;
+
     // The address specifies the Nodes position that should be loaded
-    repeated Oct address = 1;
+    repeated Oct address = 2;
 
     // Optionally to allow for deduplication if different nodes have the same hash.
     // This can also be used by the service to note further information about the 
-    string info = 2;
+    string info = 3;
   }
 
   message Feature {
-    required string type;
+    required string type = 1;
 
     // Different types of data have different length
-    required int32 byteCount;
+    required int32 byteCount = 2;
   }
 
   enum Oct {
@@ -124,6 +159,14 @@ The lookup of the nodes should be based on a cachable ID basis. For a given ID, 
 
 ```protobuf
 message NodeRequest {
+  // All the nodes to load
+  repeated Node nodes = 1;
+
+  // All the tree Id's in the response
+  repeated string treeIds = 2;
+
+  repeated Feature features = 3;
+
   enum Oct {
     AAA = 1;
     AAB = 2;
@@ -134,15 +177,24 @@ message NodeRequest {
     BBA = 7;
     BBB = 8;
   }
+
   message Node {
-    repeated Oct address = 1;
-    string info = 2;
+    int32 treeIndex = 1; // Referencing the treeIds for the main response
+    repeated Oct address = 2;
+    string info = 3;
   }
-  repeated Node nodes;
+
+  message Feature {
+    required string type = 1;
+
+    // Different types of data have different length
+    required int32 byteCount = 2;
+  }
 }
 message NodeData {
   // Streams the data in byte sets in the length of the features given for each node.
-  repeated bytes data: 1; 
+  // in the requested order
+  repeated bytes data: 1;
 }
 ```
 
