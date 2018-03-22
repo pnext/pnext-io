@@ -116,13 +116,10 @@ message QueryResponse {
   
   // Specifies the order of the features in the nodes (The order can be taken when accessing the files)
   repeated Feature feature = 2;
-
-  // All the tree Id's in the response
-  repeated string treeIds = 3;
   
   message Node {
-    // Tree ID to lookup the node for:
-    int32 treeIndex = 1;
+    // Tree ID to lookup the node for, if its missing the previous treeId is assumed.
+    string treeId = 1;
 
     // The address specifies the Nodes position that should be loaded
     repeated Oct address = 2;
@@ -162,9 +159,6 @@ message NodeRequest {
   // All the nodes to load
   repeated Node nodes = 1;
 
-  // All the tree Id's in the response
-  repeated string treeIds = 2;
-
   repeated Feature features = 3;
 
   enum Oct {
@@ -179,7 +173,7 @@ message NodeRequest {
   }
 
   message Node {
-    int32 treeIndex = 1; // Referencing the treeIds for the main response
+    string treeId = 1; // If its missing the previous treeId is assumed.
     repeated Oct address = 2;
     string info = 3;
   }
