@@ -1,0 +1,5 @@
+message Node {
+  required string treeId = 1; // If its missing the previous treeId is assumed.
+  repeated Oct address = 2;
+  required string info = 3;
+}

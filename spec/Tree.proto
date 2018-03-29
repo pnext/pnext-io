@@ -1,0 +1,12 @@
+import "google/protobuf/any.proto";
+
+message Tree {
+  required string id = 1; // ID of this tree
+  required Bounds bounds = 2; // cubic volume of the root of the octree
+  optional Point3 scale = 3; // scale for the points
+  optional Point3 offset = 4; // he offset applied to XYZ, if any (array of length 3)
+  optional int64 numPoints = 5; // total point count in the octree
+  optional Bounds boundsConforming = 6; // cubic volume around 
+  repeated Feature schema = 7; // array of point attributes and their types
+  map<string, google.protobuf.Any> metadata = 8;
+}

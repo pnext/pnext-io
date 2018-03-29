@@ -1,0 +1,5 @@
+{
+    "editor.tabSize": 2,
+    "typescript.format.insertSpaceBeforeFunctionParenthesis": true,
+    "editor.detectIndentation": false
+}

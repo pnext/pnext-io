@@ -4,8 +4,11 @@
   "description": "This work-in-progress document _(and eventually more)_ is the starting point for a more well rounded storage and access API to pointclouds _(and maybe even other 3D data formats)_",
   "main": "index.js",
   "scripts": {
-    "test:lint": "standard",
-    "test": "npm run test:lint"
+    "test:lint": "tslint -c tslint.json src/**/*.ts && standard",
+    "test": "npm run test:lint",
+    "build": "npm run build:types-js && npm run build:types-ts",
+    "build:types-js": "pbjs -t static-module -w commonjs -l \"eslint-disable one-var, no-mixed-operators\" --es6 spec/*.proto -o ts/Types.js && standard --fix ts/Types.js",
+    "build:types-ts": "pbts ts/Types.js -o ts/Types.d.ts"
   },
   "repository": {
     "type": "git",
@@ -17,20 +20,28 @@
     "url": "https://github.com/pnext/point-query/issues"
   },
   "standard": {
-    "parser": "typescript-eslint-parser",
-    "plugins": [
-      "typescript"
+    "ignore": [
+      "*.bundle.js"
     ]
   },
   "homepage": "https://github.com/pnext/point-query#readme",
   "devDependencies": {
     "@types/node": "^9.4.7",
     "@types/three": "^0.89.12",
+    "eslint-config-standard": "^11.0.0",
     "eslint-plugin-typescript": "^0.10.0",
+    "essed": "^1.4.0",
+    "glob-cli2": "^1.0.2",
+    "glob-exec": "^0.1.1",
+    "pbjs": "0.0.5",
+    "protobufjs": "^6.8.6",
     "standard": "^11.0.1",
     "tap": "^11.1.2",
+    "tslint": "^5.9.1",
+    "tslint-config-standard": "^7.0.0",
     "typescript": "^2.7.2",
-    "typescript-eslint-parser": "^14.0.0"
+    "typescript-eslint-parser": "^14.0.0",
+    "xargh": "^1.0.8"
   },
   "dependencies": {
     "three": "^0.91.0",

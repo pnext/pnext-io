@@ -1,0 +1,4 @@
+message DensityRange {
+  optional float min = 1;
+  required float max = 2;
+}

@@ -1,0 +1,10 @@
+enum Oct {
+  AAA = 1;
+  AAB = 2;
+  ABA = 3;
+  ABB = 4;
+  BAA = 5;
+  BAB = 6;
+  BBA = 7;
+  BBB = 8;
+}

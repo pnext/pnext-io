@@ -1,0 +1,4 @@
+message Bounds {
+  required Point3 min = 1;
+  required Point3 max = 2;
+}
