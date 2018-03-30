@@ -30,7 +30,6 @@
     "@types/three": "^0.89.12",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-typescript": "^0.10.0",
-    "protobufjs": "^6.8.6",
     "standard": "^11.0.1",
     "tap": "^11.1.2",
     "tslint": "^5.9.1",
@@ -40,6 +39,7 @@
   },
   "dependencies": {
     "three": "^0.91.0",
+    "protobufjs": "^6.8.6",
     "ts-stream": "^1.0.1"
   }
 }
