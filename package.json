@@ -30,18 +30,13 @@
     "@types/three": "^0.89.12",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-typescript": "^0.10.0",
-    "essed": "^1.4.0",
-    "glob-cli2": "^1.0.2",
-    "glob-exec": "^0.1.1",
-    "pbjs": "0.0.5",
     "protobufjs": "^6.8.6",
     "standard": "^11.0.1",
     "tap": "^11.1.2",
     "tslint": "^5.9.1",
     "tslint-config-standard": "^7.0.0",
     "typescript": "^2.7.2",
-    "typescript-eslint-parser": "^14.0.0",
-    "xargh": "^1.0.8"
+    "typescript-eslint-parser": "^14.0.0"
   },
   "dependencies": {
     "three": "^0.91.0",
