@@ -1,8 +1,8 @@
 import { IQuery, IQueryResponse, INodeRequest, INodeData, ITree, ITreeQuery } from './Types'
-import { Stream } from 'stream'
+import { Readable } from 'stream'
 
-export interface IQueryInterface {
+export default interface IQueryInterface {
   queryPoints (query: IQuery): Promise<IQueryResponse>
   getTree (treeQuery: ITreeQuery): Promise<ITree>
-  getNodes (nodes: INodeRequest): Stream
+  getNodes (nodes: INodeRequest): Readable
 }
