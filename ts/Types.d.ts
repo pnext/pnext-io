@@ -578,14 +578,14 @@ export class NodeRequest implements INodeRequest {
 
 /** Oct enum. */
 export enum Oct {
-    AAA = 1,
-    AAB = 2,
-    ABA = 3,
-    ABB = 4,
-    BAA = 5,
-    BAB = 6,
-    BBA = 7,
-    BBB = 8
+    AAA = 0,
+    AAB = 1,
+    ABA = 2,
+    ABB = 3,
+    BAA = 4,
+    BAB = 5,
+    BBA = 6,
+    BBB = 7
 }
 
 /** Properties of a PerspectiveCamera. */
