@@ -1348,7 +1348,7 @@ export namespace google {
 }
 
 /** Properties of a TreeQuery. */
-export interface ITreeQuery {
+export interface ITreeRequest {
 
     /** TreeQuery id */
   id: string
@@ -1358,7 +1358,7 @@ export interface ITreeQuery {
 }
 
 /** Represents a TreeQuery. */
-export class TreeQuery implements ITreeQuery {
+export class TreeQuery implements ITreeRequest {
 
     /** TreeQuery id. */
   public id: string
@@ -1370,14 +1370,14 @@ export class TreeQuery implements ITreeQuery {
      * Constructs a new TreeQuery.
      * @param [properties] Properties to set
      */
-  constructor (properties?: ITreeQuery);
+  constructor (properties?: ITreeRequest);
 
     /**
      * Creates a new TreeQuery instance using the specified properties.
      * @param [properties] Properties to set
      * @returns TreeQuery instance
      */
-  public static create (properties?: ITreeQuery): TreeQuery
+  public static create (properties?: ITreeRequest): TreeQuery
 
     /**
      * Encodes the specified TreeQuery message. Does not implicitly {@link TreeQuery.verify|verify} messages.
@@ -1385,7 +1385,7 @@ export class TreeQuery implements ITreeQuery {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encode (message: ITreeQuery, writer?: $protobuf.Writer): $protobuf.Writer
+  public static encode (message: ITreeRequest, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
      * Encodes the specified TreeQuery message, length delimited. Does not implicitly {@link TreeQuery.verify|verify} messages.
@@ -1393,7 +1393,7 @@ export class TreeQuery implements ITreeQuery {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encodeDelimited (message: ITreeQuery, writer?: $protobuf.Writer): $protobuf.Writer
+  public static encodeDelimited (message: ITreeRequest, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
      * Decodes a TreeQuery message from the specified reader or buffer.
