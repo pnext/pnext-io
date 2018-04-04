@@ -1,5 +1,5 @@
 message PerspectiveCamera {
-  required Point3 pos = 1;
+  required Vector3 pos = 1;
   required float fov = 2;
   required float aspect = 3;
   required float near = 4;
