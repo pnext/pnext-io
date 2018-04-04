@@ -1319,25 +1319,25 @@ export const NodeRequest = $root.NodeRequest = (() => {
  * Oct enum.
  * @exports Oct
  * @enum {string}
- * @property {number} AAA=1 AAA value
- * @property {number} AAB=2 AAB value
- * @property {number} ABA=3 ABA value
- * @property {number} ABB=4 ABB value
- * @property {number} BAA=5 BAA value
- * @property {number} BAB=6 BAB value
- * @property {number} BBA=7 BBA value
- * @property {number} BBB=8 BBB value
+ * @property {number} AAA=0 AAA value
+ * @property {number} AAB=1 AAB value
+ * @property {number} ABA=2 ABA value
+ * @property {number} ABB=3 ABB value
+ * @property {number} BAA=4 BAA value
+ * @property {number} BAB=5 BAB value
+ * @property {number} BBA=6 BBA value
+ * @property {number} BBB=7 BBB value
  */
 $root.Oct = (function () {
   const valuesById = {}, values = Object.create(valuesById)
-  values[valuesById[1] = 'AAA'] = 1
-  values[valuesById[2] = 'AAB'] = 2
-  values[valuesById[3] = 'ABA'] = 3
-  values[valuesById[4] = 'ABB'] = 4
-  values[valuesById[5] = 'BAA'] = 5
-  values[valuesById[6] = 'BAB'] = 6
-  values[valuesById[7] = 'BBA'] = 7
-  values[valuesById[8] = 'BBB'] = 8
+  values[valuesById[0] = 'AAA'] = 0
+  values[valuesById[1] = 'AAB'] = 1
+  values[valuesById[2] = 'ABA'] = 2
+  values[valuesById[3] = 'ABB'] = 3
+  values[valuesById[4] = 'BAA'] = 4
+  values[valuesById[5] = 'BAB'] = 5
+  values[valuesById[6] = 'BBA'] = 6
+  values[valuesById[7] = 'BBB'] = 7
   return values
 })()
 
@@ -3130,24 +3130,24 @@ export const google = $root.google = (() => {
   return google
 })()
 
-export const TreeQuery = $root.TreeQuery = (() => {
+export const TreeRequest = $root.TreeRequest = (() => {
   /**
      * Properties of a TreeQuery.
-     * @exports ITreeQuery
-     * @interface ITreeQuery
+     * @exports ITreeRequest
+     * @interface ITreeRequest
      * @property {string} id TreeQuery id
-     * @property {Array.<string>|null} [metadataProperties] TreeQuery metadataProperties
+     * @property {Array.<string>|null} [metadataProperties] TreeRequest metadataProperties
      */
 
   /**
-     * Constructs a new TreeQuery.
-     * @exports TreeQuery
-     * @classdesc Represents a TreeQuery.
-     * @implements ITreeQuery
+     * Constructs a new TreeRequest.
+     * @exports TreeRequest
+     * @classdesc Represents a TreeRequest.
+     * @implements ITreeRequest
      * @constructor
      * @param {ITreeQuery=} [properties] Properties to set
      */
-  function TreeQuery (properties) {
+  function TreeRequest (properties) {
     this.metadataProperties = []
     if (properties) {
       for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
@@ -3157,43 +3157,43 @@ export const TreeQuery = $root.TreeQuery = (() => {
   }
 
   /**
-     * TreeQuery id.
+     * TreeRequest id.
      * @member {string} id
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @instance
      */
-  TreeQuery.prototype.id = ''
+  TreeRequest.prototype.id = ''
 
   /**
-     * TreeQuery metadataProperties.
+     * TreeRequest metadataProperties.
      * @member {Array.<string>} metadataProperties
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @instance
      */
-  TreeQuery.prototype.metadataProperties = $util.emptyArray
+  TreeRequest.prototype.metadataProperties = $util.emptyArray
 
   /**
-     * Creates a new TreeQuery instance using the specified properties.
+     * Creates a new TreeRequest instance using the specified properties.
      * @function create
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @static
-     * @param {ITreeQuery=} [properties] Properties to set
-     * @returns {TreeQuery} TreeQuery instance
+     * @param {ITreeRequest=} [properties] Properties to set
+     * @returns {TreeRequest} TreeRequest instance
      */
-  TreeQuery.create = function create (properties) {
-    return new TreeQuery(properties)
+  TreeRequest.create = function create (properties) {
+    return new TreeRequest(properties)
   }
 
   /**
-     * Encodes the specified TreeQuery message. Does not implicitly {@link TreeQuery.verify|verify} messages.
+     * Encodes the specified TreeRequest message. Does not implicitly {@link TreeRequest.verify|verify} messages.
      * @function encode
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @static
-     * @param {ITreeQuery} message TreeQuery message or plain object to encode
+     * @param {ITreeRequest} message TreeRequest message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-  TreeQuery.encode = function encode (message, writer) {
+  TreeRequest.encode = function encode (message, writer) {
     if (!writer) { writer = $Writer.create() }
     writer.uint32(/* id 1, wireType 2 = */10).string(message.id)
     if (message.metadataProperties != null && message.metadataProperties.length) {
@@ -3203,30 +3203,30 @@ export const TreeQuery = $root.TreeQuery = (() => {
   }
 
   /**
-     * Encodes the specified TreeQuery message, length delimited. Does not implicitly {@link TreeQuery.verify|verify} messages.
+     * Encodes the specified TreeRequest message, length delimited. Does not implicitly {@link TreeRequest.verify|verify} messages.
      * @function encodeDelimited
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @static
-     * @param {ITreeQuery} message TreeQuery message or plain object to encode
+     * @param {ITreeRequest} message TreeRequest message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-  TreeQuery.encodeDelimited = function encodeDelimited (message, writer) {
+  TreeRequest.encodeDelimited = function encodeDelimited (message, writer) {
     return this.encode(message, writer).ldelim()
   }
 
   /**
-     * Decodes a TreeQuery message from the specified reader or buffer.
+     * Decodes a TreeRequest message from the specified reader or buffer.
      * @function decode
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {TreeQuery} TreeQuery
+     * @returns {TreeRequest} TreeRequest
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  TreeQuery.decode = function decode (reader, length) {
+  TreeRequest.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
     let end = length === undefined ? reader.len : reader.pos + length, message = new $root.TreeQuery()
     while (reader.pos < end) {
@@ -3249,29 +3249,29 @@ export const TreeQuery = $root.TreeQuery = (() => {
   }
 
   /**
-     * Decodes a TreeQuery message from the specified reader or buffer, length delimited.
+     * Decodes a TreeRequest message from the specified reader or buffer, length delimited.
      * @function decodeDelimited
      * @memberof TreeQuery
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {TreeQuery} TreeQuery
+     * @returns {TreeRequest} TreeRequest
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  TreeQuery.decodeDelimited = function decodeDelimited (reader) {
+  TreeRequest.decodeDelimited = function decodeDelimited (reader) {
     if (!(reader instanceof $Reader)) { reader = new $Reader(reader) }
     return this.decode(reader, reader.uint32())
   }
 
   /**
-     * Verifies a TreeQuery message.
+     * Verifies a TreeRequest message.
      * @function verify
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @static
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-  TreeQuery.verify = function verify (message) {
+  TreeRequest.verify = function verify (message) {
     if (typeof message !== 'object' || message === null) { return 'object expected' }
     if (!$util.isString(message.id)) { return 'id: string expected' }
     if (message.metadataProperties != null && message.hasOwnProperty('metadataProperties')) {
@@ -3284,19 +3284,19 @@ export const TreeQuery = $root.TreeQuery = (() => {
   }
 
   /**
-     * Creates a TreeQuery message from a plain object. Also converts values to their respective internal types.
+     * Creates a TreeRequest message from a plain object. Also converts values to their respective internal types.
      * @function fromObject
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @static
      * @param {Object.<string,*>} object Plain object
-     * @returns {TreeQuery} TreeQuery
+     * @returns {TreeRequest} TreeRequest
      */
-  TreeQuery.fromObject = function fromObject (object) {
-    if (object instanceof $root.TreeQuery) { return object }
-    let message = new $root.TreeQuery()
+  TreeRequest.fromObject = function fromObject (object) {
+    if (object instanceof $root.TreeRequest) { return object }
+    let message = new $root.TreeRequest()
     if (object.id != null) { message.id = String(object.id) }
     if (object.metadataProperties) {
-      if (!Array.isArray(object.metadataProperties)) { throw TypeError('.TreeQuery.metadataProperties: array expected') }
+      if (!Array.isArray(object.metadataProperties)) { throw TypeError('.TreeRequest.metadataProperties: array expected') }
       message.metadataProperties = []
       for (let i = 0; i < object.metadataProperties.length; ++i) { message.metadataProperties[i] = String(object.metadataProperties[i]) }
     }
@@ -3304,15 +3304,15 @@ export const TreeQuery = $root.TreeQuery = (() => {
   }
 
   /**
-     * Creates a plain object from a TreeQuery message. Also converts values to other types if specified.
+     * Creates a plain object from a TreeRequest message. Also converts values to other types if specified.
      * @function toObject
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @static
-     * @param {TreeQuery} message TreeQuery
+     * @param {TreeRequest} message TreeRequest
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-  TreeQuery.toObject = function toObject (message, options) {
+  TreeRequest.toObject = function toObject (message, options) {
     if (!options) { options = {} }
     let object = {}
     if (options.arrays || options.defaults) { object.metadataProperties = [] }
@@ -3326,17 +3326,17 @@ export const TreeQuery = $root.TreeQuery = (() => {
   }
 
   /**
-     * Converts this TreeQuery to JSON.
+     * Converts this TreeRequest to JSON.
      * @function toJSON
-     * @memberof TreeQuery
+     * @memberof TreeRequest
      * @instance
      * @returns {Object.<string,*>} JSON object
      */
-  TreeQuery.prototype.toJSON = function toJSON () {
+  TreeRequest.prototype.toJSON = function toJSON () {
     return this.constructor.toObject(this, $protobuf.util.toJSONOptions)
   }
 
-  return TreeQuery
+  return TreeRequest
 })()
 
 export { $root as default }
