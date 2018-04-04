@@ -6,9 +6,10 @@
   "scripts": {
     "test:lint": "tslint -c .tslintrc.json ts/**/*.ts && standard",
     "test": "npm run test:lint",
-    "build": "npm run build:types-js && npm run build:types-ts",
+    "build": "npm run build:types-js && npm run build:types-ts && npm run build:doc",
     "build:types-js": "pbjs -t static-module -w commonjs -l \"eslint-disable one-var, no-mixed-operators\" --es6 spec/*.proto -o ts/Types.js && standard --fix ts/Types.js",
-    "build:types-ts": "pbts ts/Types.js -o ts/Types.d.ts && tslint -c .tslintrc.json --fix ts/Types.d.ts"
+    "build:types-ts": "pbts ts/Types.js -o ts/Types.d.ts && tslint -c .tslintrc.json --fix ts/Types.d.ts",
+    "build:doc": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,9 @@
   },
   "homepage": "https://github.com/pnext/point-query#readme",
   "devDependencies": {
+    "@types/es6-promise": "^3.3.0",
     "@types/node": "^9.4.7",
+    "@types/protobufjs": "^6.0.0",
     "@types/three": "^0.89.12",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-typescript": "^0.10.0",
