@@ -4,20 +4,20 @@ import * as $protobuf from 'protobufjs'
 export interface IBounds {
 
     /** Bounds min */
-  min: IPoint3
+  min: IVector3
 
     /** Bounds max */
-  max: IPoint3
+  max: IVector3
 }
 
 /** Represents a Bounds. */
 export class Bounds implements IBounds {
 
     /** Bounds min. */
-  public min: IPoint3
+  public min: IVector3
 
     /** Bounds max. */
-  public max: IPoint3
+  public max: IVector3
 
   /**
    * Constructs a new Bounds.
@@ -1262,7 +1262,6 @@ export namespace google {
         class Any implements IAny {
 
             /** Any type_url. */
-            /* tslint:disable-next-line:variable-name */
           public type_url: string
 
             /** Any value. */

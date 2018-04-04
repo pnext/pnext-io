@@ -12,8 +12,8 @@ export const Bounds = $root.Bounds = (() => {
      * Properties of a Bounds.
      * @exports IBounds
      * @interface IBounds
-     * @property {IPoint3} min Bounds min
-     * @property {IPoint3} max Bounds max
+     * @property {IVector3} min Bounds min
+     * @property {IVector3} max Bounds max
      */
 
   /**
@@ -34,7 +34,7 @@ export const Bounds = $root.Bounds = (() => {
 
   /**
      * Bounds min.
-     * @member {IPoint3} min
+     * @member {IVector3} min
      * @memberof Bounds
      * @instance
      */
@@ -42,7 +42,7 @@ export const Bounds = $root.Bounds = (() => {
 
   /**
      * Bounds max.
-     * @member {IPoint3} max
+     * @member {IVector3} max
      * @memberof Bounds
      * @instance
      */
@@ -71,8 +71,8 @@ export const Bounds = $root.Bounds = (() => {
      */
   Bounds.encode = function encode (message, writer) {
     if (!writer) { writer = $Writer.create() }
-    $root.Point3.encode(message.min, writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim()
-    $root.Point3.encode(message.max, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim()
+    $root.Vector3.encode(message.min, writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim()
+    $root.Vector3.encode(message.max, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim()
     return writer
   }
 
@@ -107,10 +107,10 @@ export const Bounds = $root.Bounds = (() => {
       let tag = reader.uint32()
       switch (tag >>> 3) {
         case 1:
-          message.min = $root.Point3.decode(reader, reader.uint32())
+          message.min = $root.Vector3.decode(reader, reader.uint32())
           break
         case 2:
-          message.max = $root.Point3.decode(reader, reader.uint32())
+          message.max = $root.Vector3.decode(reader, reader.uint32())
           break
         default:
           reader.skipType(tag & 7)
@@ -148,11 +148,11 @@ export const Bounds = $root.Bounds = (() => {
   Bounds.verify = function verify (message) {
     if (typeof message !== 'object' || message === null) { return 'object expected' }
     {
-      let error = $root.Point3.verify(message.min)
+      let error = $root.Vector3.verify(message.min)
       if (error) { return 'min.' + error }
     }
     {
-      let error = $root.Point3.verify(message.max)
+      let error = $root.Vector3.verify(message.max)
       if (error) { return 'max.' + error }
     }
     return null
@@ -171,11 +171,11 @@ export const Bounds = $root.Bounds = (() => {
     let message = new $root.Bounds()
     if (object.min != null) {
       if (typeof object.min !== 'object') { throw TypeError('.Bounds.min: object expected') }
-      message.min = $root.Point3.fromObject(object.min)
+      message.min = $root.Vector3.fromObject(object.min)
     }
     if (object.max != null) {
       if (typeof object.max !== 'object') { throw TypeError('.Bounds.max: object expected') }
-      message.max = $root.Point3.fromObject(object.max)
+      message.max = $root.Vector3.fromObject(object.max)
     }
     return message
   }
@@ -196,8 +196,8 @@ export const Bounds = $root.Bounds = (() => {
       object.min = null
       object.max = null
     }
-    if (message.min != null && message.hasOwnProperty('min')) { object.min = $root.Point3.toObject(message.min, options) }
-    if (message.max != null && message.hasOwnProperty('max')) { object.max = $root.Point3.toObject(message.max, options) }
+    if (message.min != null && message.hasOwnProperty('min')) { object.min = $root.Vector3.toObject(message.min, options) }
+    if (message.max != null && message.hasOwnProperty('max')) { object.max = $root.Vector3.toObject(message.max, options) }
     return object
   }
 
@@ -2536,8 +2536,8 @@ export const Tree = $root.Tree = (() => {
      * @interface ITree
      * @property {string} id Tree id
      * @property {IBounds} bounds Tree bounds
-     * @property {IPoint3|null} [scale] Tree scale
-     * @property {IPoint3|null} [offset] Tree offset
+     * @property {IVector3|null} [scale] Tree scale
+     * @property {IVector3|null} [offset] Tree offset
      * @property {number|Long|null} [numPoints] Tree numPoints
      * @property {IBounds|null} [boundsConforming] Tree boundsConforming
      * @property {Array.<IFeature>|null} [schema] Tree schema
@@ -2651,8 +2651,8 @@ export const Tree = $root.Tree = (() => {
     if (!writer) { writer = $Writer.create() }
     writer.uint32(/* id 1, wireType 2 = */10).string(message.id)
     $root.Bounds.encode(message.bounds, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim()
-    if (message.scale != null && message.hasOwnProperty('scale')) { $root.Point3.encode(message.scale, writer.uint32(/* id 3, wireType 2 = */26).fork()).ldelim() }
-    if (message.offset != null && message.hasOwnProperty('offset')) { $root.Point3.encode(message.offset, writer.uint32(/* id 4, wireType 2 = */34).fork()).ldelim() }
+    if (message.scale != null && message.hasOwnProperty('scale')) { $root.Vector3.encode(message.scale, writer.uint32(/* id 3, wireType 2 = */26).fork()).ldelim() }
+    if (message.offset != null && message.hasOwnProperty('offset')) { $root.Vector3.encode(message.offset, writer.uint32(/* id 4, wireType 2 = */34).fork()).ldelim() }
     if (message.numPoints != null && message.hasOwnProperty('numPoints')) { writer.uint32(/* id 5, wireType 0 = */40).int64(message.numPoints) }
     if (message.boundsConforming != null && message.hasOwnProperty('boundsConforming')) { $root.Bounds.encode(message.boundsConforming, writer.uint32(/* id 6, wireType 2 = */50).fork()).ldelim() }
     if (message.schema != null && message.schema.length) {
@@ -2704,10 +2704,10 @@ export const Tree = $root.Tree = (() => {
           message.bounds = $root.Bounds.decode(reader, reader.uint32())
           break
         case 3:
-          message.scale = $root.Point3.decode(reader, reader.uint32())
+          message.scale = $root.Vector3.decode(reader, reader.uint32())
           break
         case 4:
-          message.offset = $root.Point3.decode(reader, reader.uint32())
+          message.offset = $root.Vector3.decode(reader, reader.uint32())
           break
         case 5:
           message.numPoints = reader.int64()
@@ -2767,11 +2767,11 @@ export const Tree = $root.Tree = (() => {
       if (error) { return 'bounds.' + error }
     }
     if (message.scale != null && message.hasOwnProperty('scale')) {
-      let error = $root.Point3.verify(message.scale)
+      let error = $root.Vector3.verify(message.scale)
       if (error) { return 'scale.' + error }
     }
     if (message.offset != null && message.hasOwnProperty('offset')) {
-      let error = $root.Point3.verify(message.offset)
+      let error = $root.Vector3.verify(message.offset)
       if (error) { return 'offset.' + error }
     }
     if (message.numPoints != null && message.hasOwnProperty('numPoints')) {
@@ -2817,11 +2817,11 @@ export const Tree = $root.Tree = (() => {
     }
     if (object.scale != null) {
       if (typeof object.scale !== 'object') { throw TypeError('.Tree.scale: object expected') }
-      message.scale = $root.Point3.fromObject(object.scale)
+      message.scale = $root.Vector3.fromObject(object.scale)
     }
     if (object.offset != null) {
       if (typeof object.offset !== 'object') { throw TypeError('.Tree.offset: object expected') }
-      message.offset = $root.Point3.fromObject(object.offset)
+      message.offset = $root.Vector3.fromObject(object.offset)
     }
     if (object.numPoints != null) {
       if ($util.Long) { (message.numPoints = $util.Long.fromValue(object.numPoints)).unsigned = false } else if (typeof object.numPoints === 'string') { message.numPoints = parseInt(object.numPoints, 10) } else if (typeof object.numPoints === 'number') { message.numPoints = object.numPoints } else if (typeof object.numPoints === 'object') { message.numPoints = new $util.LongBits(object.numPoints.low >>> 0, object.numPoints.high >>> 0).toNumber() }
@@ -2876,8 +2876,8 @@ export const Tree = $root.Tree = (() => {
     }
     if (message.id != null && message.hasOwnProperty('id')) { object.id = message.id }
     if (message.bounds != null && message.hasOwnProperty('bounds')) { object.bounds = $root.Bounds.toObject(message.bounds, options) }
-    if (message.scale != null && message.hasOwnProperty('scale')) { object.scale = $root.Point3.toObject(message.scale, options) }
-    if (message.offset != null && message.hasOwnProperty('offset')) { object.offset = $root.Point3.toObject(message.offset, options) }
+    if (message.scale != null && message.hasOwnProperty('scale')) { object.scale = $root.Vector3.toObject(message.scale, options) }
+    if (message.offset != null && message.hasOwnProperty('offset')) { object.offset = $root.Vector3.toObject(message.offset, options) }
     if (message.numPoints != null && message.hasOwnProperty('numPoints')) {
       if (typeof message.numPoints === 'number') { object.numPoints = options.longs === String ? String(message.numPoints) : message.numPoints } else { object.numPoints = options.longs === String ? $util.Long.prototype.toString.call(message.numPoints) : options.longs === Number ? new $util.LongBits(message.numPoints.low >>> 0, message.numPoints.high >>> 0).toNumber() : message.numPoints }
     }
