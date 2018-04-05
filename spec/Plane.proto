@@ -1,0 +1,4 @@
+message Plane {
+  required Vector3 normal = 1;
+  required float constant = 2;
+}

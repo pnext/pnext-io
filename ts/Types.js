@@ -1,75 +1,75 @@
-/* eslint-disable one-var, no-mixed-operators */
-import * as $protobuf from 'protobufjs/minimal'
+const $protobuf = require('protobufjs/minimal')
+const THREE = require('three')
 
 // Common aliases
-const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util
+const $Reader = $protobuf.Reader
+const $Writer = $protobuf.Writer
+const $util = $protobuf.util
 
 // Exported root namespace
 const $root = $protobuf.roots['default'] || ($protobuf.roots['default'] = {})
 
-export const Bounds = $root.Bounds = (() => {
-  /**
-     * Properties of a Bounds.
-     * @exports IBounds
-     * @interface IBounds
-     * @property {IVector3} min Bounds min
-     * @property {IVector3} max Bounds max
-     */
+module.exports = $root
 
+$root.Box3 = (() => {
   /**
-     * Constructs a new Bounds.
-     * @exports Bounds
-     * @classdesc Represents a Bounds.
-     * @implements IBounds
+     * Constructs a new Box.
+     * @exports Box3
+     * @classdesc Represents a Box.
      * @constructor
-     * @param {IBounds=} [properties] Properties to set
+     * @param {Box3=} [properties] Properties to set
      */
-  function Bounds (properties) {
+  function Box3 (properties) {
+    let min
+    let max
     if (properties) {
-      for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
-        if (properties[keys[i]] != null) { this[keys[i]] = properties[keys[i]] }
-      }
+      min = properties.min
+      max = properties.max
     }
+    this.min = $root.Vector3.fromObject(min || { x: Infinity, y: Infinity, z: Infinity })
+    this.max = $root.Vector3.fromObject(max || { x: -Infinity, y: -Infinity, z: -Infinity })
   }
 
-  /**
-     * Bounds min.
-     * @member {IVector3} min
-     * @memberof Bounds
-     * @instance
-     */
-  Bounds.prototype.min = null
+  Box3.prototype = Object.create(THREE.Box3.prototype)
 
   /**
-     * Bounds max.
-     * @member {IVector3} max
-     * @memberof Bounds
+     * Box min.
+     * @member {Vector3} min
+     * @memberof Box3
      * @instance
      */
-  Bounds.prototype.max = null
+  Box3.prototype.min = null
 
   /**
-     * Creates a new Bounds instance using the specified properties.
+     * Box max.
+     * @member {Vector3} max
+     * @memberof Box3
+     * @instance
+     */
+  Box3.prototype.max = null
+
+  /**
+     * Creates a new Box instance using the specified properties.
      * @function create
-     * @memberof Bounds
+     * @memberof Box3
      * @static
-     * @param {IBounds=} [properties] Properties to set
-     * @returns {Bounds} Bounds instance
+     * @param {Box=} [properties] Properties to set
+     * @returns {Box3} Box instance
      */
-  Bounds.create = function create (properties) {
-    return new Bounds(properties)
+  Box3.create = function create (properties) {
+    return new Box3(properties)
   }
 
   /**
-     * Encodes the specified Bounds message. Does not implicitly {@link Bounds.verify|verify} messages.
+     * Encodes the specified Box message. Does not implicitly {@link Box3.verify|verify} messages.
      * @function encode
-     * @memberof Bounds
+     * @memberof Box3
      * @static
-     * @param {IBounds} message Bounds message or plain object to encode
+     * @param {Box} message Box message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-  Bounds.encode = function encode (message, writer) {
+  Box3.encode = function encode (message, writer) {
     if (!writer) { writer = $Writer.create() }
     $root.Vector3.encode(message.min, writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim()
     $root.Vector3.encode(message.max, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim()
@@ -77,32 +77,33 @@ export const Bounds = $root.Bounds = (() => {
   }
 
   /**
-     * Encodes the specified Bounds message, length delimited. Does not implicitly {@link Bounds.verify|verify} messages.
+     * Encodes the specified Box message, length delimited. Does not implicitly {@link Box3.verify|verify} messages.
      * @function encodeDelimited
-     * @memberof Bounds
+     * @memberof Box3
      * @static
-     * @param {IBounds} message Bounds message or plain object to encode
+     * @param {Box} message Box message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-  Bounds.encodeDelimited = function encodeDelimited (message, writer) {
+  Box3.encodeDelimited = function encodeDelimited (message, writer) {
     return this.encode(message, writer).ldelim()
   }
 
   /**
-     * Decodes a Bounds message from the specified reader or buffer.
+     * Decodes a Box message from the specified reader or buffer.
      * @function decode
-     * @memberof Bounds
+     * @memberof Box3
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {Bounds} Bounds
+     * @returns {Box3} Box
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  Bounds.decode = function decode (reader, length) {
+  Box3.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.Bounds()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.Box()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -123,73 +124,69 @@ export const Bounds = $root.Bounds = (() => {
   }
 
   /**
-     * Decodes a Bounds message from the specified reader or buffer, length delimited.
+     * Decodes a Box message from the specified reader or buffer, length delimited.
      * @function decodeDelimited
-     * @memberof Bounds
+     * @memberof Box3
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {Bounds} Bounds
+     * @returns {Box3} Box
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  Bounds.decodeDelimited = function decodeDelimited (reader) {
+  Box3.decodeDelimited = function decodeDelimited (reader) {
     if (!(reader instanceof $Reader)) { reader = new $Reader(reader) }
     return this.decode(reader, reader.uint32())
   }
 
   /**
-     * Verifies a Bounds message.
+     * Verifies a Box message.
      * @function verify
-     * @memberof Bounds
+     * @memberof Box3
      * @static
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-  Bounds.verify = function verify (message) {
+  Box3.verify = function verify (message) {
     if (typeof message !== 'object' || message === null) { return 'object expected' }
-    {
-      let error = $root.Vector3.verify(message.min)
-      if (error) { return 'min.' + error }
-    }
-    {
-      let error = $root.Vector3.verify(message.max)
-      if (error) { return 'max.' + error }
-    }
+    let error = $root.Vector3.verify(message.min)
+    if (error) { return 'min.' + error }
+    let error2 = $root.Vector3.verify(message.max)
+    if (error2) { return 'max.' + error }
     return null
   }
 
   /**
-     * Creates a Bounds message from a plain object. Also converts values to their respective internal types.
+     * Creates a Box message from a plain object. Also converts values to their respective internal types.
      * @function fromObject
-     * @memberof Bounds
+     * @memberof Box3
      * @static
      * @param {Object.<string,*>} object Plain object
-     * @returns {Bounds} Bounds
+     * @returns {Box3} Box
      */
-  Bounds.fromObject = function fromObject (object) {
-    if (object instanceof $root.Bounds) { return object }
-    let message = new $root.Bounds()
+  Box3.fromObject = function fromObject (object) {
+    if (object instanceof $root.Box) { return object }
+    let message = new $root.Box()
     if (object.min != null) {
-      if (typeof object.min !== 'object') { throw TypeError('.Bounds.min: object expected') }
+      if (typeof object.min !== 'object') { throw TypeError('.Box3.min: object expected') }
       message.min = $root.Vector3.fromObject(object.min)
     }
     if (object.max != null) {
-      if (typeof object.max !== 'object') { throw TypeError('.Bounds.max: object expected') }
+      if (typeof object.max !== 'object') { throw TypeError('.Box3.max: object expected') }
       message.max = $root.Vector3.fromObject(object.max)
     }
     return message
   }
 
   /**
-     * Creates a plain object from a Bounds message. Also converts values to other types if specified.
+     * Creates a plain object from a Box message. Also converts values to other types if specified.
      * @function toObject
-     * @memberof Bounds
+     * @memberof Box3
      * @static
-     * @param {Bounds} message Bounds
+     * @param {Box} message Box
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-  Bounds.toObject = function toObject (message, options) {
+  Box3.toObject = function toObject (message, options) {
     if (!options) { options = {} }
     let object = {}
     if (options.defaults) {
@@ -202,20 +199,20 @@ export const Bounds = $root.Bounds = (() => {
   }
 
   /**
-     * Converts this Bounds to JSON.
+     * Converts this Box to JSON.
      * @function toJSON
-     * @memberof Bounds
+     * @memberof Box3
      * @instance
      * @returns {Object.<string,*>} JSON object
      */
-  Bounds.prototype.toJSON = function toJSON () {
+  Box3.prototype.toJSON = function toJSON () {
     return this.constructor.toObject(this, $protobuf.util.toJSONOptions)
   }
 
-  return Bounds
+  return Box3
 })()
 
-export const DensityRange = $root.DensityRange = (() => {
+$root.DensityRange = (() => {
   /**
      * Properties of a DensityRange.
      * @exports IDensityRange
@@ -310,7 +307,8 @@ export const DensityRange = $root.DensityRange = (() => {
      */
   DensityRange.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.DensityRange()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.DensityRange()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -412,7 +410,7 @@ export const DensityRange = $root.DensityRange = (() => {
   return DensityRange
 })()
 
-export const Feature = $root.Feature = (() => {
+$root.Feature = (() => {
   /**
      * Properties of a Feature.
      * @exports IFeature
@@ -507,7 +505,8 @@ export const Feature = $root.Feature = (() => {
      */
   Feature.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.Feature()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.Feature()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -608,7 +607,197 @@ export const Feature = $root.Feature = (() => {
   return Feature
 })()
 
-export const Node = $root.Node = (() => {
+$root.Frustum = (() => {
+  /**
+     * Constructs a new Frustum.
+     * @exports Frustum
+     * @classdesc Represents a Frustum.
+     * @constructor
+     * @param {Frustum=} [properties] Properties to set
+     */
+  function Frustum (properties) {
+    this.planes = []
+    if (properties) {
+      for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
+        if (properties[keys[i]] != null) { this[keys[i]] = properties[keys[i]] }
+      }
+    }
+  }
+
+  Frustum.prototype = Object.create(THREE.Frustum.prototype)
+
+  /**
+     * Frustum planes.
+     * @member {Array.<Plane>} planes
+     * @memberof Frustum
+     * @instance
+     */
+  Frustum.prototype.planes = $util.emptyArray
+
+  /**
+     * Creates a new Frustum instance using the specified properties.
+     * @function create
+     * @memberof Frustum
+     * @static
+     * @param {Frustum=} [properties] Properties to set
+     * @returns {Frustum} Frustum instance
+     */
+  Frustum.create = function create (properties) {
+    return new Frustum(properties)
+  }
+
+  /**
+     * Encodes the specified Frustum message. Does not implicitly {@link Frustum.verify|verify} messages.
+     * @function encode
+     * @memberof Frustum
+     * @static
+     * @param {Frustum} message Frustum message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+  Frustum.encode = function encode (message, writer) {
+    if (!writer) { writer = $Writer.create() }
+    if (message.planes != null && message.planes.length) {
+      for (let i = 0; i < message.planes.length; ++i) { $root.Plane.encode(message.planes[i], writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim() }
+    }
+    return writer
+  }
+
+  /**
+     * Encodes the specified Frustum message, length delimited. Does not implicitly {@link Frustum.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof Frustum
+     * @static
+     * @param {Frustum} message Frustum message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+  Frustum.encodeDelimited = function encodeDelimited (message, writer) {
+    return this.encode(message, writer).ldelim()
+  }
+
+  /**
+     * Decodes a Frustum message from the specified reader or buffer.
+     * @function decode
+     * @memberof Frustum
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {Frustum} Frustum
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+  Frustum.decode = function decode (reader, length) {
+    if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.Frustum()
+    while (reader.pos < end) {
+      let tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          if (!(message.planes && message.planes.length)) { message.planes = [] }
+          message.planes.push($root.Plane.decode(reader, reader.uint32()))
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  }
+
+  /**
+     * Decodes a Frustum message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof Frustum
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {Frustum} Frustum
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+  Frustum.decodeDelimited = function decodeDelimited (reader) {
+    if (!(reader instanceof $Reader)) { reader = new $Reader(reader) }
+    return this.decode(reader, reader.uint32())
+  }
+
+  /**
+     * Verifies a Frustum message.
+     * @function verify
+     * @memberof Frustum
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+  Frustum.verify = function verify (message) {
+    if (typeof message !== 'object' || message === null) { return 'object expected' }
+    if (message.planes != null && message.hasOwnProperty('planes')) {
+      if (!Array.isArray(message.planes)) { return 'planes: array expected' }
+      for (let i = 0; i < message.planes.length; ++i) {
+        let error = $root.Plane.verify(message.planes[i])
+        if (error) { return 'planes.' + error }
+      }
+    }
+    return null
+  }
+
+  /**
+     * Creates a Frustum message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof Frustum
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {Frustum} Frustum
+     */
+  Frustum.fromObject = function fromObject (object) {
+    if (object instanceof $root.Frustum) { return object }
+    let message = new $root.Frustum()
+    if (object.planes) {
+      if (!Array.isArray(object.planes)) { throw TypeError('.Frustum.planes: array expected') }
+      message.planes = []
+      for (let i = 0; i < object.planes.length; ++i) {
+        if (typeof object.planes[i] !== 'object') { throw TypeError('.Frustum.planes: object expected') }
+        message.planes[i] = $root.Plane.fromObject(object.planes[i])
+      }
+    }
+    return message
+  }
+
+  /**
+     * Creates a plain object from a Frustum message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof Frustum
+     * @static
+     * @param {Frustum} message Frustum
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+  Frustum.toObject = function toObject (message, options) {
+    if (!options) { options = {} }
+    let object = {}
+    if (options.arrays || options.defaults) { object.planes = [] }
+    if (message.planes && message.planes.length) {
+      object.planes = []
+      for (let j = 0; j < message.planes.length; ++j) { object.planes[j] = $root.Plane.toObject(message.planes[j], options) }
+    }
+    return object
+  }
+
+  /**
+     * Converts this Frustum to JSON.
+     * @function toJSON
+     * @memberof Frustum
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+  Frustum.prototype.toJSON = function toJSON () {
+    return this.constructor.toObject(this, $protobuf.util.toJSONOptions)
+  }
+
+  return Frustum
+})()
+
+$root.Node = (() => {
   /**
      * Properties of a Node.
      * @exports INode
@@ -716,7 +905,8 @@ export const Node = $root.Node = (() => {
      */
   Node.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.Node()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.Node()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -888,7 +1078,7 @@ export const Node = $root.Node = (() => {
   return Node
 })()
 
-export const NodeData = $root.NodeData = (() => {
+$root.NodeData = (() => {
   /**
      * Properties of a NodeData.
      * @exports INodeData
@@ -976,7 +1166,8 @@ export const NodeData = $root.NodeData = (() => {
      */
   NodeData.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.NodeData()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.NodeData()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -1020,7 +1211,7 @@ export const NodeData = $root.NodeData = (() => {
     if (message.data != null && message.hasOwnProperty('data')) {
       if (!Array.isArray(message.data)) { return 'data: array expected' }
       for (let i = 0; i < message.data.length; ++i) {
-        if (!(message.data[i] && typeof message.data[i].length === 'number' || $util.isString(message.data[i]))) { return 'data: buffer[] expected' }
+        if (!((message.data[i] && typeof message.data[i].length === 'number') || $util.isString(message.data[i]))) { return 'data: buffer[] expected' }
       }
     }
     return null
@@ -1081,7 +1272,7 @@ export const NodeData = $root.NodeData = (() => {
   return NodeData
 })()
 
-export const NodeRequest = $root.NodeRequest = (() => {
+$root.NodeRequest = (() => {
   /**
      * Properties of a NodeRequest.
      * @exports INodeRequest
@@ -1182,7 +1373,8 @@ export const NodeRequest = $root.NodeRequest = (() => {
      */
   NodeRequest.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.NodeRequest()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.NodeRequest()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -1329,7 +1521,8 @@ export const NodeRequest = $root.NodeRequest = (() => {
  * @property {number} BBB=7 BBB value
  */
 $root.Oct = (function () {
-  const valuesById = {}, values = Object.create(valuesById)
+  const valuesById = {}
+  const values = Object.create(valuesById)
   values[valuesById[0] = 'AAA'] = 0
   values[valuesById[1] = 'AAB'] = 1
   values[valuesById[2] = 'ABA'] = 2
@@ -1341,27 +1534,15 @@ $root.Oct = (function () {
   return values
 })()
 
-export const PerspectiveCamera = $root.PerspectiveCamera = (() => {
+$root.Plane = (() => {
   /**
-     * Properties of a PerspectiveCamera.
-     * @exports IPerspectiveCamera
-     * @interface IPerspectiveCamera
-     * @property {IPoint3} pos PerspectiveCamera pos
-     * @property {number} fov PerspectiveCamera fov
-     * @property {number} aspect PerspectiveCamera aspect
-     * @property {number} near PerspectiveCamera near
-     * @property {number} far PerspectiveCamera far
-     */
-
-  /**
-     * Constructs a new PerspectiveCamera.
-     * @exports PerspectiveCamera
-     * @classdesc Represents a PerspectiveCamera.
-     * @implements IPerspectiveCamera
+     * Constructs a new Plane.
+     * @exports Plane
+     * @classdesc Represents a Plane.
      * @constructor
-     * @param {IPerspectiveCamera=} [properties] Properties to set
+     * @param {Plane=} [properties] Properties to set
      */
-  function PerspectiveCamera (properties) {
+  function Plane (properties) {
     if (properties) {
       for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
         if (properties[keys[i]] != null) { this[keys[i]] = properties[keys[i]] }
@@ -1369,457 +1550,195 @@ export const PerspectiveCamera = $root.PerspectiveCamera = (() => {
     }
   }
 
-  /**
-     * PerspectiveCamera pos.
-     * @member {IPoint3} pos
-     * @memberof PerspectiveCamera
-     * @instance
-     */
-  PerspectiveCamera.prototype.pos = null
+  Plane.prototype = Object.create(THREE.Plane.prototype)
 
   /**
-     * PerspectiveCamera fov.
-     * @member {number} fov
-     * @memberof PerspectiveCamera
+     * Plane normal.
+     * @member {Vector3} normal
+     * @memberof Plane
      * @instance
      */
-  PerspectiveCamera.prototype.fov = 0
+  Plane.prototype.normal = null
 
   /**
-     * PerspectiveCamera aspect.
-     * @member {number} aspect
-     * @memberof PerspectiveCamera
+     * Plane constant.
+     * @member {number} constant
+     * @memberof Plane
      * @instance
      */
-  PerspectiveCamera.prototype.aspect = 0
+  Plane.prototype.constant = 0
 
   /**
-     * PerspectiveCamera near.
-     * @member {number} near
-     * @memberof PerspectiveCamera
-     * @instance
-     */
-  PerspectiveCamera.prototype.near = 0
-
-  /**
-     * PerspectiveCamera far.
-     * @member {number} far
-     * @memberof PerspectiveCamera
-     * @instance
-     */
-  PerspectiveCamera.prototype.far = 0
-
-  /**
-     * Creates a new PerspectiveCamera instance using the specified properties.
+     * Creates a new Plane instance using the specified properties.
      * @function create
-     * @memberof PerspectiveCamera
+     * @memberof Plane
      * @static
-     * @param {IPerspectiveCamera=} [properties] Properties to set
-     * @returns {PerspectiveCamera} PerspectiveCamera instance
+     * @param {Plane=} [properties] Properties to set
+     * @returns {Plane} Plane instance
      */
-  PerspectiveCamera.create = function create (properties) {
-    return new PerspectiveCamera(properties)
+  Plane.create = function create (properties) {
+    return new Plane(properties)
   }
 
   /**
-     * Encodes the specified PerspectiveCamera message. Does not implicitly {@link PerspectiveCamera.verify|verify} messages.
+     * Encodes the specified Plane message. Does not implicitly {@link Plane.verify|verify} messages.
      * @function encode
-     * @memberof PerspectiveCamera
+     * @memberof Plane
      * @static
-     * @param {IPerspectiveCamera} message PerspectiveCamera message or plain object to encode
+     * @param {Plane} message Plane message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-  PerspectiveCamera.encode = function encode (message, writer) {
+  Plane.encode = function encode (message, writer) {
     if (!writer) { writer = $Writer.create() }
-    $root.Point3.encode(message.pos, writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim()
-    writer.uint32(/* id 2, wireType 5 = */21).float(message.fov)
-    writer.uint32(/* id 3, wireType 5 = */29).float(message.aspect)
-    writer.uint32(/* id 4, wireType 5 = */37).float(message.near)
-    writer.uint32(/* id 5, wireType 5 = */45).float(message.far)
+    $root.Vector3.encode(message.normal, writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim()
+    writer.uint32(/* id 2, wireType 5 = */21).float(message.constant)
     return writer
   }
 
   /**
-     * Encodes the specified PerspectiveCamera message, length delimited. Does not implicitly {@link PerspectiveCamera.verify|verify} messages.
+     * Encodes the specified Plane message, length delimited. Does not implicitly {@link Plane.verify|verify} messages.
      * @function encodeDelimited
-     * @memberof PerspectiveCamera
+     * @memberof Plane
      * @static
-     * @param {IPerspectiveCamera} message PerspectiveCamera message or plain object to encode
+     * @param {Plane} message Plane message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-  PerspectiveCamera.encodeDelimited = function encodeDelimited (message, writer) {
+  Plane.encodeDelimited = function encodeDelimited (message, writer) {
     return this.encode(message, writer).ldelim()
   }
 
   /**
-     * Decodes a PerspectiveCamera message from the specified reader or buffer.
+     * Decodes a Plane message from the specified reader or buffer.
      * @function decode
-     * @memberof PerspectiveCamera
+     * @memberof Plane
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {PerspectiveCamera} PerspectiveCamera
+     * @returns {Plane} Plane
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  PerspectiveCamera.decode = function decode (reader, length) {
+  Plane.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.PerspectiveCamera()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.Plane()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
         case 1:
-          message.pos = $root.Point3.decode(reader, reader.uint32())
+          message.normal = $root.Vector3.decode(reader, reader.uint32())
           break
         case 2:
-          message.fov = reader.float()
-          break
-        case 3:
-          message.aspect = reader.float()
-          break
-        case 4:
-          message.near = reader.float()
-          break
-        case 5:
-          message.far = reader.float()
+          message.constant = reader.float()
           break
         default:
           reader.skipType(tag & 7)
           break
       }
     }
-    if (!message.hasOwnProperty('pos')) { throw $util.ProtocolError("missing required 'pos'", { instance: message }) }
-    if (!message.hasOwnProperty('fov')) { throw $util.ProtocolError("missing required 'fov'", { instance: message }) }
-    if (!message.hasOwnProperty('aspect')) { throw $util.ProtocolError("missing required 'aspect'", { instance: message }) }
-    if (!message.hasOwnProperty('near')) { throw $util.ProtocolError("missing required 'near'", { instance: message }) }
-    if (!message.hasOwnProperty('far')) { throw $util.ProtocolError("missing required 'far'", { instance: message }) }
+    if (!message.hasOwnProperty('normal')) { throw $util.ProtocolError("missing required 'normal'", { instance: message }) }
+    if (!message.hasOwnProperty('constant')) { throw $util.ProtocolError("missing required 'constant'", { instance: message }) }
     return message
   }
 
   /**
-     * Decodes a PerspectiveCamera message from the specified reader or buffer, length delimited.
+     * Decodes a Plane message from the specified reader or buffer, length delimited.
      * @function decodeDelimited
-     * @memberof PerspectiveCamera
+     * @memberof Plane
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {PerspectiveCamera} PerspectiveCamera
+     * @returns {Plane} Plane
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  PerspectiveCamera.decodeDelimited = function decodeDelimited (reader) {
+  Plane.decodeDelimited = function decodeDelimited (reader) {
     if (!(reader instanceof $Reader)) { reader = new $Reader(reader) }
     return this.decode(reader, reader.uint32())
   }
 
   /**
-     * Verifies a PerspectiveCamera message.
+     * Verifies a Plane message.
      * @function verify
-     * @memberof PerspectiveCamera
+     * @memberof Plane
      * @static
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-  PerspectiveCamera.verify = function verify (message) {
+  Plane.verify = function verify (message) {
     if (typeof message !== 'object' || message === null) { return 'object expected' }
     {
-      let error = $root.Point3.verify(message.pos)
-      if (error) { return 'pos.' + error }
+      let error = $root.Vector3.verify(message.normal)
+      if (error) { return 'normal.' + error }
     }
-    if (typeof message.fov !== 'number') { return 'fov: number expected' }
-    if (typeof message.aspect !== 'number') { return 'aspect: number expected' }
-    if (typeof message.near !== 'number') { return 'near: number expected' }
-    if (typeof message.far !== 'number') { return 'far: number expected' }
+    if (typeof message.constant !== 'number') { return 'constant: number expected' }
     return null
   }
 
   /**
-     * Creates a PerspectiveCamera message from a plain object. Also converts values to their respective internal types.
+     * Creates a Plane message from a plain object. Also converts values to their respective internal types.
      * @function fromObject
-     * @memberof PerspectiveCamera
+     * @memberof Plane
      * @static
      * @param {Object.<string,*>} object Plain object
-     * @returns {PerspectiveCamera} PerspectiveCamera
+     * @returns {Plane} Plane
      */
-  PerspectiveCamera.fromObject = function fromObject (object) {
-    if (object instanceof $root.PerspectiveCamera) { return object }
-    let message = new $root.PerspectiveCamera()
-    if (object.pos != null) {
-      if (typeof object.pos !== 'object') { throw TypeError('.PerspectiveCamera.pos: object expected') }
-      message.pos = $root.Point3.fromObject(object.pos)
+  Plane.fromObject = function fromObject (object) {
+    if (object instanceof $root.Plane) { return object }
+    let message = new $root.Plane()
+    if (object.normal != null) {
+      if (typeof object.normal !== 'object') { throw TypeError('.Plane.normal: object expected') }
+      message.normal = $root.Vector3.fromObject(object.normal)
     }
-    if (object.fov != null) { message.fov = Number(object.fov) }
-    if (object.aspect != null) { message.aspect = Number(object.aspect) }
-    if (object.near != null) { message.near = Number(object.near) }
-    if (object.far != null) { message.far = Number(object.far) }
+    if (object.constant != null) { message.constant = Number(object.constant) }
     return message
   }
 
   /**
-     * Creates a plain object from a PerspectiveCamera message. Also converts values to other types if specified.
+     * Creates a plain object from a Plane message. Also converts values to other types if specified.
      * @function toObject
-     * @memberof PerspectiveCamera
+     * @memberof Plane
      * @static
-     * @param {PerspectiveCamera} message PerspectiveCamera
+     * @param {Plane} message Plane
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-  PerspectiveCamera.toObject = function toObject (message, options) {
+  Plane.toObject = function toObject (message, options) {
     if (!options) { options = {} }
     let object = {}
     if (options.defaults) {
-      object.pos = null
-      object.fov = 0
-      object.aspect = 0
-      object.near = 0
-      object.far = 0
+      object.normal = null
+      object.constant = 0
     }
-    if (message.pos != null && message.hasOwnProperty('pos')) { object.pos = $root.Point3.toObject(message.pos, options) }
-    if (message.fov != null && message.hasOwnProperty('fov')) { object.fov = options.json && !isFinite(message.fov) ? String(message.fov) : message.fov }
-    if (message.aspect != null && message.hasOwnProperty('aspect')) { object.aspect = options.json && !isFinite(message.aspect) ? String(message.aspect) : message.aspect }
-    if (message.near != null && message.hasOwnProperty('near')) { object.near = options.json && !isFinite(message.near) ? String(message.near) : message.near }
-    if (message.far != null && message.hasOwnProperty('far')) { object.far = options.json && !isFinite(message.far) ? String(message.far) : message.far }
+    if (message.normal != null && message.hasOwnProperty('normal')) { object.normal = $root.Vector3.toObject(message.normal, options) }
+    if (message.constant != null && message.hasOwnProperty('constant')) { object.constant = options.json && !isFinite(message.constant) ? String(message.constant) : message.constant }
     return object
   }
 
   /**
-     * Converts this PerspectiveCamera to JSON.
+     * Converts this Plane to JSON.
      * @function toJSON
-     * @memberof PerspectiveCamera
+     * @memberof Plane
      * @instance
      * @returns {Object.<string,*>} JSON object
      */
-  PerspectiveCamera.prototype.toJSON = function toJSON () {
+  Plane.prototype.toJSON = function toJSON () {
     return this.constructor.toObject(this, $protobuf.util.toJSONOptions)
   }
 
-  return PerspectiveCamera
+  return Plane
 })()
 
-export const Point3 = $root.Point3 = (() => {
-  /**
-     * Properties of a Point3.
-     * @exports IPoint3
-     * @interface IPoint3
-     * @property {number} x Point3 x
-     * @property {number} y Point3 y
-     * @property {number} z Point3 z
-     */
-
-  /**
-     * Constructs a new Point3.
-     * @exports Point3
-     * @classdesc Represents a Point3.
-     * @implements IPoint3
-     * @constructor
-     * @param {IPoint3=} [properties] Properties to set
-     */
-  function Point3 (properties) {
-    if (properties) {
-      for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
-        if (properties[keys[i]] != null) { this[keys[i]] = properties[keys[i]] }
-      }
-    }
-  }
-
-  /**
-     * Point3 x.
-     * @member {number} x
-     * @memberof Point3
-     * @instance
-     */
-  Point3.prototype.x = 0
-
-  /**
-     * Point3 y.
-     * @member {number} y
-     * @memberof Point3
-     * @instance
-     */
-  Point3.prototype.y = 0
-
-  /**
-     * Point3 z.
-     * @member {number} z
-     * @memberof Point3
-     * @instance
-     */
-  Point3.prototype.z = 0
-
-  /**
-     * Creates a new Point3 instance using the specified properties.
-     * @function create
-     * @memberof Point3
-     * @static
-     * @param {IPoint3=} [properties] Properties to set
-     * @returns {Point3} Point3 instance
-     */
-  Point3.create = function create (properties) {
-    return new Point3(properties)
-  }
-
-  /**
-     * Encodes the specified Point3 message. Does not implicitly {@link Point3.verify|verify} messages.
-     * @function encode
-     * @memberof Point3
-     * @static
-     * @param {IPoint3} message Point3 message or plain object to encode
-     * @param {$protobuf.Writer} [writer] Writer to encode to
-     * @returns {$protobuf.Writer} Writer
-     */
-  Point3.encode = function encode (message, writer) {
-    if (!writer) { writer = $Writer.create() }
-    writer.uint32(/* id 1, wireType 5 = */13).float(message.x)
-    writer.uint32(/* id 2, wireType 5 = */21).float(message.y)
-    writer.uint32(/* id 3, wireType 5 = */29).float(message.z)
-    return writer
-  }
-
-  /**
-     * Encodes the specified Point3 message, length delimited. Does not implicitly {@link Point3.verify|verify} messages.
-     * @function encodeDelimited
-     * @memberof Point3
-     * @static
-     * @param {IPoint3} message Point3 message or plain object to encode
-     * @param {$protobuf.Writer} [writer] Writer to encode to
-     * @returns {$protobuf.Writer} Writer
-     */
-  Point3.encodeDelimited = function encodeDelimited (message, writer) {
-    return this.encode(message, writer).ldelim()
-  }
-
-  /**
-     * Decodes a Point3 message from the specified reader or buffer.
-     * @function decode
-     * @memberof Point3
-     * @static
-     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @param {number} [length] Message length if known beforehand
-     * @returns {Point3} Point3
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-  Point3.decode = function decode (reader, length) {
-    if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.Point3()
-    while (reader.pos < end) {
-      let tag = reader.uint32()
-      switch (tag >>> 3) {
-        case 1:
-          message.x = reader.float()
-          break
-        case 2:
-          message.y = reader.float()
-          break
-        case 3:
-          message.z = reader.float()
-          break
-        default:
-          reader.skipType(tag & 7)
-          break
-      }
-    }
-    if (!message.hasOwnProperty('x')) { throw $util.ProtocolError("missing required 'x'", { instance: message }) }
-    if (!message.hasOwnProperty('y')) { throw $util.ProtocolError("missing required 'y'", { instance: message }) }
-    if (!message.hasOwnProperty('z')) { throw $util.ProtocolError("missing required 'z'", { instance: message }) }
-    return message
-  }
-
-  /**
-     * Decodes a Point3 message from the specified reader or buffer, length delimited.
-     * @function decodeDelimited
-     * @memberof Point3
-     * @static
-     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {Point3} Point3
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-  Point3.decodeDelimited = function decodeDelimited (reader) {
-    if (!(reader instanceof $Reader)) { reader = new $Reader(reader) }
-    return this.decode(reader, reader.uint32())
-  }
-
-  /**
-     * Verifies a Point3 message.
-     * @function verify
-     * @memberof Point3
-     * @static
-     * @param {Object.<string,*>} message Plain object to verify
-     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-     */
-  Point3.verify = function verify (message) {
-    if (typeof message !== 'object' || message === null) { return 'object expected' }
-    if (typeof message.x !== 'number') { return 'x: number expected' }
-    if (typeof message.y !== 'number') { return 'y: number expected' }
-    if (typeof message.z !== 'number') { return 'z: number expected' }
-    return null
-  }
-
-  /**
-     * Creates a Point3 message from a plain object. Also converts values to their respective internal types.
-     * @function fromObject
-     * @memberof Point3
-     * @static
-     * @param {Object.<string,*>} object Plain object
-     * @returns {Point3} Point3
-     */
-  Point3.fromObject = function fromObject (object) {
-    if (object instanceof $root.Point3) { return object }
-    let message = new $root.Point3()
-    if (object.x != null) { message.x = Number(object.x) }
-    if (object.y != null) { message.y = Number(object.y) }
-    if (object.z != null) { message.z = Number(object.z) }
-    return message
-  }
-
-  /**
-     * Creates a plain object from a Point3 message. Also converts values to other types if specified.
-     * @function toObject
-     * @memberof Point3
-     * @static
-     * @param {Point3} message Point3
-     * @param {$protobuf.IConversionOptions} [options] Conversion options
-     * @returns {Object.<string,*>} Plain object
-     */
-  Point3.toObject = function toObject (message, options) {
-    if (!options) { options = {} }
-    let object = {}
-    if (options.defaults) {
-      object.x = 0
-      object.y = 0
-      object.z = 0
-    }
-    if (message.x != null && message.hasOwnProperty('x')) { object.x = options.json && !isFinite(message.x) ? String(message.x) : message.x }
-    if (message.y != null && message.hasOwnProperty('y')) { object.y = options.json && !isFinite(message.y) ? String(message.y) : message.y }
-    if (message.z != null && message.hasOwnProperty('z')) { object.z = options.json && !isFinite(message.z) ? String(message.z) : message.z }
-    return object
-  }
-
-  /**
-     * Converts this Point3 to JSON.
-     * @function toJSON
-     * @memberof Point3
-     * @instance
-     * @returns {Object.<string,*>} JSON object
-     */
-  Point3.prototype.toJSON = function toJSON () {
-    return this.constructor.toObject(this, $protobuf.util.toJSONOptions)
-  }
-
-  return Point3
-})()
-
-export const Query = $root.Query = (() => {
+$root.Query = (() => {
   /**
      * Properties of a Query.
      * @exports IQuery
      * @interface IQuery
-     * @property {IPerspectiveCamera} cam Query cam
+     * @property {Frustum} frustum Query frustum
      * @property {IRelevanceRange} relevance Query relevance
      * @property {IDensityRange|null} [density] Query density
-     * @property {IBounds|null} [cut] Query cut
+     * @property {Box3|null} [cut] Query cut
      * @property {Array.<string>|null} [feature] Query feature
      */
 
@@ -1841,12 +1760,12 @@ export const Query = $root.Query = (() => {
   }
 
   /**
-     * Query cam.
-     * @member {IPerspectiveCamera} cam
+     * Query frustum.
+     * @member {Frustum} frustum
      * @memberof Query
      * @instance
      */
-  Query.prototype.cam = null
+  Query.prototype.frustum = null
 
   /**
      * Query relevance.
@@ -1866,7 +1785,7 @@ export const Query = $root.Query = (() => {
 
   /**
      * Query cut.
-     * @member {IBounds|null|undefined} cut
+     * @member {Box3|null|undefined} cut
      * @memberof Query
      * @instance
      */
@@ -1903,10 +1822,10 @@ export const Query = $root.Query = (() => {
      */
   Query.encode = function encode (message, writer) {
     if (!writer) { writer = $Writer.create() }
-    $root.PerspectiveCamera.encode(message.cam, writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim()
-    $root.RelevanceRange.encode(message.relevance, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim()
+    $root.Frustum.encode(message.frustum, writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim()
+    if (message.relevance != null && message.hasOwnProperty('relevance')) { $root.RelevanceRange.encode(message.relevance, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim() }
     if (message.density != null && message.hasOwnProperty('density')) { $root.DensityRange.encode(message.density, writer.uint32(/* id 3, wireType 2 = */26).fork()).ldelim() }
-    if (message.cut != null && message.hasOwnProperty('cut')) { $root.Bounds.encode(message.cut, writer.uint32(/* id 4, wireType 2 = */34).fork()).ldelim() }
+    if (message.cut != null && message.hasOwnProperty('cut')) { $root.Box3.encode(message.cut, writer.uint32(/* id 4, wireType 2 = */34).fork()).ldelim() }
     if (message.feature != null && message.feature.length) {
       for (let i = 0; i < message.feature.length; ++i) { writer.uint32(/* id 5, wireType 2 = */42).string(message.feature[i]) }
     }
@@ -1939,12 +1858,13 @@ export const Query = $root.Query = (() => {
      */
   Query.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.Query()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.Query()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
         case 1:
-          message.cam = $root.PerspectiveCamera.decode(reader, reader.uint32())
+          message.frustum = $root.Frustum.decode(reader, reader.uint32())
           break
         case 2:
           message.relevance = $root.RelevanceRange.decode(reader, reader.uint32())
@@ -1953,7 +1873,7 @@ export const Query = $root.Query = (() => {
           message.density = $root.DensityRange.decode(reader, reader.uint32())
           break
         case 4:
-          message.cut = $root.Bounds.decode(reader, reader.uint32())
+          message.cut = $root.Box3.decode(reader, reader.uint32())
           break
         case 5:
           if (!(message.feature && message.feature.length)) { message.feature = [] }
@@ -1964,8 +1884,7 @@ export const Query = $root.Query = (() => {
           break
       }
     }
-    if (!message.hasOwnProperty('cam')) { throw $util.ProtocolError("missing required 'cam'", { instance: message }) }
-    if (!message.hasOwnProperty('relevance')) { throw $util.ProtocolError("missing required 'relevance'", { instance: message }) }
+    if (!message.hasOwnProperty('frustum')) { throw $util.ProtocolError("missing required 'frustum'", { instance: message }) }
     return message
   }
 
@@ -1995,8 +1914,8 @@ export const Query = $root.Query = (() => {
   Query.verify = function verify (message) {
     if (typeof message !== 'object' || message === null) { return 'object expected' }
     {
-      let error = $root.PerspectiveCamera.verify(message.cam)
-      if (error) { return 'cam.' + error }
+      let error = $root.Frustum.verify(message.frustum)
+      if (error) { return 'frustum.' + error }
     }
     {
       let error = $root.RelevanceRange.verify(message.relevance)
@@ -2007,7 +1926,7 @@ export const Query = $root.Query = (() => {
       if (error) { return 'density.' + error }
     }
     if (message.cut != null && message.hasOwnProperty('cut')) {
-      let error = $root.Bounds.verify(message.cut)
+      let error = $root.Box3.verify(message.cut)
       if (error) { return 'cut.' + error }
     }
     if (message.feature != null && message.hasOwnProperty('feature')) {
@@ -2030,9 +1949,9 @@ export const Query = $root.Query = (() => {
   Query.fromObject = function fromObject (object) {
     if (object instanceof $root.Query) { return object }
     let message = new $root.Query()
-    if (object.cam != null) {
-      if (typeof object.cam !== 'object') { throw TypeError('.Query.cam: object expected') }
-      message.cam = $root.PerspectiveCamera.fromObject(object.cam)
+    if (object.frustum != null) {
+      if (typeof object.frustum !== 'object') { throw TypeError('.Query.frustum: object expected') }
+      message.frustum = $root.Frustum.fromObject(object.frustum)
     }
     if (object.relevance != null) {
       if (typeof object.relevance !== 'object') { throw TypeError('.Query.relevance: object expected') }
@@ -2044,7 +1963,7 @@ export const Query = $root.Query = (() => {
     }
     if (object.cut != null) {
       if (typeof object.cut !== 'object') { throw TypeError('.Query.cut: object expected') }
-      message.cut = $root.Bounds.fromObject(object.cut)
+      message.cut = $root.Box3.fromObject(object.cut)
     }
     if (object.feature) {
       if (!Array.isArray(object.feature)) { throw TypeError('.Query.feature: array expected') }
@@ -2068,15 +1987,15 @@ export const Query = $root.Query = (() => {
     let object = {}
     if (options.arrays || options.defaults) { object.feature = [] }
     if (options.defaults) {
-      object.cam = null
+      object.frustum = null
       object.relevance = null
       object.density = null
       object.cut = null
     }
-    if (message.cam != null && message.hasOwnProperty('cam')) { object.cam = $root.PerspectiveCamera.toObject(message.cam, options) }
+    if (message.frustum != null && message.hasOwnProperty('frustum')) { object.frustum = $root.Frustum.toObject(message.frustum, options) }
     if (message.relevance != null && message.hasOwnProperty('relevance')) { object.relevance = $root.RelevanceRange.toObject(message.relevance, options) }
     if (message.density != null && message.hasOwnProperty('density')) { object.density = $root.DensityRange.toObject(message.density, options) }
-    if (message.cut != null && message.hasOwnProperty('cut')) { object.cut = $root.Bounds.toObject(message.cut, options) }
+    if (message.cut != null && message.hasOwnProperty('cut')) { object.cut = $root.Box3.toObject(message.cut, options) }
     if (message.feature && message.feature.length) {
       object.feature = []
       for (let j = 0; j < message.feature.length; ++j) { object.feature[j] = message.feature[j] }
@@ -2098,7 +2017,7 @@ export const Query = $root.Query = (() => {
   return Query
 })()
 
-export const QueryResponse = $root.QueryResponse = (() => {
+$root.QueryResponse = (() => {
   /**
      * Properties of a QueryResponse.
      * @exports IQueryResponse
@@ -2199,7 +2118,8 @@ export const QueryResponse = $root.QueryResponse = (() => {
      */
   QueryResponse.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.QueryResponse()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.QueryResponse()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -2332,7 +2252,7 @@ export const QueryResponse = $root.QueryResponse = (() => {
   return QueryResponse
 })()
 
-export const RelevanceRange = $root.RelevanceRange = (() => {
+$root.RelevanceRange = (() => {
   /**
      * Properties of a RelevanceRange.
      * @exports IRelevanceRange
@@ -2427,7 +2347,8 @@ export const RelevanceRange = $root.RelevanceRange = (() => {
      */
   RelevanceRange.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.RelevanceRange()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.RelevanceRange()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -2529,17 +2450,17 @@ export const RelevanceRange = $root.RelevanceRange = (() => {
   return RelevanceRange
 })()
 
-export const Tree = $root.Tree = (() => {
+$root.Tree = (() => {
   /**
      * Properties of a Tree.
      * @exports ITree
      * @interface ITree
      * @property {string} id Tree id
-     * @property {IBounds} bounds Tree bounds
-     * @property {IVector3|null} [scale] Tree scale
-     * @property {IVector3|null} [offset] Tree offset
+     * @property {Box} Box Tree Box
+     * @property {Vector3|null} [scale] Tree scale
+     * @property {Vector3|null} [offset] Tree offset
      * @property {number|Long|null} [numPoints] Tree numPoints
-     * @property {IBounds|null} [boundsConforming] Tree boundsConforming
+     * @property {Box3|null} [BoxConforming] Tree BoxConforming
      * @property {Array.<IFeature>|null} [schema] Tree schema
      * @property {Object.<string,google.protobuf.IAny>|null} [metadata] Tree metadata
      */
@@ -2571,8 +2492,8 @@ export const Tree = $root.Tree = (() => {
   Tree.prototype.id = ''
 
   /**
-     * Tree bounds.
-     * @member {IBounds} bounds
+     * Tree Box.
+     * @member {Box3} Box
      * @memberof Tree
      * @instance
      */
@@ -2580,7 +2501,7 @@ export const Tree = $root.Tree = (() => {
 
   /**
      * Tree scale.
-     * @member {IPoint3|null|undefined} scale
+     * @member {Vector3|null|undefined} scale
      * @memberof Tree
      * @instance
      */
@@ -2588,7 +2509,7 @@ export const Tree = $root.Tree = (() => {
 
   /**
      * Tree offset.
-     * @member {IPoint3|null|undefined} offset
+     * @member {Vector3|null|undefined} offset
      * @memberof Tree
      * @instance
      */
@@ -2600,11 +2521,11 @@ export const Tree = $root.Tree = (() => {
      * @memberof Tree
      * @instance
      */
-  Tree.prototype.numPoints = $util.Long ? $util.Long.fromBits(0, 0, false) : 0
+  Tree.prototype.numPoints = 0
 
   /**
      * Tree boundsConforming.
-     * @member {IBounds|null|undefined} boundsConforming
+     * @member {Box3|null|undefined} BoxConforming
      * @memberof Tree
      * @instance
      */
@@ -2650,11 +2571,11 @@ export const Tree = $root.Tree = (() => {
   Tree.encode = function encode (message, writer) {
     if (!writer) { writer = $Writer.create() }
     writer.uint32(/* id 1, wireType 2 = */10).string(message.id)
-    $root.Bounds.encode(message.bounds, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim()
+    $root.Box3.encode(message.bounds, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim()
     if (message.scale != null && message.hasOwnProperty('scale')) { $root.Vector3.encode(message.scale, writer.uint32(/* id 3, wireType 2 = */26).fork()).ldelim() }
     if (message.offset != null && message.hasOwnProperty('offset')) { $root.Vector3.encode(message.offset, writer.uint32(/* id 4, wireType 2 = */34).fork()).ldelim() }
     if (message.numPoints != null && message.hasOwnProperty('numPoints')) { writer.uint32(/* id 5, wireType 0 = */40).int64(message.numPoints) }
-    if (message.boundsConforming != null && message.hasOwnProperty('boundsConforming')) { $root.Bounds.encode(message.boundsConforming, writer.uint32(/* id 6, wireType 2 = */50).fork()).ldelim() }
+    if (message.boundsConforming != null && message.hasOwnProperty('boundsConforming')) { $root.Box3.encode(message.boundsConforming, writer.uint32(/* id 6, wireType 2 = */50).fork()).ldelim() }
     if (message.schema != null && message.schema.length) {
       for (let i = 0; i < message.schema.length; ++i) { $root.Feature.encode(message.schema[i], writer.uint32(/* id 7, wireType 2 = */58).fork()).ldelim() }
     }
@@ -2693,7 +2614,9 @@ export const Tree = $root.Tree = (() => {
      */
   Tree.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.Tree(), key
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.Tree()
+    let key
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -2701,7 +2624,7 @@ export const Tree = $root.Tree = (() => {
           message.id = reader.string()
           break
         case 2:
-          message.bounds = $root.Bounds.decode(reader, reader.uint32())
+          message.bounds = $root.Box3.decode(reader, reader.uint32())
           break
         case 3:
           message.scale = $root.Vector3.decode(reader, reader.uint32())
@@ -2713,7 +2636,7 @@ export const Tree = $root.Tree = (() => {
           message.numPoints = reader.int64()
           break
         case 6:
-          message.boundsConforming = $root.Bounds.decode(reader, reader.uint32())
+          message.boundsConforming = $root.Box3.decode(reader, reader.uint32())
           break
         case 7:
           if (!(message.schema && message.schema.length)) { message.schema = [] }
@@ -2763,7 +2686,7 @@ export const Tree = $root.Tree = (() => {
     if (typeof message !== 'object' || message === null) { return 'object expected' }
     if (!$util.isString(message.id)) { return 'id: string expected' }
     {
-      let error = $root.Bounds.verify(message.bounds)
+      let error = $root.Box3.verify(message.bounds)
       if (error) { return 'bounds.' + error }
     }
     if (message.scale != null && message.hasOwnProperty('scale')) {
@@ -2778,7 +2701,7 @@ export const Tree = $root.Tree = (() => {
       if (!$util.isInteger(message.numPoints) && !(message.numPoints && $util.isInteger(message.numPoints.low) && $util.isInteger(message.numPoints.high))) { return 'numPoints: integer|Long expected' }
     }
     if (message.boundsConforming != null && message.hasOwnProperty('boundsConforming')) {
-      let error = $root.Bounds.verify(message.boundsConforming)
+      let error = $root.Box3.verify(message.boundsConforming)
       if (error) { return 'boundsConforming.' + error }
     }
     if (message.schema != null && message.hasOwnProperty('schema')) {
@@ -2813,7 +2736,7 @@ export const Tree = $root.Tree = (() => {
     if (object.id != null) { message.id = String(object.id) }
     if (object.bounds != null) {
       if (typeof object.bounds !== 'object') { throw TypeError('.Tree.bounds: object expected') }
-      message.bounds = $root.Bounds.fromObject(object.bounds)
+      message.bounds = $root.Box3.fromObject(object.bounds)
     }
     if (object.scale != null) {
       if (typeof object.scale !== 'object') { throw TypeError('.Tree.scale: object expected') }
@@ -2828,7 +2751,7 @@ export const Tree = $root.Tree = (() => {
     }
     if (object.boundsConforming != null) {
       if (typeof object.boundsConforming !== 'object') { throw TypeError('.Tree.boundsConforming: object expected') }
-      message.boundsConforming = $root.Bounds.fromObject(object.boundsConforming)
+      message.boundsConforming = $root.Box3.fromObject(object.boundsConforming)
     }
     if (object.schema) {
       if (!Array.isArray(object.schema)) { throw TypeError('.Tree.schema: array expected') }
@@ -2868,20 +2791,17 @@ export const Tree = $root.Tree = (() => {
       object.bounds = null
       object.scale = null
       object.offset = null
-      if ($util.Long) {
-        let long = new $util.Long(0, 0, false)
-        object.numPoints = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long
-      } else { object.numPoints = options.longs === String ? '0' : 0 }
+      object.numPoints = 0
       object.boundsConforming = null
     }
     if (message.id != null && message.hasOwnProperty('id')) { object.id = message.id }
-    if (message.bounds != null && message.hasOwnProperty('bounds')) { object.bounds = $root.Bounds.toObject(message.bounds, options) }
+    if (message.bounds != null && message.hasOwnProperty('bounds')) { object.bounds = $root.Box3.toObject(message.bounds, options) }
     if (message.scale != null && message.hasOwnProperty('scale')) { object.scale = $root.Vector3.toObject(message.scale, options) }
     if (message.offset != null && message.hasOwnProperty('offset')) { object.offset = $root.Vector3.toObject(message.offset, options) }
     if (message.numPoints != null && message.hasOwnProperty('numPoints')) {
       if (typeof message.numPoints === 'number') { object.numPoints = options.longs === String ? String(message.numPoints) : message.numPoints } else { object.numPoints = options.longs === String ? $util.Long.prototype.toString.call(message.numPoints) : options.longs === Number ? new $util.LongBits(message.numPoints.low >>> 0, message.numPoints.high >>> 0).toNumber() : message.numPoints }
     }
-    if (message.boundsConforming != null && message.hasOwnProperty('boundsConforming')) { object.boundsConforming = $root.Bounds.toObject(message.boundsConforming, options) }
+    if (message.boundsConforming != null && message.hasOwnProperty('boundsConforming')) { object.boundsConforming = $root.Box3.toObject(message.boundsConforming, options) }
     if (message.schema && message.schema.length) {
       object.schema = []
       for (let j = 0; j < message.schema.length; ++j) { object.schema[j] = $root.Feature.toObject(message.schema[j], options) }
@@ -2908,7 +2828,7 @@ export const Tree = $root.Tree = (() => {
   return Tree
 })()
 
-export const google = $root.google = (() => {
+$root.google = (() => {
   /**
      * Namespace google.
      * @exports google
@@ -3019,7 +2939,8 @@ export const google = $root.google = (() => {
              */
       Any.decode = function decode (reader, length) {
         if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Any()
+        let end = length === undefined ? reader.len : reader.pos + length
+        let message = new $root.google.protobuf.Any()
         while (reader.pos < end) {
           let tag = reader.uint32()
           switch (tag >>> 3) {
@@ -3066,7 +2987,7 @@ export const google = $root.google = (() => {
           if (!$util.isString(message.type_url)) { return 'type_url: string expected' }
         }
         if (message.value != null && message.hasOwnProperty('value')) {
-          if (!(message.value && typeof message.value.length === 'number' || $util.isString(message.value))) { return 'value: buffer expected' }
+          if (!((message.value && typeof message.value.length === 'number') || $util.isString(message.value))) { return 'value: buffer expected' }
         }
         return null
       }
@@ -3130,24 +3051,24 @@ export const google = $root.google = (() => {
   return google
 })()
 
-export const TreeRequest = $root.TreeRequest = (() => {
+$root.TreeQuery = (() => {
   /**
      * Properties of a TreeQuery.
-     * @exports ITreeRequest
-     * @interface ITreeRequest
+     * @exports ITreeQuery
+     * @interface ITreeQuery
      * @property {string} id TreeQuery id
-     * @property {Array.<string>|null} [metadataProperties] TreeRequest metadataProperties
+     * @property {Array.<string>|null} [metadataProperties] TreeQuery metadataProperties
      */
 
   /**
-     * Constructs a new TreeRequest.
-     * @exports TreeRequest
-     * @classdesc Represents a TreeRequest.
-     * @implements ITreeRequest
+     * Constructs a new TreeQuery.
+     * @exports TreeQuery
+     * @classdesc Represents a TreeQuery.
+     * @implements ITreeQuery
      * @constructor
      * @param {ITreeQuery=} [properties] Properties to set
      */
-  function TreeRequest (properties) {
+  function TreeQuery (properties) {
     this.metadataProperties = []
     if (properties) {
       for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
@@ -3157,43 +3078,43 @@ export const TreeRequest = $root.TreeRequest = (() => {
   }
 
   /**
-     * TreeRequest id.
+     * TreeQuery id.
      * @member {string} id
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @instance
      */
-  TreeRequest.prototype.id = ''
+  TreeQuery.prototype.id = ''
 
   /**
-     * TreeRequest metadataProperties.
+     * TreeQuery metadataProperties.
      * @member {Array.<string>} metadataProperties
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @instance
      */
-  TreeRequest.prototype.metadataProperties = $util.emptyArray
+  TreeQuery.prototype.metadataProperties = $util.emptyArray
 
   /**
-     * Creates a new TreeRequest instance using the specified properties.
+     * Creates a new TreeQuery instance using the specified properties.
      * @function create
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @static
-     * @param {ITreeRequest=} [properties] Properties to set
-     * @returns {TreeRequest} TreeRequest instance
+     * @param {ITreeQuery=} [properties] Properties to set
+     * @returns {TreeQuery} TreeQuery instance
      */
-  TreeRequest.create = function create (properties) {
-    return new TreeRequest(properties)
+  TreeQuery.create = function create (properties) {
+    return new TreeQuery(properties)
   }
 
   /**
-     * Encodes the specified TreeRequest message. Does not implicitly {@link TreeRequest.verify|verify} messages.
+     * Encodes the specified TreeQuery message. Does not implicitly {@link TreeQuery.verify|verify} messages.
      * @function encode
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @static
-     * @param {ITreeRequest} message TreeRequest message or plain object to encode
+     * @param {ITreeQuery} message TreeQuery message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-  TreeRequest.encode = function encode (message, writer) {
+  TreeQuery.encode = function encode (message, writer) {
     if (!writer) { writer = $Writer.create() }
     writer.uint32(/* id 1, wireType 2 = */10).string(message.id)
     if (message.metadataProperties != null && message.metadataProperties.length) {
@@ -3203,32 +3124,33 @@ export const TreeRequest = $root.TreeRequest = (() => {
   }
 
   /**
-     * Encodes the specified TreeRequest message, length delimited. Does not implicitly {@link TreeRequest.verify|verify} messages.
+     * Encodes the specified TreeQuery message, length delimited. Does not implicitly {@link TreeQuery.verify|verify} messages.
      * @function encodeDelimited
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @static
-     * @param {ITreeRequest} message TreeRequest message or plain object to encode
+     * @param {ITreeQuery} message TreeQuery message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-  TreeRequest.encodeDelimited = function encodeDelimited (message, writer) {
+  TreeQuery.encodeDelimited = function encodeDelimited (message, writer) {
     return this.encode(message, writer).ldelim()
   }
 
   /**
-     * Decodes a TreeRequest message from the specified reader or buffer.
+     * Decodes a TreeQuery message from the specified reader or buffer.
      * @function decode
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {TreeRequest} TreeRequest
+     * @returns {TreeQuery} TreeQuery
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  TreeRequest.decode = function decode (reader, length) {
+  TreeQuery.decode = function decode (reader, length) {
     if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
-    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.TreeQuery()
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.TreeQuery()
     while (reader.pos < end) {
       let tag = reader.uint32()
       switch (tag >>> 3) {
@@ -3249,29 +3171,29 @@ export const TreeRequest = $root.TreeRequest = (() => {
   }
 
   /**
-     * Decodes a TreeRequest message from the specified reader or buffer, length delimited.
+     * Decodes a TreeQuery message from the specified reader or buffer, length delimited.
      * @function decodeDelimited
      * @memberof TreeQuery
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {TreeRequest} TreeRequest
+     * @returns {TreeQuery} TreeQuery
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  TreeRequest.decodeDelimited = function decodeDelimited (reader) {
+  TreeQuery.decodeDelimited = function decodeDelimited (reader) {
     if (!(reader instanceof $Reader)) { reader = new $Reader(reader) }
     return this.decode(reader, reader.uint32())
   }
 
   /**
-     * Verifies a TreeRequest message.
+     * Verifies a TreeQuery message.
      * @function verify
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @static
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-  TreeRequest.verify = function verify (message) {
+  TreeQuery.verify = function verify (message) {
     if (typeof message !== 'object' || message === null) { return 'object expected' }
     if (!$util.isString(message.id)) { return 'id: string expected' }
     if (message.metadataProperties != null && message.hasOwnProperty('metadataProperties')) {
@@ -3284,19 +3206,19 @@ export const TreeRequest = $root.TreeRequest = (() => {
   }
 
   /**
-     * Creates a TreeRequest message from a plain object. Also converts values to their respective internal types.
+     * Creates a TreeQuery message from a plain object. Also converts values to their respective internal types.
      * @function fromObject
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @static
      * @param {Object.<string,*>} object Plain object
-     * @returns {TreeRequest} TreeRequest
+     * @returns {TreeQuery} TreeQuery
      */
-  TreeRequest.fromObject = function fromObject (object) {
-    if (object instanceof $root.TreeRequest) { return object }
-    let message = new $root.TreeRequest()
+  TreeQuery.fromObject = function fromObject (object) {
+    if (object instanceof $root.TreeQuery) { return object }
+    let message = new $root.TreeQuery()
     if (object.id != null) { message.id = String(object.id) }
     if (object.metadataProperties) {
-      if (!Array.isArray(object.metadataProperties)) { throw TypeError('.TreeRequest.metadataProperties: array expected') }
+      if (!Array.isArray(object.metadataProperties)) { throw TypeError('.TreeQuery.metadataProperties: array expected') }
       message.metadataProperties = []
       for (let i = 0; i < object.metadataProperties.length; ++i) { message.metadataProperties[i] = String(object.metadataProperties[i]) }
     }
@@ -3304,15 +3226,15 @@ export const TreeRequest = $root.TreeRequest = (() => {
   }
 
   /**
-     * Creates a plain object from a TreeRequest message. Also converts values to other types if specified.
+     * Creates a plain object from a TreeQuery message. Also converts values to other types if specified.
      * @function toObject
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @static
-     * @param {TreeRequest} message TreeRequest
+     * @param {TreeQuery} message TreeQuery
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-  TreeRequest.toObject = function toObject (message, options) {
+  TreeQuery.toObject = function toObject (message, options) {
     if (!options) { options = {} }
     let object = {}
     if (options.arrays || options.defaults) { object.metadataProperties = [] }
@@ -3326,17 +3248,222 @@ export const TreeRequest = $root.TreeRequest = (() => {
   }
 
   /**
-     * Converts this TreeRequest to JSON.
+     * Converts this TreeQuery to JSON.
      * @function toJSON
-     * @memberof TreeRequest
+     * @memberof TreeQuery
      * @instance
      * @returns {Object.<string,*>} JSON object
      */
-  TreeRequest.prototype.toJSON = function toJSON () {
+  TreeQuery.prototype.toJSON = function toJSON () {
     return this.constructor.toObject(this, $protobuf.util.toJSONOptions)
   }
 
-  return TreeRequest
+  return TreeQuery
 })()
 
-export { $root as default }
+$root.Vector3 = (() => {
+  /**
+     * Constructs a new Vector3.
+     * @exports Vector3
+     * @classdesc Represents a Vector3.
+     * @constructor
+     * @param {Vector3=} [properties] Properties to set
+     */
+  function Vector3 (properties) {
+    if (properties) {
+      for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
+        if (properties[keys[i]] != null) { this[keys[i]] = properties[keys[i]] }
+      }
+    }
+  }
+
+  Vector3.prototype = Object.create(THREE.Vector3.prototype)
+
+  /**
+     * Vector3 x.
+     * @member {number} x
+     * @memberof Vector3
+     * @instance
+     */
+  Vector3.prototype.x = 0
+
+  /**
+     * Vector3 y.
+     * @member {number} y
+     * @memberof Vector3
+     * @instance
+     */
+  Vector3.prototype.y = 0
+
+  /**
+     * Vector3 z.
+     * @member {number} z
+     * @memberof Vector3
+     * @instance
+     */
+  Vector3.prototype.z = 0
+
+  /**
+     * Creates a new Vector3 instance using the specified properties.
+     * @function create
+     * @memberof Vector3
+     * @static
+     * @param {Vector3=} [properties] Properties to set
+     * @returns {Vector3} Vector3 instance
+     */
+  Vector3.create = function create (properties) {
+    return new Vector3(properties)
+  }
+
+  /**
+     * Encodes the specified Vector3 message. Does not implicitly {@link Vector3.verify|verify} messages.
+     * @function encode
+     * @memberof Vector3
+     * @static
+     * @param {Vector3} message Vector3 message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+  Vector3.encode = function encode (message, writer) {
+    if (!writer) { writer = $Writer.create() }
+    writer.uint32(/* id 1, wireType 5 = */13).float(message.x)
+    writer.uint32(/* id 2, wireType 5 = */21).float(message.y)
+    writer.uint32(/* id 3, wireType 5 = */29).float(message.z)
+    return writer
+  }
+
+  /**
+     * Encodes the specified Vector3 message, length delimited. Does not implicitly {@link Vector3.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof Vector3
+     * @static
+     * @param {Vector3} message Vector3 message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+  Vector3.encodeDelimited = function encodeDelimited (message, writer) {
+    return this.encode(message, writer).ldelim()
+  }
+
+  /**
+     * Decodes a Vector3 message from the specified reader or buffer.
+     * @function decode
+     * @memberof Vector3
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {Vector3} Vector3
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+  Vector3.decode = function decode (reader, length) {
+    if (!(reader instanceof $Reader)) { reader = $Reader.create(reader) }
+    let end = length === undefined ? reader.len : reader.pos + length
+    let message = new $root.Vector3()
+    while (reader.pos < end) {
+      let tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          message.x = reader.float()
+          break
+        case 2:
+          message.y = reader.float()
+          break
+        case 3:
+          message.z = reader.float()
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    if (!message.hasOwnProperty('x')) { throw $util.ProtocolError("missing required 'x'", { instance: message }) }
+    if (!message.hasOwnProperty('y')) { throw $util.ProtocolError("missing required 'y'", { instance: message }) }
+    if (!message.hasOwnProperty('z')) { throw $util.ProtocolError("missing required 'z'", { instance: message }) }
+    return message
+  }
+
+  /**
+     * Decodes a Vector3 message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof Vector3
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {Vector3} Vector3
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+  Vector3.decodeDelimited = function decodeDelimited (reader) {
+    if (!(reader instanceof $Reader)) { reader = new $Reader(reader) }
+    return this.decode(reader, reader.uint32())
+  }
+
+  /**
+     * Verifies a Vector3 message.
+     * @function verify
+     * @memberof Vector3
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+  Vector3.verify = function verify (message) {
+    if (typeof message !== 'object' || message === null) { return 'object expected' }
+    if (typeof message.x !== 'number') { return 'x: number expected' }
+    if (typeof message.y !== 'number') { return 'y: number expected' }
+    if (typeof message.z !== 'number') { return 'z: number expected' }
+    return null
+  }
+
+  /**
+     * Creates a Vector3 message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof Vector3
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {Vector3} Vector3
+     */
+  Vector3.fromObject = function fromObject (object) {
+    if (object instanceof $root.Vector3) { return object }
+    let message = new $root.Vector3()
+    if (object.x != null) { message.x = Number(object.x) }
+    if (object.y != null) { message.y = Number(object.y) }
+    if (object.z != null) { message.z = Number(object.z) }
+    return message
+  }
+
+  /**
+     * Creates a plain object from a Vector3 message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof Vector3
+     * @static
+     * @param {Vector3} message Vector3
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+  Vector3.toObject = function toObject (message, options) {
+    if (!options) { options = {} }
+    let object = {}
+    if (options.defaults) {
+      object.x = 0
+      object.y = 0
+      object.z = 0
+    }
+    if (message.x != null && message.hasOwnProperty('x')) { object.x = options.json && !isFinite(message.x) ? String(message.x) : message.x }
+    if (message.y != null && message.hasOwnProperty('y')) { object.y = options.json && !isFinite(message.y) ? String(message.y) : message.y }
+    if (message.z != null && message.hasOwnProperty('z')) { object.z = options.json && !isFinite(message.z) ? String(message.z) : message.z }
+    return object
+  }
+
+  /**
+     * Converts this Vector3 to JSON.
+     * @function toJSON
+     * @memberof Vector3
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+  Vector3.prototype.toJSON = function toJSON () {
+    return this.constructor.toObject(this, $protobuf.util.toJSONOptions)
+  }
+
+  return Vector3
+})()

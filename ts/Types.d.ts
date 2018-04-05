@@ -1,96 +1,80 @@
 import * as $protobuf from 'protobufjs'
+import THREE from 'three'
 
-/** Properties of a Bounds. */
-export interface IBounds {
-
-    /** Bounds min */
-  min: IVector3
-
-    /** Bounds max */
-  max: IVector3
-}
-
-/** Represents a Bounds. */
-export class Bounds implements IBounds {
-
-    /** Bounds min. */
-  public min: IVector3
-
-    /** Bounds max. */
-  public max: IVector3
-
+/** Represents a Box. */
+export class Box3 extends THREE.Box3 {
   /**
-   * Constructs a new Bounds.
+   * Constructs a new Box.
    * @param [properties] Properties to set
    */
-  constructor (properties?: IBounds);
+  constructor (properties?: Box3);
 
     /**
-     * Creates a new Bounds instance using the specified properties.
+     * Creates a new Box instance using the specified properties.
      * @param [properties] Properties to set
-     * @returns Bounds instance
+     * @returns Box instance
      */
-  public static create (properties?: IBounds): Bounds
+  public static create (properties?: Box3): Box3
 
     /**
-     * Encodes the specified Bounds message. Does not implicitly {@link Bounds.verify|verify} messages.
-     * @param message Bounds message or plain object to encode
+     * Encodes the specified Box message. Does not implicitly {@link Box.verify|verify} messages.
+     * @param message Box message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encode (message: IBounds, writer?: $protobuf.Writer): $protobuf.Writer
+  public static encode (message: Box3, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
-     * Encodes the specified Bounds message, length delimited. Does not implicitly {@link Bounds.verify|verify} messages.
-     * @param message Bounds message or plain object to encode
+     * Encodes the specified Box message, length delimited. Does not implicitly {@link Box.verify|verify} messages.
+     * @param message Box message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encodeDelimited (message: IBounds, writer?: $protobuf.Writer): $protobuf.Writer
+  public static encodeDelimited (message: Box3, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
-     * Decodes a Bounds message from the specified reader or buffer.
+     * Decodes a Box message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns Bounds
+     * @returns Box
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  public static decode (reader: ($protobuf.Reader | Uint8Array), length?: number): Bounds
+  public static decode (reader: ($protobuf.Reader | Uint8Array), length?: number): Box3
 
     /**
-     * Decodes a Bounds message from the specified reader or buffer, length delimited.
+     * Decodes a Box message from the specified reader or buffer, length delimited.
      * @param reader Reader or buffer to decode from
-     * @returns Bounds
+     * @returns Box
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  public static decodeDelimited (reader: ($protobuf.Reader | Uint8Array)): Bounds
+  public static decodeDelimited (reader: ($protobuf.Reader | Uint8Array)): Box3
 
     /**
-     * Verifies a Bounds message.
+     * Verifies a Box message.
      * @param message Plain object to verify
      * @returns `null` if valid, otherwise the reason why it is not
      */
   public static verify (message: { [k: string]: any }): (string | null)
 
     /**
-     * Creates a Bounds message from a plain object. Also converts values to their respective internal types.
+     * Creates a Box message from a plain object. Also converts values to their respective internal types.
      * @param object Plain object
-     * @returns Bounds
+     * @returns Box
      */
-  public static fromObject (object: { [k: string]: any }): Bounds
+  public static fromObject (object: { [k: string]: any }): Box3
 
     /**
-     * Creates a plain object from a Bounds message. Also converts values to other types if specified.
-     * @param message Bounds
+     * Creates a plain object from a Box message. Also converts values to other types if specified.
+     * @param message Box
      * @param [options] Conversion options
      * @returns Plain object
      */
-  public static toObject (message: Bounds, options?: $protobuf.IConversionOptions): { [k: string]: any }
+  public static toObject (message: Box3, options?: $protobuf.IConversionOptions): { [k: string]: any }
 
     /**
-     * Converts this Bounds to JSON.
+     * Converts this Box to JSON.
      * @returns JSON object
      */
   public toJSON (): { [k: string]: any }
@@ -283,6 +267,89 @@ export class Feature implements IFeature {
 
     /**
      * Converts this Feature to JSON.
+     * @returns JSON object
+     */
+  public toJSON (): { [k: string]: any }
+}
+
+/** Represents a Frustum. */
+export class Frustum extends THREE.Frustum {
+
+    /** Frustum planes. */
+  public planes: Plane[]
+
+    /**
+     * Constructs a new Frustum.
+     * @param [properties] Properties to set
+     */
+  constructor (properties?: Frustum);
+
+    /**
+     * Creates a new Frustum instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns Frustum instance
+     */
+  public static create (properties?: Frustum): Frustum
+
+    /**
+     * Encodes the specified Frustum message. Does not implicitly {@link Frustum.verify|verify} messages.
+     * @param message Frustum message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+  public static encode (message: Frustum, writer?: $protobuf.Writer): $protobuf.Writer
+
+    /**
+     * Encodes the specified Frustum message, length delimited. Does not implicitly {@link Frustum.verify|verify} messages.
+     * @param message Frustum message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+  public static encodeDelimited (message: Frustum, writer?: $protobuf.Writer): $protobuf.Writer
+
+    /**
+     * Decodes a Frustum message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns Frustum
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+  public static decode (reader: ($protobuf.Reader | Uint8Array), length?: number): Frustum
+
+    /**
+     * Decodes a Frustum message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns Frustum
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+  public static decodeDelimited (reader: ($protobuf.Reader | Uint8Array)): Frustum
+
+    /**
+     * Verifies a Frustum message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+  public static verify (message: { [k: string]: any }): (string | null)
+
+    /**
+     * Creates a Frustum message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns Frustum
+     */
+  public static fromObject (object: { [k: string]: any }): Frustum
+
+    /**
+     * Creates a plain object from a Frustum message. Also converts values to other types if specified.
+     * @param message Frustum
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+  public static toObject (message: Frustum, options?: $protobuf.IConversionOptions): { [k: string]: any }
+
+    /**
+     * Converts this Frustum to JSON.
      * @returns JSON object
      */
   public toJSON (): { [k: string]: any }
@@ -588,217 +655,81 @@ export enum Oct {
     BBB = 7
 }
 
-/** Properties of a PerspectiveCamera. */
-export interface IPerspectiveCamera {
-
-    /** PerspectiveCamera pos */
-  pos: IPoint3
-
-    /** PerspectiveCamera fov */
-  fov: number
-
-    /** PerspectiveCamera aspect */
-  aspect: number
-
-    /** PerspectiveCamera near */
-  near: number
-
-    /** PerspectiveCamera far */
-  far: number
-}
-
-/** Represents a PerspectiveCamera. */
-export class PerspectiveCamera implements IPerspectiveCamera {
-
-    /** PerspectiveCamera pos. */
-  public pos: IPoint3
-
-    /** PerspectiveCamera fov. */
-  public fov: number
-
-    /** PerspectiveCamera aspect. */
-  public aspect: number
-
-    /** PerspectiveCamera near. */
-  public near: number
-
-    /** PerspectiveCamera far. */
-  public far: number
+/** Represents a Plane. */
+export class Plane extends THREE.Plane {
 
     /**
-     * Constructs a new PerspectiveCamera.
+     * Constructs a new Plane.
      * @param [properties] Properties to set
      */
-  constructor (properties?: IPerspectiveCamera);
+  constructor (properties?: Plane);
 
     /**
-     * Creates a new PerspectiveCamera instance using the specified properties.
+     * Creates a new Plane instance using the specified properties.
      * @param [properties] Properties to set
-     * @returns PerspectiveCamera instance
+     * @returns Plane instance
      */
-  public static create (properties?: IPerspectiveCamera): PerspectiveCamera
+  public static create (properties?: Plane): Plane
 
     /**
-     * Encodes the specified PerspectiveCamera message. Does not implicitly {@link PerspectiveCamera.verify|verify} messages.
-     * @param message PerspectiveCamera message or plain object to encode
+     * Encodes the specified Plane message. Does not implicitly {@link Plane.verify|verify} messages.
+     * @param message Plane message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encode (message: IPerspectiveCamera, writer?: $protobuf.Writer): $protobuf.Writer
+  public static encode (message: Plane, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
-     * Encodes the specified PerspectiveCamera message, length delimited. Does not implicitly {@link PerspectiveCamera.verify|verify} messages.
-     * @param message PerspectiveCamera message or plain object to encode
+     * Encodes the specified Plane message, length delimited. Does not implicitly {@link Plane.verify|verify} messages.
+     * @param message Plane message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encodeDelimited (message: IPerspectiveCamera, writer?: $protobuf.Writer): $protobuf.Writer
+  public static encodeDelimited (message: Plane, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
-     * Decodes a PerspectiveCamera message from the specified reader or buffer.
+     * Decodes a Plane message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns PerspectiveCamera
+     * @returns Plane
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  public static decode (reader: ($protobuf.Reader | Uint8Array), length?: number): PerspectiveCamera
+  public static decode (reader: ($protobuf.Reader | Uint8Array), length?: number): Plane
 
     /**
-     * Decodes a PerspectiveCamera message from the specified reader or buffer, length delimited.
+     * Decodes a Plane message from the specified reader or buffer, length delimited.
      * @param reader Reader or buffer to decode from
-     * @returns PerspectiveCamera
+     * @returns Plane
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  public static decodeDelimited (reader: ($protobuf.Reader | Uint8Array)): PerspectiveCamera
+  public static decodeDelimited (reader: ($protobuf.Reader | Uint8Array)): Plane
 
     /**
-     * Verifies a PerspectiveCamera message.
+     * Verifies a Plane message.
      * @param message Plain object to verify
      * @returns `null` if valid, otherwise the reason why it is not
      */
   public static verify (message: { [k: string]: any }): (string | null)
 
     /**
-     * Creates a PerspectiveCamera message from a plain object. Also converts values to their respective internal types.
+     * Creates a Plane message from a plain object. Also converts values to their respective internal types.
      * @param object Plain object
-     * @returns PerspectiveCamera
+     * @returns Plane
      */
-  public static fromObject (object: { [k: string]: any }): PerspectiveCamera
+  public static fromObject (object: { [k: string]: any }): Plane
 
     /**
-     * Creates a plain object from a PerspectiveCamera message. Also converts values to other types if specified.
-     * @param message PerspectiveCamera
+     * Creates a plain object from a Plane message. Also converts values to other types if specified.
+     * @param message Plane
      * @param [options] Conversion options
      * @returns Plain object
      */
-  public static toObject (message: PerspectiveCamera, options?: $protobuf.IConversionOptions): { [k: string]: any }
+  public static toObject (message: Plane, options?: $protobuf.IConversionOptions): { [k: string]: any }
 
     /**
-     * Converts this PerspectiveCamera to JSON.
-     * @returns JSON object
-     */
-  public toJSON (): { [k: string]: any }
-}
-
-/** Properties of a Point3. */
-export interface IPoint3 {
-
-    /** Point3 x */
-  x: number
-
-    /** Point3 y */
-  y: number
-
-    /** Point3 z */
-  z: number
-}
-
-/** Represents a Point3. */
-export class Point3 implements IPoint3 {
-
-    /** Point3 x. */
-  public x: number
-
-    /** Point3 y. */
-  public y: number
-
-    /** Point3 z. */
-  public z: number
-
-    /**
-     * Constructs a new Point3.
-     * @param [properties] Properties to set
-     */
-  constructor (properties?: IPoint3);
-
-    /**
-     * Creates a new Point3 instance using the specified properties.
-     * @param [properties] Properties to set
-     * @returns Point3 instance
-     */
-  public static create (properties?: IPoint3): Point3
-
-    /**
-     * Encodes the specified Point3 message. Does not implicitly {@link Point3.verify|verify} messages.
-     * @param message Point3 message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-  public static encode (message: IPoint3, writer?: $protobuf.Writer): $protobuf.Writer
-
-    /**
-     * Encodes the specified Point3 message, length delimited. Does not implicitly {@link Point3.verify|verify} messages.
-     * @param message Point3 message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-  public static encodeDelimited (message: IPoint3, writer?: $protobuf.Writer): $protobuf.Writer
-
-    /**
-     * Decodes a Point3 message from the specified reader or buffer.
-     * @param reader Reader or buffer to decode from
-     * @param [length] Message length if known beforehand
-     * @returns Point3
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-  public static decode (reader: ($protobuf.Reader | Uint8Array), length?: number): Point3
-
-    /**
-     * Decodes a Point3 message from the specified reader or buffer, length delimited.
-     * @param reader Reader or buffer to decode from
-     * @returns Point3
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-  public static decodeDelimited (reader: ($protobuf.Reader | Uint8Array)): Point3
-
-    /**
-     * Verifies a Point3 message.
-     * @param message Plain object to verify
-     * @returns `null` if valid, otherwise the reason why it is not
-     */
-  public static verify (message: { [k: string]: any }): (string | null)
-
-    /**
-     * Creates a Point3 message from a plain object. Also converts values to their respective internal types.
-     * @param object Plain object
-     * @returns Point3
-     */
-  public static fromObject (object: { [k: string]: any }): Point3
-
-    /**
-     * Creates a plain object from a Point3 message. Also converts values to other types if specified.
-     * @param message Point3
-     * @param [options] Conversion options
-     * @returns Plain object
-     */
-  public static toObject (message: Point3, options?: $protobuf.IConversionOptions): { [k: string]: any }
-
-    /**
-     * Converts this Point3 to JSON.
+     * Converts this Plane to JSON.
      * @returns JSON object
      */
   public toJSON (): { [k: string]: any }
@@ -807,17 +738,17 @@ export class Point3 implements IPoint3 {
 /** Properties of a Query. */
 export interface IQuery {
 
-    /** Query cam */
-  cam: IPerspectiveCamera
+    /** Query frustum */
+  frustum: Frustum
 
     /** Query relevance */
-  relevance: IRelevanceRange
+  relevance?: IRelevanceRange
 
     /** Query density */
   density?: (IDensityRange | null)
 
     /** Query cut */
-  cut?: (IBounds | null)
+  cut?: (Box3 | null)
 
     /** Query feature */
   feature?: (string[] | null)
@@ -826,8 +757,8 @@ export interface IQuery {
 /** Represents a Query. */
 export class Query implements IQuery {
 
-    /** Query cam. */
-  public cam: IPerspectiveCamera
+    /** Query frustum. */
+  public frustum: Frustum
 
     /** Query relevance. */
   public relevance: IRelevanceRange
@@ -836,7 +767,7 @@ export class Query implements IQuery {
   public density?: (IDensityRange | null)
 
     /** Query cut. */
-  public cut?: (IBounds | null)
+  public cut?: (Box3 | null)
 
     /** Query feature. */
   public feature: string[]
@@ -1117,19 +1048,19 @@ export interface ITree {
   id: string
 
     /** Tree bounds */
-  bounds: IBounds
+  bounds: Box3
 
     /** Tree scale */
-  scale?: (IPoint3 | null)
+  scale?: (Vector3 | null)
 
     /** Tree offset */
-  offset?: (IPoint3 | null)
+  offset?: (Vector3 | null)
 
     /** Tree numPoints */
   numPoints?: (number | Long | null)
 
     /** Tree boundsConforming */
-  boundsConforming?: (IBounds | null)
+  boundsConforming?: (Box3 | null)
 
     /** Tree schema */
   schema?: (IFeature[] | null)
@@ -1145,19 +1076,19 @@ export class Tree implements ITree {
   public id: string
 
     /** Tree bounds. */
-  public bounds: IBounds
+  public bounds: Box3
 
     /** Tree scale. */
-  public scale?: (IPoint3 | null)
+  public scale?: (Vector3 | null)
 
     /** Tree offset. */
-  public offset?: (IPoint3 | null)
+  public offset?: (Vector3 | null)
 
     /** Tree numPoints. */
   public numPoints: (number | Long)
 
     /** Tree boundsConforming. */
-  public boundsConforming?: (IBounds | null)
+  public boundsConforming?: (Box3 | null)
 
     /** Tree schema. */
   public schema: IFeature[]
@@ -1262,6 +1193,7 @@ export namespace google {
         class Any implements IAny {
 
             /** Any type_url. */
+          // tslint:disable-next-line
           public type_url: string
 
             /** Any value. */
@@ -1347,7 +1279,7 @@ export namespace google {
 }
 
 /** Properties of a TreeQuery. */
-export interface ITreeRequest {
+export interface ITreeQuery {
 
     /** TreeQuery id */
   id: string
@@ -1357,7 +1289,7 @@ export interface ITreeRequest {
 }
 
 /** Represents a TreeQuery. */
-export class TreeQuery implements ITreeRequest {
+export class TreeQuery implements ITreeQuery {
 
     /** TreeQuery id. */
   public id: string
@@ -1369,14 +1301,14 @@ export class TreeQuery implements ITreeRequest {
      * Constructs a new TreeQuery.
      * @param [properties] Properties to set
      */
-  constructor (properties?: ITreeRequest);
+  constructor (properties?: ITreeQuery);
 
     /**
      * Creates a new TreeQuery instance using the specified properties.
      * @param [properties] Properties to set
      * @returns TreeQuery instance
      */
-  public static create (properties?: ITreeRequest): TreeQuery
+  public static create (properties?: ITreeQuery): TreeQuery
 
     /**
      * Encodes the specified TreeQuery message. Does not implicitly {@link TreeQuery.verify|verify} messages.
@@ -1384,7 +1316,7 @@ export class TreeQuery implements ITreeRequest {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encode (message: ITreeRequest, writer?: $protobuf.Writer): $protobuf.Writer
+  public static encode (message: ITreeQuery, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
      * Encodes the specified TreeQuery message, length delimited. Does not implicitly {@link TreeQuery.verify|verify} messages.
@@ -1392,7 +1324,7 @@ export class TreeQuery implements ITreeRequest {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encodeDelimited (message: ITreeRequest, writer?: $protobuf.Writer): $protobuf.Writer
+  public static encodeDelimited (message: ITreeQuery, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
      * Decodes a TreeQuery message from the specified reader or buffer.
@@ -1437,6 +1369,95 @@ export class TreeQuery implements ITreeRequest {
 
     /**
      * Converts this TreeQuery to JSON.
+     * @returns JSON object
+     */
+  public toJSON (): { [k: string]: any }
+}
+
+/** Represents a Vector3. */
+export class Vector3 extends THREE.Vector3 {
+
+    /** Vector3 x. */
+  public x: number
+
+    /** Vector3 y. */
+  public y: number
+
+    /** Vector3 z. */
+  public z: number
+
+    /**
+     * Constructs a new Vector3.
+     * @param [properties] Properties to set
+     */
+  constructor (properties?: Vector3);
+
+    /**
+     * Creates a new Vector3 instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns Vector3 instance
+     */
+  public static create (properties?: Vector3): Vector3
+
+    /**
+     * Encodes the specified Vector3 message. Does not implicitly {@link Vector3.verify|verify} messages.
+     * @param message Vector3 message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+  public static encode (message: Vector3, writer?: $protobuf.Writer): $protobuf.Writer
+
+    /**
+     * Encodes the specified Vector3 message, length delimited. Does not implicitly {@link Vector3.verify|verify} messages.
+     * @param message Vector3 message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+  public static encodeDelimited (message: Vector3, writer?: $protobuf.Writer): $protobuf.Writer
+
+    /**
+     * Decodes a Vector3 message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns Vector3
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+  public static decode (reader: ($protobuf.Reader | Uint8Array), length?: number): Vector3
+
+    /**
+     * Decodes a Vector3 message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns Vector3
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+  public static decodeDelimited (reader: ($protobuf.Reader | Uint8Array)): Vector3
+
+    /**
+     * Verifies a Vector3 message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+  public static verify (message: { [k: string]: any }): (string | null)
+
+    /**
+     * Creates a Vector3 message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns Vector3
+     */
+  public static fromObject (object: { [k: string]: any }): Vector3
+
+    /**
+     * Creates a plain object from a Vector3 message. Also converts values to other types if specified.
+     * @param message Vector3
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+  public static toObject (message: Vector3, options?: $protobuf.IConversionOptions): { [k: string]: any }
+
+    /**
+     * Converts this Vector3 to JSON.
      * @returns JSON object
      */
   public toJSON (): { [k: string]: any }

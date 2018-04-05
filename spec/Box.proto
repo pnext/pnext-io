@@ -1,0 +1,4 @@
+message Box {
+  required Vector3 min = 1;
+  required Vector3 max = 2;
+}

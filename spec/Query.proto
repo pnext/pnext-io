@@ -6,7 +6,7 @@ message Query {
     [FOV]: https://en.wikipedia.org/wiki/Field_of_view
     [Frustum]: https://en.wikipedia.org/wiki/Viewing_frustum
   */
-  required PerspectiveCamera cam = 1;
+  required Frustum frustum = 1;
 
   /*
     In order to limit based on the memory/cpu limits of the device it needs to be
@@ -14,7 +14,7 @@ message Query {
     Once the browser did ask for a given max set though it should also be able to download further parts of the query
     by limiting it also to exclude the first set of points.
   */
-  required RelevanceRange relevance = 2;
+  optional RelevanceRange relevance = 2;
 
   /*
     The browser might be working on a small device that might be capable to render all the points
@@ -27,7 +27,7 @@ message Query {
     One common problem of pointclouds is to create slices of data for profiles. By providing a bounding
     box its possible for the browser to receive only a slice of data.
   */
-  optional Bounds cut = 4;
+  optional Box cut = 4;
 
   /*
     In case the server is capable of reducing pointcloud features, the client can specify which features are

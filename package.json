@@ -1,15 +1,17 @@
 {
+  "$schema": "http://json.schemastore.org/package",
   "name": "point-query",
   "version": "1.0.0",
   "description": "This work-in-progress document _(and eventually more)_ is the starting point for a more well rounded storage and access API to pointclouds _(and maybe even other 3D data formats)_",
   "main": "index.js",
   "scripts": {
+    "test": "npm run test:lint && npm run test:unit",
+    "test:unit": "tap -- ts_test/*.ts",
     "test:lint": "tslint -c .tslintrc.json ts/**/*.ts && standard",
-    "test": "npm run test:lint",
-    "build": "npm run build:types-js && npm run build:types-ts && npm run build:doc",
     "build:types-js": "pbjs -t static-module -w commonjs -l \"eslint-disable one-var, no-mixed-operators\" --es6 spec/*.proto -o ts/Types.js && standard --fix ts/Types.js",
-    "build:types-ts": "pbts ts/Types.js -o ts/Types.d.ts && tslint -c .tslintrc.json --fix ts/Types.d.ts",
-    "build:doc": "typedoc"
+    "build:types-ts": "npm run build:types-js && pbts ts/Types.js -o ts/Types.d.ts && tslint -c .tslintrc.json --fix ts/Types.d.ts",
+    "build:js": "tsc && standard --fix build/*.js",
+    "build:doc": "typedoc --name point-query --mode modules --includeDeclarations --excludeExternals --out build/doc"
   },
   "repository": {
     "type": "git",
@@ -35,8 +37,10 @@
     "eslint-plugin-typescript": "^0.10.0",
     "standard": "^11.0.1",
     "tap": "^11.1.2",
+    "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
     "tslint-config-standard": "^7.0.0",
+    "typedoc": "^0.11.1",
     "typescript": "^2.7.2",
     "typescript-eslint-parser": "^14.0.0"
   },
