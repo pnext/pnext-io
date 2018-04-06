@@ -58,7 +58,8 @@ test('Valid, basic query', async t => {
   t.same(result.nodes[0], {
     address: [],
     info: null,
-    treeId: 'test'
+    treeId: 'test',
+    numPoints: 1
   })
   t.equals(result.feature, undefined)
 

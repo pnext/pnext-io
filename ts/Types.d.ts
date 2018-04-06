@@ -1,4 +1,5 @@
 import * as $protobuf from 'protobufjs'
+import { Readable } from 'stream'
 import THREE from 'three'
 
 /** Represents a Box. */
@@ -275,9 +276,6 @@ export class Feature implements IFeature {
 /** Represents a Frustum. */
 export class Frustum extends THREE.Frustum {
 
-    /** Frustum planes. */
-  public planes: Plane[]
-
     /**
      * Constructs a new Frustum.
      * @param [properties] Properties to set
@@ -366,6 +364,9 @@ export interface INode {
 
     /** Node info */
   info: string
+
+    /** Node numPoints */
+  numPoints: (number | Long)
 }
 
 /** Represents a Node. */
@@ -379,6 +380,9 @@ export class Node implements INode {
 
     /** Node info. */
   public info: string
+
+  /** Node numPoints. */
+  public numPoints: (number | Long)
 
     /**
      * Constructs a new Node.
@@ -1461,4 +1465,102 @@ export class Vector3 extends THREE.Vector3 {
      * @returns JSON object
      */
   public toJSON (): { [k: string]: any }
+}
+
+/** Represents a PnextIO */
+export interface IPnextIO {
+
+  /**
+   * Calls getTree.
+   * @param request TreeQuery message or plain object
+   * @returns Promise
+   */
+  getTree (request: ITreeQuery): Promise<ITree>
+
+  /**
+   * Calls queryPoints.
+   * @param request Query message or plain object
+   * @returns Promise
+   */
+  queryPoints (request: IQuery): Promise<IQueryResponse>
+
+  /**
+   * Calls getNodes.
+   * @param request NodeRequest message or plain object
+   * @returns Readable
+   */
+  getNodes (request: INodeRequest): Readable
+}
+
+/** Represents a PnextIO */
+export class PnextIO extends $protobuf.rpc.Service implements IPnextIO {
+
+    /**
+     * Constructs a new PnextIO service.
+     * @param rpcImpl RPC implementation
+     * @param [requestDelimited=false] Whether requests are length-delimited
+     * @param [responseDelimited=false] Whether responses are length-delimited
+     */
+  constructor (rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
+
+    /**
+     * Creates new PnextIO service using the specified rpc implementation.
+     * @param rpcImpl RPC implementation
+     * @param [requestDelimited=false] Whether requests are length-delimited
+     * @param [responseDelimited=false] Whether responses are length-delimited
+     * @returns RPC service. Useful where requests and/or responses are streamed.
+     */
+  public static create (rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): PnextIO
+
+    /**
+     * Calls getTree.
+     * @param request TreeQuery message or plain object
+     * @param callback Node-style callback called with the error, if any, and Tree
+     */
+  public getTree (request: ITreeQuery, callback: PnextIO.getTreeCallback): void
+
+    /**
+     * Calls getTree.
+     * @param request TreeQuery message or plain object
+     * @returns Promise
+     */
+  public getTree (request: ITreeQuery): Promise<Tree>
+
+    /**
+     * Calls queryPoints.
+     * @param request Query message or plain object
+     * @param callback Node-style callback called with the error, if any, and QueryResponse
+     */
+  public queryPoints (request: IQuery, callback: PnextIO.queryPointsCallback): void
+
+    /**
+     * Calls queryPoints.
+     * @param request Query message or plain object
+     * @returns Promise
+     */
+  public queryPoints (request: IQuery): Promise<QueryResponse>
+
+    /**
+     * Calls getNodes.
+     * @param request NodeRequest message or plain object
+     * @returns Readable
+     */
+  public getNodes (request: INodeRequest): Readable
+}
+
+export namespace PnextIO {
+
+    /**
+     * Callback as used by {@link PnextIO#getTree}.
+     * @param error Error, if any
+     * @param [response] Tree
+     */
+    type getTreeCallback = (error: (Error | null), response?: Tree) => void
+
+    /**
+     * Callback as used by {@link PnextIO#queryPoints}.
+     * @param error Error, if any
+     * @param [response] QueryResponse
+     */
+    type queryPointsCallback = (error: (Error | null), response?: QueryResponse) => void
 }

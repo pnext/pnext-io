@@ -2,4 +2,5 @@ message Node {
   required string treeId = 1; // If its missing the previous treeId is assumed.
   repeated Oct address = 2;
   required string info = 3;
+  required uint64 numPoints = 4; // Amount of points in the node
 }

@@ -805,6 +805,7 @@ $root.Node = (() => {
      * @property {string} treeId Node treeId
      * @property {Array.<Oct>|null} [address] Node address
      * @property {string} info Node info
+     * @property {number|Long} numPoints Node numPoints
      */
 
   /**
@@ -849,6 +850,14 @@ $root.Node = (() => {
   Node.prototype.info = ''
 
   /**
+     * Node numPoints.
+     * @member {number|Long} numPoints
+     * @memberof Node
+     * @instance
+     */
+  Node.prototype.numPoints = 0
+
+  /**
      * Creates a new Node instance using the specified properties.
      * @function create
      * @memberof Node
@@ -876,6 +885,7 @@ $root.Node = (() => {
       for (let i = 0; i < message.address.length; ++i) { writer.uint32(/* id 2, wireType 0 = */16).int32(message.address[i]) }
     }
     writer.uint32(/* id 3, wireType 2 = */26).string(message.info)
+    writer.uint32(/* id 4, wireType 0 = */32).uint64(message.numPoints)
     return writer
   }
 
@@ -923,6 +933,9 @@ $root.Node = (() => {
         case 3:
           message.info = reader.string()
           break
+        case 4:
+          message.numPoints = reader.uint64()
+          break
         default:
           reader.skipType(tag & 7)
           break
@@ -930,6 +943,7 @@ $root.Node = (() => {
     }
     if (!message.hasOwnProperty('treeId')) { throw $util.ProtocolError("missing required 'treeId'", { instance: message }) }
     if (!message.hasOwnProperty('info')) { throw $util.ProtocolError("missing required 'info'", { instance: message }) }
+    if (!message.hasOwnProperty('numPoints')) { throw $util.ProtocolError("missing required 'numPoints'", { instance: message }) }
     return message
   }
 
@@ -978,6 +992,7 @@ $root.Node = (() => {
       }
     }
     if (!$util.isString(message.info)) { return 'info: string expected' }
+    if (!$util.isInteger(message.numPoints) && !(message.numPoints && $util.isInteger(message.numPoints.low) && $util.isInteger(message.numPoints.high))) { return 'numPoints: integer|Long expected' }
     return null
   }
 
@@ -1035,6 +1050,9 @@ $root.Node = (() => {
       }
     }
     if (object.info != null) { message.info = String(object.info) }
+    if (object.numPoints != null) {
+      if ($util.Long) { (message.numPoints = $util.Long.fromValue(object.numPoints)).unsigned = true } else if (typeof object.numPoints === 'string') { message.numPoints = parseInt(object.numPoints, 10) } else if (typeof object.numPoints === 'number') { message.numPoints = object.numPoints } else if (typeof object.numPoints === 'object') { message.numPoints = new $util.LongBits(object.numPoints.low >>> 0, object.numPoints.high >>> 0).toNumber(true) }
+    }
     return message
   }
 
@@ -1054,6 +1072,7 @@ $root.Node = (() => {
     if (options.defaults) {
       object.treeId = ''
       object.info = ''
+      object.numPoints = 0
     }
     if (message.treeId != null && message.hasOwnProperty('treeId')) { object.treeId = message.treeId }
     if (message.address && message.address.length) {
@@ -1061,6 +1080,9 @@ $root.Node = (() => {
       for (let j = 0; j < message.address.length; ++j) { object.address[j] = options.enums === String ? $root.Oct[message.address[j]] : message.address[j] }
     }
     if (message.info != null && message.hasOwnProperty('info')) { object.info = message.info }
+    if (message.numPoints != null && message.hasOwnProperty('numPoints')) {
+      if (typeof message.numPoints === 'number') { object.numPoints = options.longs === String ? String(message.numPoints) : message.numPoints } else { object.numPoints = options.longs === String ? $util.Long.prototype.toString.call(message.numPoints) : options.longs === Number ? new $util.LongBits(message.numPoints.low >>> 0, message.numPoints.high >>> 0).toNumber(true) : message.numPoints }
+    }
     return object
   }
 
@@ -2574,8 +2596,8 @@ $root.Tree = (() => {
     $root.Box3.encode(message.bounds, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim()
     if (message.scale != null && message.hasOwnProperty('scale')) { $root.Vector3.encode(message.scale, writer.uint32(/* id 3, wireType 2 = */26).fork()).ldelim() }
     if (message.offset != null && message.hasOwnProperty('offset')) { $root.Vector3.encode(message.offset, writer.uint32(/* id 4, wireType 2 = */34).fork()).ldelim() }
-    if (message.numPoints != null && message.hasOwnProperty('numPoints')) { writer.uint32(/* id 5, wireType 0 = */40).int64(message.numPoints) }
-    if (message.boundsConforming != null && message.hasOwnProperty('boundsConforming')) { $root.Box3.encode(message.boundsConforming, writer.uint32(/* id 6, wireType 2 = */50).fork()).ldelim() }
+    if (message.numPoints != null && message.hasOwnProperty('numPoints')) { writer.uint32(/* id 5, wireType 0 = */40).uint64(message.numPoints) }
+    if (message.boundsConforming != null && message.hasOwnProperty('boundsConforming')) { $root.Box.encode(message.boundsConforming, writer.uint32(/* id 6, wireType 2 = */50).fork()).ldelim() }
     if (message.schema != null && message.schema.length) {
       for (let i = 0; i < message.schema.length; ++i) { $root.Feature.encode(message.schema[i], writer.uint32(/* id 7, wireType 2 = */58).fork()).ldelim() }
     }
@@ -2633,7 +2655,7 @@ $root.Tree = (() => {
           message.offset = $root.Vector3.decode(reader, reader.uint32())
           break
         case 5:
-          message.numPoints = reader.int64()
+          message.numPoints = reader.uint64()
           break
         case 6:
           message.boundsConforming = $root.Box3.decode(reader, reader.uint32())
@@ -2747,7 +2769,7 @@ $root.Tree = (() => {
       message.offset = $root.Vector3.fromObject(object.offset)
     }
     if (object.numPoints != null) {
-      if ($util.Long) { (message.numPoints = $util.Long.fromValue(object.numPoints)).unsigned = false } else if (typeof object.numPoints === 'string') { message.numPoints = parseInt(object.numPoints, 10) } else if (typeof object.numPoints === 'number') { message.numPoints = object.numPoints } else if (typeof object.numPoints === 'object') { message.numPoints = new $util.LongBits(object.numPoints.low >>> 0, object.numPoints.high >>> 0).toNumber() }
+      if ($util.Long) { (message.numPoints = $util.Long.fromValue(object.numPoints)).unsigned = true } else if (typeof object.numPoints === 'string') { message.numPoints = parseInt(object.numPoints, 10) } else if (typeof object.numPoints === 'number') { message.numPoints = object.numPoints } else if (typeof object.numPoints === 'object') { message.numPoints = new $util.LongBits(object.numPoints.low >>> 0, object.numPoints.high >>> 0).toNumber(true) }
     }
     if (object.boundsConforming != null) {
       if (typeof object.boundsConforming !== 'object') { throw TypeError('.Tree.boundsConforming: object expected') }
@@ -2799,7 +2821,7 @@ $root.Tree = (() => {
     if (message.scale != null && message.hasOwnProperty('scale')) { object.scale = $root.Vector3.toObject(message.scale, options) }
     if (message.offset != null && message.hasOwnProperty('offset')) { object.offset = $root.Vector3.toObject(message.offset, options) }
     if (message.numPoints != null && message.hasOwnProperty('numPoints')) {
-      if (typeof message.numPoints === 'number') { object.numPoints = options.longs === String ? String(message.numPoints) : message.numPoints } else { object.numPoints = options.longs === String ? $util.Long.prototype.toString.call(message.numPoints) : options.longs === Number ? new $util.LongBits(message.numPoints.low >>> 0, message.numPoints.high >>> 0).toNumber() : message.numPoints }
+      if (typeof message.numPoints === 'number') { object.numPoints = options.longs === String ? String(message.numPoints) : message.numPoints } else { object.numPoints = options.longs === String ? $util.Long.prototype.toString.call(message.numPoints) : options.longs === Number ? new $util.LongBits(message.numPoints.low >>> 0, message.numPoints.high >>> 0).toNumber(true) : message.numPoints }
     }
     if (message.boundsConforming != null && message.hasOwnProperty('boundsConforming')) { object.boundsConforming = $root.Box3.toObject(message.boundsConforming, options) }
     if (message.schema && message.schema.length) {
@@ -3466,4 +3488,137 @@ $root.Vector3 = (() => {
   }
 
   return Vector3
+})()
+
+export const PnextIO = $root.PnextIO = (() => {
+  /**
+     * Constructs a new PnextIO service.
+     * @exports PnextIO
+     * @classdesc Represents a PnextIO
+     * @extends $protobuf.rpc.Service
+     * @constructor
+     * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+     * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+     * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+     */
+  function PnextIO (rpcImpl, requestDelimited, responseDelimited) {
+    $protobuf.rpc.Service.call(this, rpcImpl, requestDelimited, responseDelimited)
+  }
+
+  (PnextIO.prototype = Object.create($protobuf.rpc.Service.prototype)).constructor = PnextIO
+
+  /**
+     * Creates new PnextIO service using the specified rpc implementation.
+     * @function create
+     * @memberof PnextIO
+     * @static
+     * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+     * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+     * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+     * @returns {PnextIO} RPC service. Useful where requests and/or responses are streamed.
+     */
+  PnextIO.create = function create (rpcImpl, requestDelimited, responseDelimited) {
+    return new this(rpcImpl, requestDelimited, responseDelimited)
+  }
+
+  /**
+     * Callback as used by {@link PnextIO#getTree}.
+     * @memberof PnextIO
+     * @typedef getTreeCallback
+     * @type {function}
+     * @param {Error|null} error Error, if any
+     * @param {Tree} [response] Tree
+     */
+
+  /**
+     * Calls getTree.
+     * @function getTree
+     * @memberof PnextIO
+     * @instance
+     * @param {ITreeQuery} request TreeQuery message or plain object
+     * @param {PnextIO.getTreeCallback} callback Node-style callback called with the error, if any, and Tree
+     * @returns {undefined}
+     * @variation 1
+     */
+  PnextIO.prototype.getTree = function getTree (request, callback) {
+    return this.rpcCall(getTree, $root.TreeQuery, $root.Tree, request, callback)
+  }
+
+  /**
+     * Calls getTree.
+     * @function getTree
+     * @memberof PnextIO
+     * @instance
+     * @param {ITreeQuery} request TreeQuery message or plain object
+     * @returns {Promise<Tree>} Promise
+     * @variation 2
+     */
+
+  /**
+     * Callback as used by {@link PnextIO#queryPoints}.
+     * @memberof PnextIO
+     * @typedef queryPointsCallback
+     * @type {function}
+     * @param {Error|null} error Error, if any
+     * @param {QueryResponse} [response] QueryResponse
+     */
+
+  /**
+     * Calls queryPoints.
+     * @function queryPoints
+     * @memberof PnextIO
+     * @instance
+     * @param {IQuery} request Query message or plain object
+     * @param {PnextIO.queryPointsCallback} callback Node-style callback called with the error, if any, and QueryResponse
+     * @returns {undefined}
+     * @variation 1
+     */
+  PnextIO.prototype.queryPoints = function queryPoints (request, callback) {
+    return this.rpcCall(queryPoints, $root.Query, $root.QueryResponse, request, callback)
+  }
+
+  /**
+     * Calls queryPoints.
+     * @function queryPoints
+     * @memberof PnextIO
+     * @instance
+     * @param {IQuery} request Query message or plain object
+     * @returns {Promise<QueryResponse>} Promise
+     * @variation 2
+     */
+
+  /**
+     * Callback as used by {@link PnextIO#getNodes}.
+     * @memberof PnextIO
+     * @typedef getNodesCallback
+     * @type {function}
+     * @param {Error|null} error Error, if any
+     * @param {NodeData} [response] NodeData
+     */
+
+  /**
+     * Calls getNodes.
+     * @function getNodes
+     * @memberof PnextIO
+     * @instance
+     * @param {INodeRequest} request NodeRequest message or plain object
+     * @param {PnextIO.getNodesCallback} callback Node-style callback called with the error, if any, and NodeData
+     * @returns {undefined}
+     * @variation 1
+     */
+  PnextIO.prototype.getNodes = function getNodes (request, callback) {
+    return this.rpcCall(getNodes, $root.NodeRequest, $root.NodeData, request, callback)
+  }
+
+  /**
+     * Calls getNodes.
+     * @function getNodes
+     * @memberof PnextIO
+     * @instance
+     * @param {INodeRequest} request NodeRequest message or plain object
+     * @returns {Promise<NodeData>} Promise
+     * @variation 2
+     */
+
+  return PnextIO
 })()

@@ -1,0 +1,16 @@
+service PnextIO {
+  /**
+   * Information about a tree given in the 
+   */
+  rpc getTree (TreeQuery) returns (Tree) {}
+
+  /**
+   * Query for a set of points based on the camera position
+   */
+  rpc queryPoints (Query) returns (QueryResponse) {}
+
+  /**
+   * Requesting the actual node data from the server.
+   */
+  rpc getNodes (NodeRequest) returns (stream NodeData) {}
+}

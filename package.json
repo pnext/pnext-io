@@ -1,6 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/package",
-  "name": "point-query",
+  "name": "pnext-io",
   "version": "1.0.0",
   "description": "This work-in-progress document _(and eventually more)_ is the starting point for a more well rounded storage and access API to pointclouds _(and maybe even other 3D data formats)_",
   "main": "index.js",

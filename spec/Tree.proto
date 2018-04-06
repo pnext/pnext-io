@@ -5,7 +5,7 @@ message Tree {
   required Box bounds = 2; // cubic volume of the root of the octree
   optional Vector3 scale = 3; // scale for the points
   optional Vector3 offset = 4; // he offset applied to XYZ, if any (array of length 3)
-  optional int64 numPoints = 5; // total point count in the octree
+  optional uint64 numPoints = 5; // total point count in the octree
   optional Box boundsConforming = 6; // cubic volume around 
   repeated Feature schema = 7; // array of point attributes and their types
   map<string, google.protobuf.Any> metadata = 8;

@@ -1,5 +1,4 @@
-import IQueryInterface from '../../ts/IQueryInterface'
-import { IQueryResponse, IQuery, ITreeQuery, ITree, INodeRequest, IFeature, INode, Oct, Vector3, Plane, Box3, Frustum } from '../../ts/Types'
+import { IQueryResponse, IQuery, ITreeQuery, ITree, INodeRequest, IFeature, INode, Oct, Vector3, Plane, Box3, Frustum, IPnextIO } from '../../ts/Types'
 import { Readable } from 'stream'
 
 class Tree implements ITree {
@@ -81,17 +80,12 @@ class TraversalContext {
 function collectNodes (tree: SampleImpl, query: IQuery, result: Response, context: TraversalContext): boolean {
   let node: TreeNode
   const frustum = query.frustum
-  console.log(frustum.planes)
   while (context.nodes.length > 0) {
     node = context.nodes.pop()
     if (!node.bounds) {
       continue
     }
-    console.log(node.bounds)
     if (!frustum.intersectsBox(node.bounds)) {
-      debugger
-      console.log(frustum.intersectsBox(node.bounds))
-      console.log('out of frustum')
       continue
     }
     if (query.cut && !query.cut.intersectsBox(node.bounds)) {
@@ -108,7 +102,8 @@ function collectNodes (tree: SampleImpl, query: IQuery, result: Response, contex
       result.nodes.push({
         treeId: tree.id,
         address: node.address,
-        info: null
+        info: null,
+        numPoints: node.points.length
       })
     }
     context.numPoints = nextNumPoints
@@ -136,7 +131,7 @@ function getBounds (points: Vector3[]): Box3 {
   return result
 }
 
-export default class SampleImpl implements IQueryInterface {
+export default class SampleImpl implements IPnextIO {
 
   root: TreeNode
   metadata: any
