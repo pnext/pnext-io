@@ -1300,7 +1300,7 @@ $root.NodeRequest = (() => {
      * @exports INodeRequest
      * @interface INodeRequest
      * @property {Array.<INode>|null} [nodes] NodeRequest nodes
-     * @property {Array.<IFeature>|null} [features] NodeRequest features
+     * @property {Array.<IFeature>|null} [schema] NodeRequest features
      */
 
   /**
@@ -1313,7 +1313,7 @@ $root.NodeRequest = (() => {
      */
   function NodeRequest (properties) {
     this.nodes = []
-    this.features = []
+    this.schema = []
     if (properties) {
       for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
         if (properties[keys[i]] != null) { this[keys[i]] = properties[keys[i]] }
@@ -1331,11 +1331,11 @@ $root.NodeRequest = (() => {
 
   /**
      * NodeRequest features.
-     * @member {Array.<IFeature>} features
+     * @member {Array.<IFeature>} schema
      * @memberof NodeRequest
      * @instance
      */
-  NodeRequest.prototype.features = $util.emptyArray
+  NodeRequest.prototype.schema = $util.emptyArray
 
   /**
      * Creates a new NodeRequest instance using the specified properties.
@@ -1363,8 +1363,8 @@ $root.NodeRequest = (() => {
     if (message.nodes != null && message.nodes.length) {
       for (let i = 0; i < message.nodes.length; ++i) { $root.Node.encode(message.nodes[i], writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim() }
     }
-    if (message.features != null && message.features.length) {
-      for (let i = 0; i < message.features.length; ++i) { $root.Feature.encode(message.features[i], writer.uint32(/* id 3, wireType 2 = */26).fork()).ldelim() }
+    if (message.schema != null && message.schema.length) {
+      for (let i = 0; i < message.schema.length; ++i) { $root.Feature.encode(message.schema[i], writer.uint32(/* id 3, wireType 2 = */26).fork()).ldelim() }
     }
     return writer
   }
@@ -1405,8 +1405,8 @@ $root.NodeRequest = (() => {
           message.nodes.push($root.Node.decode(reader, reader.uint32()))
           break
         case 3:
-          if (!(message.features && message.features.length)) { message.features = [] }
-          message.features.push($root.Feature.decode(reader, reader.uint32()))
+          if (!(message.schema && message.schema.length)) { message.schema = [] }
+          message.schema.push($root.Feature.decode(reader, reader.uint32()))
           break
         default:
           reader.skipType(tag & 7)
@@ -1448,11 +1448,11 @@ $root.NodeRequest = (() => {
         if (error) { return 'nodes.' + error }
       }
     }
-    if (message.features != null && message.hasOwnProperty('features')) {
-      if (!Array.isArray(message.features)) { return 'features: array expected' }
-      for (let i = 0; i < message.features.length; ++i) {
-        let error = $root.Feature.verify(message.features[i])
-        if (error) { return 'features.' + error }
+    if (message.schema != null && message.hasOwnProperty('schema')) {
+      if (!Array.isArray(message.schema)) { return 'features: array expected' }
+      for (let i = 0; i < message.schema.length; ++i) {
+        let error = $root.Feature.verify(message.schema[i])
+        if (error) { return 'schema.' + error }
       }
     }
     return null
@@ -1477,12 +1477,12 @@ $root.NodeRequest = (() => {
         message.nodes[i] = $root.Node.fromObject(object.nodes[i])
       }
     }
-    if (object.features) {
-      if (!Array.isArray(object.features)) { throw TypeError('.NodeRequest.features: array expected') }
-      message.features = []
-      for (let i = 0; i < object.features.length; ++i) {
-        if (typeof object.features[i] !== 'object') { throw TypeError('.NodeRequest.features: object expected') }
-        message.features[i] = $root.Feature.fromObject(object.features[i])
+    if (object.schema) {
+      if (!Array.isArray(object.schema)) { throw TypeError('.NodeRequest.schema: array expected') }
+      message.schema = []
+      for (let i = 0; i < object.schema.length; ++i) {
+        if (typeof object.schema[i] !== 'object') { throw TypeError('.NodeRequest.schema: object expected') }
+        message.schema[i] = $root.Feature.fromObject(object.schema[i])
       }
     }
     return message
@@ -1502,15 +1502,15 @@ $root.NodeRequest = (() => {
     let object = {}
     if (options.arrays || options.defaults) {
       object.nodes = []
-      object.features = []
+      object.schema = []
     }
     if (message.nodes && message.nodes.length) {
       object.nodes = []
       for (let j = 0; j < message.nodes.length; ++j) { object.nodes[j] = $root.Node.toObject(message.nodes[j], options) }
     }
-    if (message.features && message.features.length) {
-      object.features = []
-      for (let j = 0; j < message.features.length; ++j) { object.features[j] = $root.Feature.toObject(message.features[j], options) }
+    if (message.schema && message.schema.length) {
+      object.schema = []
+      for (let j = 0; j < message.schema.length; ++j) { object.schema[j] = $root.Feature.toObject(message.schema[j], options) }
     }
     return object
   }
@@ -1773,7 +1773,6 @@ $root.Query = (() => {
      * @param {IQuery=} [properties] Properties to set
      */
   function Query (properties) {
-    this.feature = []
     if (properties) {
       for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
         if (properties[keys[i]] != null) { this[keys[i]] = properties[keys[i]] }
@@ -1814,14 +1813,6 @@ $root.Query = (() => {
   Query.prototype.cut = null
 
   /**
-     * Query feature.
-     * @member {Array.<string>} feature
-     * @memberof Query
-     * @instance
-     */
-  Query.prototype.feature = $util.emptyArray
-
-  /**
      * Creates a new Query instance using the specified properties.
      * @function create
      * @memberof Query
@@ -1848,9 +1839,6 @@ $root.Query = (() => {
     if (message.relevance != null && message.hasOwnProperty('relevance')) { $root.RelevanceRange.encode(message.relevance, writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim() }
     if (message.density != null && message.hasOwnProperty('density')) { $root.DensityRange.encode(message.density, writer.uint32(/* id 3, wireType 2 = */26).fork()).ldelim() }
     if (message.cut != null && message.hasOwnProperty('cut')) { $root.Box3.encode(message.cut, writer.uint32(/* id 4, wireType 2 = */34).fork()).ldelim() }
-    if (message.feature != null && message.feature.length) {
-      for (let i = 0; i < message.feature.length; ++i) { writer.uint32(/* id 5, wireType 2 = */42).string(message.feature[i]) }
-    }
     return writer
   }
 
@@ -1896,10 +1884,6 @@ $root.Query = (() => {
           break
         case 4:
           message.cut = $root.Box3.decode(reader, reader.uint32())
-          break
-        case 5:
-          if (!(message.feature && message.feature.length)) { message.feature = [] }
-          message.feature.push(reader.string())
           break
         default:
           reader.skipType(tag & 7)
@@ -1951,12 +1935,6 @@ $root.Query = (() => {
       let error = $root.Box3.verify(message.cut)
       if (error) { return 'cut.' + error }
     }
-    if (message.feature != null && message.hasOwnProperty('feature')) {
-      if (!Array.isArray(message.feature)) { return 'feature: array expected' }
-      for (let i = 0; i < message.feature.length; ++i) {
-        if (!$util.isString(message.feature[i])) { return 'feature: string[] expected' }
-      }
-    }
     return null
   }
 
@@ -1987,11 +1965,6 @@ $root.Query = (() => {
       if (typeof object.cut !== 'object') { throw TypeError('.Query.cut: object expected') }
       message.cut = $root.Box3.fromObject(object.cut)
     }
-    if (object.feature) {
-      if (!Array.isArray(object.feature)) { throw TypeError('.Query.feature: array expected') }
-      message.feature = []
-      for (let i = 0; i < object.feature.length; ++i) { message.feature[i] = String(object.feature[i]) }
-    }
     return message
   }
 
@@ -2007,7 +1980,6 @@ $root.Query = (() => {
   Query.toObject = function toObject (message, options) {
     if (!options) { options = {} }
     let object = {}
-    if (options.arrays || options.defaults) { object.feature = [] }
     if (options.defaults) {
       object.frustum = null
       object.relevance = null
@@ -2018,10 +1990,6 @@ $root.Query = (() => {
     if (message.relevance != null && message.hasOwnProperty('relevance')) { object.relevance = $root.RelevanceRange.toObject(message.relevance, options) }
     if (message.density != null && message.hasOwnProperty('density')) { object.density = $root.DensityRange.toObject(message.density, options) }
     if (message.cut != null && message.hasOwnProperty('cut')) { object.cut = $root.Box3.toObject(message.cut, options) }
-    if (message.feature && message.feature.length) {
-      object.feature = []
-      for (let j = 0; j < message.feature.length; ++j) { object.feature[j] = message.feature[j] }
-    }
     return object
   }
 
@@ -2058,7 +2026,6 @@ $root.QueryResponse = (() => {
      */
   function QueryResponse (properties) {
     this.nodes = []
-    this.feature = []
     if (properties) {
       for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i) {
         if (properties[keys[i]] != null) { this[keys[i]] = properties[keys[i]] }
@@ -2073,14 +2040,6 @@ $root.QueryResponse = (() => {
      * @instance
      */
   QueryResponse.prototype.nodes = $util.emptyArray
-
-  /**
-     * QueryResponse feature.
-     * @member {Array.<IFeature>} feature
-     * @memberof QueryResponse
-     * @instance
-     */
-  QueryResponse.prototype.feature = $util.emptyArray
 
   /**
      * Creates a new QueryResponse instance using the specified properties.
@@ -2107,9 +2066,6 @@ $root.QueryResponse = (() => {
     if (!writer) { writer = $Writer.create() }
     if (message.nodes != null && message.nodes.length) {
       for (let i = 0; i < message.nodes.length; ++i) { $root.Node.encode(message.nodes[i], writer.uint32(/* id 1, wireType 2 = */10).fork()).ldelim() }
-    }
-    if (message.feature != null && message.feature.length) {
-      for (let i = 0; i < message.feature.length; ++i) { $root.Feature.encode(message.feature[i], writer.uint32(/* id 2, wireType 2 = */18).fork()).ldelim() }
     }
     return writer
   }
@@ -2148,10 +2104,6 @@ $root.QueryResponse = (() => {
         case 1:
           if (!(message.nodes && message.nodes.length)) { message.nodes = [] }
           message.nodes.push($root.Node.decode(reader, reader.uint32()))
-          break
-        case 2:
-          if (!(message.feature && message.feature.length)) { message.feature = [] }
-          message.feature.push($root.Feature.decode(reader, reader.uint32()))
           break
         default:
           reader.skipType(tag & 7)
@@ -2193,13 +2145,6 @@ $root.QueryResponse = (() => {
         if (error) { return 'nodes.' + error }
       }
     }
-    if (message.feature != null && message.hasOwnProperty('feature')) {
-      if (!Array.isArray(message.feature)) { return 'feature: array expected' }
-      for (let i = 0; i < message.feature.length; ++i) {
-        let error = $root.Feature.verify(message.feature[i])
-        if (error) { return 'feature.' + error }
-      }
-    }
     return null
   }
 
@@ -2222,14 +2167,6 @@ $root.QueryResponse = (() => {
         message.nodes[i] = $root.Node.fromObject(object.nodes[i])
       }
     }
-    if (object.feature) {
-      if (!Array.isArray(object.feature)) { throw TypeError('.QueryResponse.feature: array expected') }
-      message.feature = []
-      for (let i = 0; i < object.feature.length; ++i) {
-        if (typeof object.feature[i] !== 'object') { throw TypeError('.QueryResponse.feature: object expected') }
-        message.feature[i] = $root.Feature.fromObject(object.feature[i])
-      }
-    }
     return message
   }
 
@@ -2247,15 +2184,10 @@ $root.QueryResponse = (() => {
     let object = {}
     if (options.arrays || options.defaults) {
       object.nodes = []
-      object.feature = []
     }
     if (message.nodes && message.nodes.length) {
       object.nodes = []
       for (let j = 0; j < message.nodes.length; ++j) { object.nodes[j] = $root.Node.toObject(message.nodes[j], options) }
-    }
-    if (message.feature && message.feature.length) {
-      object.feature = []
-      for (let j = 0; j < message.feature.length; ++j) { object.feature[j] = $root.Feature.toObject(message.feature[j], options) }
     }
     return object
   }
@@ -3588,26 +3520,16 @@ export const PnextIO = $root.PnextIO = (() => {
      */
 
   /**
-     * Callback as used by {@link PnextIO#getNodes}.
-     * @memberof PnextIO
-     * @typedef getNodesCallback
-     * @type {function}
-     * @param {Error|null} error Error, if any
-     * @param {NodeData} [response] NodeData
-     */
-
-  /**
      * Calls getNodes.
      * @function getNodes
      * @memberof PnextIO
      * @instance
      * @param {INodeRequest} request NodeRequest message or plain object
-     * @param {PnextIO.getNodesCallback} callback Node-style callback called with the error, if any, and NodeData
-     * @returns {undefined}
+     * @returns {Readable}
      * @variation 1
      */
-  PnextIO.prototype.getNodes = function getNodes (request, callback) {
-    return this.rpcCall(getNodes, $root.NodeRequest, $root.NodeData, request, callback)
+  PnextIO.prototype.getNodes = function getNodes (request) {
+    return this.rpcCall(getNodes, $root.NodeRequest, $root.NodeData, request)
   }
 
   /**

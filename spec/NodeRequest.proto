@@ -2,5 +2,6 @@ message NodeRequest {
   // All the nodes to load
   repeated Node nodes = 1;
 
-  repeated Feature features = 3;
+  // Non-binding 
+  repeated Feature schema = 3;
 }

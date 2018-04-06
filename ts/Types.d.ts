@@ -558,7 +558,7 @@ export interface INodeRequest {
   nodes?: (INode[] | null)
 
     /** NodeRequest features */
-  features?: (IFeature[] | null)
+  schema?: (IFeature[] | null)
 }
 
 /** Represents a NodeRequest. */
@@ -567,8 +567,8 @@ export class NodeRequest implements INodeRequest {
     /** NodeRequest nodes. */
   public nodes: INode[]
 
-    /** NodeRequest features. */
-  public features: IFeature[]
+    /** NodeRequest schema. */
+  public schema: IFeature[]
 
     /**
      * Constructs a new NodeRequest.
@@ -858,9 +858,6 @@ export interface IQueryResponse {
 
     /** QueryResponse nodes */
   nodes?: (INode[] | null)
-
-    /** QueryResponse feature */
-  feature?: (IFeature[] | null)
 }
 
 /** Represents a QueryResponse. */
@@ -868,9 +865,6 @@ export class QueryResponse implements IQueryResponse {
 
     /** QueryResponse nodes. */
   public nodes: INode[]
-
-    /** QueryResponse feature. */
-  public feature: IFeature[]
 
     /**
      * Constructs a new QueryResponse.

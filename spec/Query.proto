@@ -28,10 +28,4 @@ message Query {
     box its possible for the browser to receive only a slice of data.
   */
   optional Box cut = 4;
-
-  /*
-    In case the server is capable of reducing pointcloud features, the client can specify which features are
-    interesting to it.
-  */
-  repeated string feature = 5;
 }

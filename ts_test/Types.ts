@@ -1,8 +1,10 @@
 #!/usr/bin/env node --require ts-node/register
 import { test } from 'tap'
 import Types from '../ts/Types'
-import { Box3, Plane, Frustum, PerspectiveCamera, Matrix4, Vector3 } from 'three'
+import { Box3, Plane, Frustum, PerspectiveCamera, Matrix4, Vector3, Vector } from 'three'
 import SampleImpl from './impl/SampleImpl'
+import toPromise from 'stream-to-promise'
+import through2 from 'through2'
 
 function frustumForCamera (cam: PerspectiveCamera): Frustum {
   return (new Frustum()).setFromMatrix(
@@ -29,7 +31,7 @@ function queryTree (impl: SampleImpl | any, query: any) {
   if (!(impl instanceof SampleImpl)) {
     impl = new SampleImpl(impl)
   }
-  return impl.queryPoints(Types.Query.fromObject(query))
+  return (impl as SampleImpl).queryPoints(Types.Query.fromObject(query))
 }
 
 test('make sure to implement three API', t => {
@@ -44,7 +46,6 @@ test('Sample Query to an empty set', async t => {
     frustum: frustumForCamera(new PerspectiveCamera())
   })
   t.equals(result.nodes, undefined)
-  t.equals(result.feature, undefined)
 })
 
 test('Valid, basic query', async t => {
@@ -61,11 +62,46 @@ test('Valid, basic query', async t => {
     treeId: 'test',
     numPoints: 1
   })
-  t.equals(result.feature, undefined)
 
   result = await queryTree(points,
     { frustum: twoPointFrustum(new Vector3(10, 0, 0), new Vector3(20, 0, 0)) }
   )
   t.equals(result.nodes, undefined, 'A change of camera should hide the node.')
-  t.equals(result.feature, undefined)
+})
+
+class PointParser {
+  length: Number = 0
+  constructor (schema: Types.IFeature[]) {
+    length = schema.reduce((total: number, feature: Types.IFeature) => total + feature.byteCount, 0)
+  }
+}
+
+test('Loading data as query result', async t => {
+  const point = Types.Vector3.fromObject({ x: 1, y: 1, z: 1 })
+  const tree = new SampleImpl([ point ])
+  const result = await queryTree(tree, { frustum: twoPointFrustum(new Vector3(10, 0, 0), point) })
+  const info = await tree.getTree(Types.TreeQuery.fromObject({ id: result.nodes[0].treeId }))
+  const pointParser = new PointParser(info.schema)
+  let buffer: Buffer
+  const data: Vector3[] = await toPromise(tree.getNodes(Types.NodeRequest.fromObject(result)).pipe(
+    through2({ objectMode: true }, function (chunk, enc, callback) {
+      if (buffer) {
+        buffer = Buffer.concat([buffer, chunk])
+      } else {
+        buffer = chunk
+      }
+      while (buffer.length > pointParser.length) {
+        let point: Vector3 = pointParser.parse(buffer)
+        if (point) {
+          this.push(point)
+          buffer = buffer.slice(pointParser.length)
+        }
+      }
+      if (buffer.length === 0) {
+        buffer = null
+      }
+    })
+  ))
+  t.equals(data.length, 1)
+  t.same(data[0], { x: 1, y: 1, z: 1 })
 })

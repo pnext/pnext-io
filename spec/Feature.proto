@@ -1,6 +1,6 @@
 message Feature {
-  required string type = 1;
 
-  // Different types of data have different length
-  required int32 byteCount = 2;
+  required string name = 1;
+
+  required FeatureType type = 2;
 }

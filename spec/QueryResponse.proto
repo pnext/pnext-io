@@ -1,7 +1,4 @@
 message QueryResponse {
   // Nodes to load. The order specifies the load-order-importance of each node.
   repeated Node nodes = 1;
-  
-  // Specifies the order of the features in the nodes (The order can be taken when accessing the files)
-  repeated Feature feature = 2;
 }
