@@ -26,6 +26,7 @@ We use [Visual Studio Code][] with following plugins:
 - [TSLint][] to lint TypeScript source files
 - [npm Intellisense][] to lookup npm entries in import statements
 - [auto-schema][] to get code-completion in the json files
+- [EditorConfig][] to define and maintain consistent coding styles between different editors and IDEs
 
 ## Before Pull Requests
 
@@ -69,4 +70,5 @@ If you want to debug a test file simply add the `--inspect-brk` to the
 [TSLint]: https://marketplace.visualstudio.com/items?itemName=eg2.tslint
 [npm Intellisense]: https://marketplace.visualstudio.com/items?itemName=christian-kohler.npm-intellisense
 [auto-schema]: https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-auto-schema
+[EditorConfig]: https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig
 [shebang]: https://en.wikipedia.org/wiki/Shebang_(Unix)
