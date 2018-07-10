@@ -6,6 +6,14 @@ import INodeWithTree from '../api/INodeWithTree'
 import IPointQuery from '../api/IPointQuery'
 
 export default class AbstractIO {
+
+  constructor () {
+    // TODO: The trees are fetched every time again
+    //       Adding a lru-cache that keeps trees to a
+    //       certain amount would allow quicker node
+    //       requests
+  }
+
   getTrees (query: ITreeQuery): ReadableStream<ITree> {
     throw new Error('not implemented!')
   }
