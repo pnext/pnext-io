@@ -1,5 +1,0 @@
-message NodeData {
-  // Streams the data in byte sets in the length of the features given for each node.
-  // in the requested order
-  repeated bytes data = 1;
-}

@@ -1,4 +1,0 @@
-message TreeQuery {
-  required string id = 1;
-  repeated string metadataProperties = 2; // Optional filter for metadata properties to to be returned. Using minimatch patterns with ! support for negation. If missing, all metadata will be returned, "!*" specifies no metadata.
-}
