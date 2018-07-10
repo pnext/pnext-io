@@ -1,10 +1,10 @@
 enum Oct {
-  AAA = 1;
-  AAB = 2;
-  ABA = 3;
-  ABB = 4;
-  BAA = 5;
-  BAB = 6;
-  BBA = 7;
-  BBB = 8;
+  AX1 = 1;
+  AX2 = 2;
+  AY1 = 3;
+  AY2 = 4;
+  BX1 = 5;
+  BX2 = 6;
+  BY1 = 7;
+  BY2 = 8;
 }
