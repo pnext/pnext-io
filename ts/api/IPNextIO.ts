@@ -3,6 +3,7 @@ import ITree from './ITree'
 import INodeQuery from './INodeQuery'
 import IPointQuery from './IPointQuery'
 import INode from './INode'
+import INodeWithTree from './INodeWithTree'
 import { ReadableStream } from 'ts-stream'
 
 export default interface IPNextIO {
@@ -22,6 +23,11 @@ export default interface IPNextIO {
    * Query for a set of nodes based on the camera position
    */
   getNodes (query: IPointQuery): ReadableStream<INode>,
+
+  /**
+   * Query for a set nof nodes with the trees already added as reference
+   */
+  getNodesWithTrees (query?: IPointQuery): ReadableStream<INodeWithTree>,
 
   /**
    * Requesting the actual node data from the server.
