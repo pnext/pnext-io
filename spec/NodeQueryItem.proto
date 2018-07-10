@@ -1,0 +1,9 @@
+message Node {
+  // If its missing the previous treeId is assumed.
+  optional string treeId = 1;
+  // An id to identify the node. Should only be used
+  // if no octadr is given
+  optional string id = 2;
+  // If the Tree is stored as an oct tree the oct tree might be contained in this address
+  repeated Oct address = 4;
+}
