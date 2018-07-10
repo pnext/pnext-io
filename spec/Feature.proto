@@ -3,4 +3,6 @@ message Feature {
   required string name = 1;
 
   required FeatureType type = 2;
+
+  optional uint32 length = 3;
 }
