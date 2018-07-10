@@ -3,7 +3,7 @@ import IRange from './IRange'
 import IBox3 from './IBox3'
 
 export default interface IQuery {
-  frustum?: IFrustum
+  frustum: IFrustum
   relevance?: IRange
   density?: IRange
   cut?: IBox3

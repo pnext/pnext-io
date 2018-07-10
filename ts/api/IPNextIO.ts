@@ -22,7 +22,7 @@ export default interface IPNextIO {
   /**
    * Query for a set of nodes based on the camera position
    */
-  getNodes (query: IPointQuery): ReadableStream<INode>,
+  getNodes (query?: IPointQuery): ReadableStream<INode>,
 
   /**
    * Query for a set nof nodes with the trees already added as reference
@@ -32,5 +32,5 @@ export default interface IPNextIO {
   /**
    * Requesting the actual node data from the server.
    */
-  getData (query: INodeQuery): ReadableStream<{ [k: string]: any }>,
+  getData (query?: INodeQuery): ReadableStream<{ [k: string]: any }>,
 }

@@ -1,4 +1,4 @@
 export default interface ITreeQuery {
-  ids: string[]
+  ids?: string[]
   metadataProperties?: string[]
 }
