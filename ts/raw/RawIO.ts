@@ -2,6 +2,7 @@ import IPNextIO from '../api/IPNextIO'
 import Stream from 'ts-stream'
 import ITree from '../api/ITree'
 import INode from '../api/INode'
+import INodeQueryItem from '../api/INodeQueryItem'
 import IPointQuery from '../api/IPointQuery'
 import ITreeQuery from '../api/ITreeQuery'
 import INodeQuery from '../api/INodeQuery'
@@ -11,6 +12,7 @@ import IFeature from "../api/IFeature"
 import FeatureType from "../api/FeatureType"
 import FeatureLength from '../util/FeatureLength'
 import AbstractIO from '../util/AbstractIO'
+import expandBox from '../util/expandBox'
 
 export interface IPoint {
   x: number,
@@ -18,11 +20,15 @@ export interface IPoint {
   z: number
 }
 
-function collectBounds (points: IPoint[]): IBox3 {
-  const bounds: IBox3 = {
+function createBox (): IBox3 {
+  return {
     min: { x: Number.MAX_VALUE, y: Number.MAX_VALUE, z: Number.MAX_VALUE},
     max: { x: -Number.MAX_VALUE, y: -Number.MAX_VALUE, z: -Number.MAX_VALUE}
   }
+}
+
+function collectBounds (points: IPoint[]): IBox3 {
+  const bounds: IBox3 = createBox()
   for (const point of points) {
     if (point.x < bounds.min.x) {
       bounds.min.x = point.x
@@ -47,9 +53,9 @@ function collectBounds (points: IPoint[]): IBox3 {
 }
 
 class TreeInfo implements ITree {
-  id: string;
-  bounds: IBox3;
-  boundsConforming: IBox3;
+  id: string
+  bounds: IBox3
+  boundsConforming: IBox3
   scale: IVector3  = { x: 1, y: 1, z: 1}
   offset: IVector3 = { x: 0, y: 0, z: 0}
   numPoints: number | Long;
@@ -59,11 +65,15 @@ class TreeInfo implements ITree {
     { name: 'z', type: FeatureType.double, length: FeatureLength[FeatureType.double] }
   ]
   metadata: { [k: string]: any }
+  boundsForPoints: IBox3[]
 
-  constructor (id: string, points: IPoint[]) {
+  constructor (id: string, pointData: IPoint[][]) {
     this.id = id || (Date.now().toString(32) + '.' + Math.random().toString(32))
-    this.numPoints = points.length
-    this.boundsConforming = collectBounds(points)
+    this.numPoints = pointData.reduce((total: number, points: IPoint[]) => {
+      return total += points.length
+    }, 0)
+    this.boundsForPoints = pointData.map(collectBounds)
+    this.boundsConforming = this.boundsForPoints.reduce(expandBox)
     this.bounds = this.boundsConforming
     this.metadata = {
       created: new Date().toISOString()
@@ -73,12 +83,14 @@ class TreeInfo implements ITree {
 
 export default class RawIO extends AbstractIO implements IPNextIO {
   info: TreeInfo
-  points: IPoint[]
+  pointData: IPoint[][]
+  ids: number[]
 
-  constructor (id: string, points: IPoint[]) {
+  constructor (id: string, pointData: IPoint[][]) {
     super()
-    this.info = new TreeInfo(id, points)
-    this.points = points
+    this.info = new TreeInfo(id, pointData)
+    this.pointData = pointData
+    this.ids = pointData.map((value: IPoint[], index: number) => index)
   }
 
   getTrees (query?: ITreeQuery): Stream<ITree> {
@@ -100,13 +112,20 @@ export default class RawIO extends AbstractIO implements IPNextIO {
 
   getNodes (query?: IPointQuery): Stream<INode> {
     const stream = new Stream<INode>()
+    let first = true
     setImmediate(() => {
-      const node: INode = {
-        treeId: this.info.id,
-        id: '0',
-        numPoints: this.info.numPoints
+      let index = 0
+      for (const points of this.pointData) {
+        const node: INode = {
+          id: index.toString(),
+          numPoints: this.info.numPoints
+        }
+        if (first) {
+          node.treeId = this.info.id
+        }
+        stream.write(node)
+        index ++
       }
-      stream.write(node)
       stream.end()
     })
     return stream
@@ -115,20 +134,31 @@ export default class RawIO extends AbstractIO implements IPNextIO {
   getData (query?: INodeQuery): Stream<{ [k: string]: any; }> {
     const stream = new Stream<{ [k:string]: any }>()
     setImmediate(() => {
-      for (const node of query.nodes) {
-        if (node.treeId !== this.info.id) {
-          stream.abort(new Error(`Invalid tree id "${node.treeId}" requested!`))
-          return
+      let ids: number[] = this.ids
+      if (query) {
+        ids = []
+        for (const node of query.nodes) {
+          if (node.treeId !== this.info.id) {
+            stream.abort(new Error(`Invalid tree id "${node.treeId}" requested!`))
+            return
+          }
+          if (node.address) {
+            stream.abort(new Error('This tree only supports id-ed nodes'))
+            return
+          }
+          if (!node.id) {
+            stream.abort(new Error('Node id requred!'))
+            return
+          }
+          const num = parseInt(node.id, 10)
+          if (isNaN(num) || num < 0 || num >= this.pointData.length) {
+            stream.abort(new Error(`Invalid node: ${node.id}`))
+          }
+          ids.push(num)
         }
-        if (node.address) {
-          stream.abort(new Error('This tree only supports id-ed nodes'))
-          return
-        }
-        if (node.id !== '0') {
-          stream.abort(new Error(`Unknown node "${node.id}"`))
-          return
-        }
-        for (const point of this.points) {
+      }
+      for (const index of ids) {
+        for (const point of this.pointData[index]) {
           stream.write(point)
         }
       }

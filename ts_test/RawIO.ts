@@ -4,7 +4,7 @@ import RawIO from '../ts/raw/RawIO'
 import FeatureType from '../ts/api/FeatureType';
 
 test('Simple tree info', async t => {
-  const io = new RawIO('abc', [])
+  const io = new RawIO('abc', [[]])
   const trees = await io.getTrees().toArray()
   t.equals(trees.length, 1)
   const tree = trees[0]
@@ -34,11 +34,11 @@ test('Simple tree info', async t => {
 })
 
 test('bounds for multiple points', async t => {
-  const io = new RawIO('abc', [
+  const io = new RawIO('abc', [[
     {x: 2, y: 2, z: 2},
     {x: 0, y: 0, z: 0},
     {x: 1, y: 1, z: 1}
-  ])
+  ]])
   const tree = await io.getTree('abc')
   t.deepEquals(tree.bounds, {
     min: { x: 0, y: 0, z: 0 },
@@ -48,9 +48,9 @@ test('bounds for multiple points', async t => {
 })
 
 test('getting nodes', async t => {
-  const io = new RawIO('abc', [
+  const io = new RawIO('abc', [[
     {x: 0, y: 0, z: 0}
-  ])
+  ]])
   const nodes = await io.getNodes().toArray()
   t.equals(nodes.length, 1)
   const node = nodes[0]
@@ -60,10 +60,10 @@ test('getting nodes', async t => {
   t.equals(node.numPoints, 1)
 })
 
-test('getting data', async t => {
-  const io = new RawIO('abc', [
+test('fetching nodes', async t => {
+  const io = new RawIO('abc', [[
     {x: 0, y: 0, z: 0}
-  ])
+  ]])
   const nodes = await io.getNodes().toArray()
   t.equals(nodes.length, 1)
   const node = nodes[0]
@@ -73,6 +73,20 @@ test('getting data', async t => {
   t.equals(node.numPoints, 1)
 })
 
-test('', async t => {
+test('fetching nodes with trees', async t => {
+  const io = new RawIO('abc', [[
+    {x: 0, y: 0, z: 0}
+  ]])
+  const nodes = await io.getNodesWithTrees().toArray()
+  t.equals(nodes.length, 1)
+  const node = nodes[0]
+  t.equals(node.tree.id, 'abc')
+})
 
+test('fetching points', async t => {
+  const point = {x: 0, y: 0, z: 0}
+  const io = new RawIO('abc', [[point]])
+  const points = await io.getData().toArray()
+  t.equals(points.length, 1)
+  t.equals(points[0], point)
 })
