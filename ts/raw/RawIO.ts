@@ -13,6 +13,7 @@ import FeatureType from "../api/FeatureType"
 import Feature from '../api/Feature'
 import AbstractIO from '../util/AbstractIO'
 import expandBox from '../util/expandBox'
+import featureMatch from '../util/featureMatch'
 
 export interface IPoint {
   x: number,
@@ -153,6 +154,13 @@ export default class RawIO extends AbstractIO implements IPNextIO {
             stream.end(new Error(`Invalid node: ${node.id}`)).catch(ignoreError)
           }
           ids.push(num)
+        }
+      }
+      if (query && query.schema) {
+        const error = featureMatch(this.info.schema, query.schema)
+        if (error) {
+          stream.end(new Error(error)).catch(ignoreError)
+          return
         }
       }
       for (const index of ids) {

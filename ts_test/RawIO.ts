@@ -2,6 +2,7 @@
 import { test } from 'tap'
 import RawIO from '../ts/raw/RawIO'
 import FeatureType from '../ts/api/FeatureType';
+import Feature from '../ts/api/Feature';
 
 test('Simple tree info', async t => {
   const io = new RawIO('abc', [[]])
@@ -84,4 +85,22 @@ test('fetching points', async t => {
   const points = await io.getPoints().toArray()
   t.equals(points.length, 1)
   t.equals(points[0], POINT_ZERO)
+})
+
+test('fetching with features should be able to return points with more properties than requested.', async t => {
+  const io = new RawIO('abc', [[POINT_ZERO]])
+  const points = await io.getPoints({
+    schema: [Feature.x]
+  }).toArray()
+  t.equals(points[0], POINT_ZERO)
+})
+
+test('fetching features that dont exist', async t => {
+  const io = new RawIO('abc', [[POINT_ZERO]])
+  try {
+    const p = await io.getPoints({ schema: [Feature.r]}).toArray()
+    t.fail('There should have been an error here')
+  } catch (e) {
+    t.equals(e.message, '#0: r is not available.')
+  }
 })
