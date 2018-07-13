@@ -21,6 +21,8 @@ export interface IPoint {
   z: number
 }
 
+function ignoreError () {}
+
 function createBox (): IBox3 {
   return {
     min: { x: Number.MAX_VALUE, y: Number.MAX_VALUE, z: Number.MAX_VALUE},
@@ -96,7 +98,7 @@ export default class RawIO extends AbstractIO implements IPNextIO {
       if (query && query.ids) {
         for (const id of query.ids) {
           if (id !== this.info.id) {
-            stream.abort(new Error(`Unknown tree ${id}`))
+            stream.end(new Error(`Unknown tree ${id}`)).catch(ignoreError)
             return
           }
         }
@@ -136,20 +138,20 @@ export default class RawIO extends AbstractIO implements IPNextIO {
         ids = []
         for (const node of query.nodes) {
           if (node.treeId !== this.info.id) {
-            stream.abort(new Error(`Invalid tree id "${node.treeId}" requested!`))
+            stream.end(new Error(`Invalid tree id "${node.treeId}" requested!`)).catch(ignoreError)
             return
           }
           if (node.address) {
-            stream.abort(new Error('This tree only supports id-ed nodes'))
+            stream.end(new Error('This tree only supports id-ed nodes')).catch(ignoreError)
             return
           }
           if (!node.id) {
-            stream.abort(new Error('Node id requred!'))
+            stream.end(new Error('Node id requred!')).catch(ignoreError)
             return
           }
           const num = parseInt(node.id, 10)
           if (isNaN(num) || num < 0 || num >= this.pointData.length) {
-            stream.abort(new Error(`Invalid node: ${node.id}`))
+            stream.end(new Error(`Invalid node: ${node.id}`)).catch(ignoreError)
           }
           ids.push(num)
         }
