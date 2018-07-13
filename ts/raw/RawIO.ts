@@ -11,7 +11,6 @@ import IBox3 from '../api/IBox3'
 import IFeature from "../api/IFeature"
 import FeatureType from "../api/FeatureType"
 import Feature from '../api/Feature'
-import FeatureLength from '../util/FeatureLength'
 import AbstractIO from '../util/AbstractIO'
 import expandBox from '../util/expandBox'
 
