@@ -10,6 +10,7 @@ import IVector3 from '../api/IVector3'
 import IBox3 from '../api/IBox3'
 import IFeature from "../api/IFeature"
 import FeatureType from "../api/FeatureType"
+import Feature from '../api/Feature'
 import FeatureLength from '../util/FeatureLength'
 import AbstractIO from '../util/AbstractIO'
 import expandBox from '../util/expandBox'
@@ -59,11 +60,7 @@ class TreeInfo implements ITree {
   scale: IVector3  = { x: 1, y: 1, z: 1}
   offset: IVector3 = { x: 0, y: 0, z: 0}
   numPoints: number | Long;
-  schema = [
-    { name: 'x', type: FeatureType.double, length: FeatureLength[FeatureType.double] },
-    { name: 'y', type: FeatureType.double, length: FeatureLength[FeatureType.double] },
-    { name: 'z', type: FeatureType.double, length: FeatureLength[FeatureType.double] }
-  ]
+  schema = [ Feature.x, Feature.y, Feature.z ]
   metadata: { [k: string]: any }
   boundsForPoints: IBox3[]
 
