@@ -135,7 +135,7 @@ export default class RawIO extends AbstractIO implements IPNextIO {
     const stream = new Stream<{ [k:string]: any }>()
     setImmediate(() => {
       let ids: number[] = this.ids
-      if (query) {
+      if (query && query.nodes) {
         ids = []
         for (const node of query.nodes) {
           if (node.treeId !== this.info.id) {
