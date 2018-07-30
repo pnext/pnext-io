@@ -1,4 +1,4 @@
-import IFrustum from "../api/IFrustum"
+import IFrustum from './IFrustum'
 import IBox3 from '../api/IBox3'
 import IVector3 from '../api/IVector3'
 import distanceToPointPlane from './distancePointPlane'

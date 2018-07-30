@@ -1,4 +1,4 @@
-import IPlane from './IPlane'
+import IPlane from '../api/IPlane'
 
 export default interface IFrustum {
   planes: IPlane[]
