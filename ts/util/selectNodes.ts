@@ -15,6 +15,7 @@ import inRange from './inRange'
 import IDisplay from '../api/IDisplay';
 import ILongRange from '../api/ILongRange';
 import Long from 'long';
+import IDensityRange from '../api/IDensityRange'
 
 function getPerspectiveCamera (input: IPerspectiveCamera): PerspectiveCamera {
   if (input instanceof PerspectiveCamera) {
@@ -118,20 +119,20 @@ function sortByWeight (a: IWeightedNode, b: IWeightedNode): number {
   return 0
 }
 
-function normalizeDensity (density?: IRange, height?:number): IRange | null {
+function normalizeDensity (density?: IDensityRange): IRange | null {
   if (!density) {
     return null
   }
-  if (isNaN(height)) {
+  if (isNaN(density.height)) {
     return density
   }
   let min = density.min
   if (!isNaN(min)) {
-    min = min / height
+    min = min / density.height
   }
   return {
     min,
-    max: density.max / height
+    max: density.max / density.height
   }
 }
 
@@ -150,7 +151,7 @@ function getFrustumDisplays (display?: IDisplay[]): IFrustumDisplay[] | null {
       frustum,
       cam,
       display,
-      normalDensity: normalizeDensity(display.density, display.density.height)
+      normalDensity: normalizeDensity(display.density)
     }
   })
 }
