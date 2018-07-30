@@ -29,5 +29,5 @@ message NodeQuery {
     One common problem of pointclouds is to create slices of data for profiles. By providing a bounding
     box its possible for the browser to receive only a slice of data.
   */
-  optional Box cut = 4;
+  repeated Box cut = 4;
 }
