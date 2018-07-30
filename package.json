@@ -30,25 +30,27 @@
   "homepage": "https://github.com/pnext/point-query#readme",
   "devDependencies": {
     "@types/es6-promise": "^3.3.0",
-    "@types/node": "^9.4.7",
+    "@types/node": "^10.5.2",
     "@types/protobufjs": "^6.0.0",
-    "@types/three": "^0.89.12",
+    "@types/three": "^0.92.12",
     "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-typescript": "^0.10.0",
+    "eslint-plugin-typescript": "^0.12.0",
     "standard": "^11.0.1",
     "stream-to-promise": "^2.2.0",
-    "tap": "^11.1.2",
+    "tap": "^12.0.1",
     "through2": "^2.0.3",
-    "ts-node": "^5.0.1",
-    "tslint": "^5.9.1",
-    "tslint-config-standard": "^7.0.0",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.10.0",
+    "tslint-config-standard": "^7.1.0",
+    "typedarray-to-buffer": "^3.1.5",
     "typedoc": "^0.11.1",
-    "typescript": "^2.7.2",
-    "typescript-eslint-parser": "^14.0.0"
+    "typescript": "^2.9.2",
+    "typescript-eslint-parser": "^16.0.1"
   },
   "dependencies": {
-    "three": "^0.91.0",
+    "long": "^4.0.0",
     "protobufjs": "^6.8.6",
+    "three": "^0.94.0",
     "ts-stream": "^1.0.1"
   }
 }
