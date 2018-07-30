@@ -1,4 +1,4 @@
-message Node {
+message NodeQueryItem {
   // If its missing the previous treeId is assumed.
   optional string treeId = 1;
   // An id to identify the node. Should only be used

@@ -9,10 +9,10 @@ service PnextIO {
   /**
    * Query for a set of points based on the camera position
    */
-  rpc getPoints (PointQuery) returns (stream Node) {}
+  rpc getNodes (NodeQuery) returns (stream Node) {}
 
   /**
    * Requesting the actual node data from the server.
    */
-  rpc getNodes (NodeQuery) returns (stream google.protobuf.BytesValue) {}
+  rpc getPoints (PointQuery) returns (stream google.protobuf.BytesValue) {}
 }
