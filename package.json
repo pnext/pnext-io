@@ -48,6 +48,7 @@
     "typescript-eslint-parser": "^16.0.1"
   },
   "dependencies": {
+    "long": "^4.0.0",
     "protobufjs": "^6.8.6",
     "three": "^0.94.0",
     "ts-stream": "^1.0.1"
