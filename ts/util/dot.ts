@@ -3,7 +3,7 @@ import IVector3 from '../api/IVector3'
 /*
  * Adapted from Three.js
  * https://github.com/mrdoob/three.js/blob/bbe01b9e5e7214bb1d781057bcbef74c2cc7266d/src/math/Vector3.js#L479-L483
- * 
+ *
  * The MIT License
  *
  * Copyright © 2010-2018 three.js authors

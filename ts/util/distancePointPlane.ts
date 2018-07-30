@@ -5,7 +5,7 @@ import dot from './dot'
 /**
  * Adapted from Three.js
  * https://github.com/mrdoob/three.js/blob/14e053247ec0a5fb12339b32610c2d29d95f0f15/src/math/Plane.js#L101-L105
- * 
+ *
  * The MIT License
  *
  * Copyright © 2010-2018 three.js authors

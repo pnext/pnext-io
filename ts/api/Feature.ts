@@ -10,8 +10,7 @@ const Feature: { [k: string]: IFeature } = {
   r: { name: 'r', type: uint8 },
   g: { name: 'g', type: uint8 },
   b: { name: 'b', type: uint8 },
-  a: { name: 'a', type: uint8 },
+  a: { name: 'a', type: uint8 }
 }
 
 export default Feature
-

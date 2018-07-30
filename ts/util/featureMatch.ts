@@ -6,7 +6,7 @@ export default function featureMatch (base: IFeature[], target: IFeature[]): (st
   for (const feature of base) {
     availableFeatures[feature.name] = feature
   }
-  for (var i = 0; i < target.length; i ++) {
+  for (let i = 0; i < target.length; i ++) {
     const targetFeature = target[i]
     const rootFeature = availableFeatures[targetFeature.name]
     if (!rootFeature) {

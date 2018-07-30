@@ -8,8 +8,8 @@ import ITreeQuery from '../api/ITreeQuery'
 import INodeQuery from '../api/INodeQuery'
 import IVector3 from '../api/IVector3'
 import IBox3 from '../api/IBox3'
-import IFeature from "../api/IFeature"
-import FeatureType from "../api/FeatureType"
+import IFeature from '../api/IFeature'
+import FeatureType from '../api/FeatureType'
 import Feature from '../api/Feature'
 import AbstractIO from '../util/AbstractIO'
 import expandBox from '../util/expandBox'
@@ -21,12 +21,14 @@ export interface IPoint {
   z: number
 }
 
-function ignoreError () {}
+function ignoreError () {
+  return
+}
 
 function createBox (): IBox3 {
   return {
-    min: { x: Number.MAX_VALUE, y: Number.MAX_VALUE, z: Number.MAX_VALUE},
-    max: { x: -Number.MAX_VALUE, y: -Number.MAX_VALUE, z: -Number.MAX_VALUE}
+    min: { x: Number.MAX_VALUE, y: Number.MAX_VALUE, z: Number.MAX_VALUE },
+    max: { x: -Number.MAX_VALUE, y: -Number.MAX_VALUE, z: -Number.MAX_VALUE }
   }
 }
 
@@ -36,19 +38,19 @@ function collectBounds (points: IPoint[]): IBox3 {
     if (point.x < bounds.min.x) {
       bounds.min.x = point.x
     }
-    if (point.x > bounds.max.x ) {
+    if (point.x > bounds.max.x) {
       bounds.max.x = point.x
     }
     if (point.y < bounds.min.y) {
       bounds.min.y = point.y
     }
-    if (point.y > bounds.max.y ) {
+    if (point.y > bounds.max.y) {
       bounds.max.y = point.y
     }
     if (point.z < bounds.min.z) {
       bounds.min.z = point.z
     }
-    if (point.z > bounds.max.z ) {
+    if (point.z > bounds.max.z) {
       bounds.max.z = point.z
     }
   }
@@ -59,9 +61,9 @@ class TreeInfo implements ITree {
   id: string
   bounds: IBox3
   boundsConforming: IBox3
-  scale: IVector3  = { x: 1, y: 1, z: 1}
-  offset: IVector3 = { x: 0, y: 0, z: 0}
-  numPoints: number | Long;
+  scale: IVector3 = { x: 1, y: 1, z: 1 }
+  offset: IVector3 = { x: 0, y: 0, z: 0 }
+  numPoints: number | Long
   schema = [ Feature.x, Feature.y, Feature.z ]
   metadata: { [k: string]: any }
   boundsForPoints: IBox3[]
@@ -131,7 +133,7 @@ export default class RawIO extends AbstractIO implements IPNextIO {
   }
 
   getPoints (query?: IPointQuery): Stream<{ [k: string]: any; }> {
-    const stream = new Stream<{ [k:string]: any }>()
+    const stream = new Stream<{ [k: string ]: any }>()
     setImmediate(() => {
       let ids: number[] = this.ids
       if (query && query.nodes) {

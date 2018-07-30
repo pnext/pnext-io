@@ -1,4 +1,4 @@
-import FeatureType from "../api/FeatureType"
+import FeatureType from '../api/FeatureType'
 
 const FeatureLength: { [k: number]: number } = {
   [FeatureType.uint8]: 1,

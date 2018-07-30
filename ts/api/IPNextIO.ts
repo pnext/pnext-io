@@ -14,7 +14,7 @@ export default interface IPNextIO {
 
   /**
    * Information about a single tree given in the source
-   * 
+   *
    * (Convenience wrapper)
    */
   getTree (id: string, metadataProperties?: string[]): PromiseLike<ITree>,
@@ -32,5 +32,5 @@ export default interface IPNextIO {
   /**
    * Requesting the actual node data from the server.
    */
-  getPoints (query?: IPointQuery): ReadableStream<{ [k: string]: any }>,
+  getPoints (query?: IPointQuery): ReadableStream<{ [k: string]: any }>
 }

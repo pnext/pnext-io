@@ -9,7 +9,7 @@ export default interface ITree {
   /**
    * The scale factor for this data. May be either a number, an array of length 3,
    * or may not be present at all in the case of absolutely positioned data.
-   * 
+   *
    * If scale is present, then absolutely positioned values for spatial coordinates
    * can be determined as absolutelyPositionedValue = serializedValue * scale + offset.
    */
@@ -18,10 +18,10 @@ export default interface ITree {
   /**
    * The offset at which this data was indexed.
    * This value will not exist for absolutely positioned data.
-   * 
+   *
    * If offset is present, then absolutely positioned values for spatial coordinates
    * can be determined as absolutelyPositionedValue = serializedValue * scale + offset.
-   * 
+   *
    * Note that for a dataType of laszip, offset information must be read from the
    * LAZ header since individual files may be serialized with a local offset.
    */
@@ -30,7 +30,7 @@ export default interface ITree {
 
   /**
    * The narrowest bounds conforming to the maximal extents of the data.
-   * 
+   *
    * This value is always in native coordinate space, so any scale or offset
    * values will not have been applied.
    */

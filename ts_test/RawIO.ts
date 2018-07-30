@@ -1,8 +1,8 @@
 #!/usr/bin/env node --require ts-node/register
 import { test } from 'tap'
 import RawIO from '../ts/raw/RawIO'
-import FeatureType from '../ts/api/FeatureType';
-import Feature from '../ts/api/Feature';
+import FeatureType from '../ts/api/FeatureType'
+import Feature from '../ts/api/Feature'
 
 test('Simple tree info', async t => {
   const io = new RawIO('abc', [[]])
@@ -38,9 +38,9 @@ const POINT_ZERO = { x: 0, y: 0, z: 0 }
 
 test('bounds for multiple points', async t => {
   const io = new RawIO('abc', [[
-    {x: 2, y: 2, z: 2},
+    { x: 2, y: 2, z: 2 },
     POINT_ZERO,
-    {x: 1, y: 1, z: 1}
+    { x: 1, y: 1, z: 1 }
   ]])
   const tree = await io.getTree('abc')
   t.deepEquals(tree.bounds, {
@@ -98,7 +98,7 @@ test('fetching with features should be able to return points with more propertie
 test('fetching features that dont exist', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
   try {
-    const p = await io.getPoints({ schema: [Feature.r]}).toArray()
+    const p = await io.getPoints({ schema: [Feature.r] }).toArray()
     t.fail('There should have been an error here')
   } catch (e) {
     t.equals(e.message, '#0: r is not available.')

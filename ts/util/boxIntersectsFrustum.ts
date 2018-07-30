@@ -8,7 +8,7 @@ const p: IVector3 = { x: 0, y: 0, z: 0 }
 /**
  * Adapted from Three.js
  * https://github.com/mrdoob/three.js/blob/ea5de6733511ea3a66231d7c6790e64a9f4e20da/src/math/Frustum.js#L141-L171
- * 
+ *
  * The MIT License
  *
  * Copyright © 2010-2018 three.js authors
@@ -33,7 +33,7 @@ const p: IVector3 = { x: 0, y: 0, z: 0 }
  */
 export default function boxIntersectsFrustum (box: IBox3, frustum: IFrustum): boolean {
   const planes = frustum.planes
-  for ( var i = 0 ; i < 6; i++ ) {
+  for (let i = 0 ; i < 6; i++) {
     const plane = planes[i]
 
     // corner at max distance
@@ -41,7 +41,7 @@ export default function boxIntersectsFrustum (box: IBox3, frustum: IFrustum): bo
     p.y = plane.normal.y > 0 ? box.max.y : box.min.y
     p.z = plane.normal.z > 0 ? box.max.z : box.min.z
 
-    if ( distanceToPointPlane(p, plane) < 0 ) {
+    if (distanceToPointPlane(p, plane) < 0) {
       return false
     }
   }

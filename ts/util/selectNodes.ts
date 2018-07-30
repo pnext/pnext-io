@@ -12,9 +12,9 @@ import IBox3 from '../api/IBox3'
 import IRange from '../api/IRange'
 import { getMaxListeners } from 'cluster'
 import inRange from './inRange'
-import IDisplay from '../api/IDisplay';
-import ILongRange from '../api/ILongRange';
-import Long from 'long';
+import IDisplay from '../api/IDisplay'
+import ILongRange from '../api/ILongRange'
+import Long from 'long'
 import IDensityRange from '../api/IDensityRange'
 
 function getPerspectiveCamera (input: IPerspectiveCamera): PerspectiveCamera {
@@ -63,13 +63,13 @@ function getWeight (node: INodeTree, fDisplays?: IFrustumDisplay[]): number {
       distance
     )
     if (fDisplay.normalDensity && !inRange(fDisplay.normalDensity, screenPixelRatio)) {
-      continue;
+      continue
     }
     if (distance < node.boundingSphere.radius) {
       // Definitely load items within the sphere
       return Number.MAX_VALUE
     } else if (weight < screenPixelRatio) {
-      // The biggest screenPixelRadius wins 
+      // The biggest screenPixelRadius wins
       weight = screenPixelRatio
     }
   }
@@ -204,7 +204,7 @@ export default async function selectNodes (query: INodeQuery, treeNodeList: INod
   let fDisplays: IFrustumDisplay[] | null = getFrustumDisplays(query.display)
   let totalPoints: Long = new Long(0)
   const min: Long | number = minLong(query.pointRange)
-  
+
   while (treeNodeList) {
     if (query.cut || fDisplays) {
       treeNodeList = filterInvisibleNodes(treeNodeList, query.cut, fDisplays)

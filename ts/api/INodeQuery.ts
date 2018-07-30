@@ -8,7 +8,7 @@ export default interface INodeQuery {
 
   /**
    * Multiple cut boxes.
-   * 
+   *
    * Cut boxes are additive: If a node intersects
    * with any cut box it will be returned.
    */
