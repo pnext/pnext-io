@@ -1,5 +1,5 @@
-import INodeQueryItem from './INodeQueryItem'
+import INodeSelector from './INodeSelector'
 
-export default interface INode extends INodeQueryItem {
+export default interface INode extends INodeSelector {
   readonly numPoints: (number | Long)
 }

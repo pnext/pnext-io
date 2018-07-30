@@ -2,7 +2,7 @@ import IPNextIO from '../api/IPNextIO'
 import Stream from 'ts-stream'
 import ITree from '../api/ITree'
 import INode from '../api/INode'
-import INodeQueryItem from '../api/INodeQueryItem'
+import INodeSelector from '../api/INodeSelector'
 import IPointQuery from '../api/IPointQuery'
 import ITreeQuery from '../api/ITreeQuery'
 import INodeQuery from '../api/INodeQuery'
@@ -110,7 +110,7 @@ export default class RawIO extends AbstractIO implements IPNextIO {
     return stream
   }
 
-  getNodes (query?: IPointQuery): Stream<INode> {
+  getNodes (query?: INodeQuery): Stream<INode> {
     const stream = new Stream<INode>()
     let first = true
     setImmediate(() => {
@@ -131,7 +131,7 @@ export default class RawIO extends AbstractIO implements IPNextIO {
     return stream
   }
 
-  getData (query?: INodeQuery): Stream<{ [k: string]: any; }> {
+  getPoints (query?: IPointQuery): Stream<{ [k: string]: any; }> {
     const stream = new Stream<{ [k:string]: any }>()
     setImmediate(() => {
       let ids: number[] = this.ids

@@ -3,7 +3,7 @@ import ITreeQuery from '../api/ITreeQuery'
 import { ReadableStream } from 'ts-stream'
 import INode from '../api/INode'
 import INodeWithTree from '../api/INodeWithTree'
-import IPointQuery from '../api/IPointQuery'
+import INodeQuery from '../api/INodeQuery'
 
 export default class AbstractIO {
 
@@ -18,7 +18,7 @@ export default class AbstractIO {
     throw new Error('not implemented!')
   }
 
-  getNodes (query?: IPointQuery): ReadableStream<INode> {
+  getNodes (query?: INodeQuery): ReadableStream<INode> {
     throw new Error('not implemented')
   }
 
@@ -30,7 +30,7 @@ export default class AbstractIO {
     return trees[0]
   }
 
-  getNodesWithTrees (query?: IPointQuery): ReadableStream<INodeWithTree> {
+  getNodesWithTrees (query?: INodeQuery): ReadableStream<INodeWithTree> {
     const trees = {}
     let currentTreeId
     return this.getNodes(query)

@@ -1,10 +1,7 @@
-import IFrustum from './IFrustum'
-import IRange from './IRange'
-import IBox3 from './IBox3'
+import INodeSelector from './INodeSelector'
+import IFeature from './IFeature'
 
-export default interface IQuery {
-  frustum: IFrustum
-  relevance?: IRange
-  density?: IRange
-  cut?: IBox3
+export default interface IPointQuery {
+  nodes: INodeSelector[]
+  schema?: IFeature[]
 }

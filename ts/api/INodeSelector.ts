@@ -1,6 +1,6 @@
 import Oct from './Oct'
 
-export default interface INodeQueryItem {
+export default interface INodeSelector {
   treeId?: string
   id?: string
   address?: Oct[]

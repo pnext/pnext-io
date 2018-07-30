@@ -86,7 +86,7 @@ test('fetching nodes with trees', async t => {
 test('fetching points', async t => {
   const point = {x: 0, y: 0, z: 0}
   const io = new RawIO('abc', [[point]])
-  const points = await io.getData().toArray()
+  const points = await io.getPoints().toArray()
   t.equals(points.length, 1)
   t.equals(points[0], point)
 })
