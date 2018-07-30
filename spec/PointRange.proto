@@ -1,4 +1,4 @@
-message RelevanceRange {
+message PointRange {
   optional int32 min = 1;
   required int32 max = 2;
 }

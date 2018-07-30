@@ -11,7 +11,7 @@ message NodeQuery {
     Once the browser did ask for a given max set though it should also be able to download further parts of the query
     by limiting it also to exclude the first set of points.
   */
-  optional RelevanceRange relevance = 2;
+  optional PointRange pointRange = 2;
 
   /*
     One common problem of pointclouds is to create slices of data for profiles. By providing a bounding
