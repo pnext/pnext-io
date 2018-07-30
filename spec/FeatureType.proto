@@ -19,8 +19,8 @@ enum FeatureType {
   sfixedint16 = 18;
   sfixedint32 = 19;
   sfixedint64 = 20;
-  string = 21 [(length) = 0];
-  bytes = 22 [(length) = 0];
+  string = 21 [(length) = -1];
+  bytes = 22 [(length) = -1];
   bool = 23;
   float = 24;
   double = 25;

@@ -1,4 +1,0 @@
-message QueryResponse {
-  // Nodes to load. The order specifies the load-order-importance of each node.
-  repeated Node nodes = 1;
-}

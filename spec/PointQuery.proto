@@ -1,4 +1,4 @@
-message NodeRequest {
+message PointQuery {
   // All the nodes to load
   repeated Node nodes = 1;
 

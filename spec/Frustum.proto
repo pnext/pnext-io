@@ -1,6 +1,0 @@
-message Frustum {
-  /*
-   Exactly 6 Planes that represent the frustum
-   */
-  repeated Plane planes = 1;
-}

@@ -1,4 +1,8 @@
 message DensityRange {
   optional float min = 1;
   required float max = 2;
+  /*
+    The density range uses 0
+  */
+  optional float32 height = 3;
 }

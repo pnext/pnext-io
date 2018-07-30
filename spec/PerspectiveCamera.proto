@@ -1,0 +1,13 @@
+/*
+  There are various ways to express a Perspective Camera.
+  This query uses the matrix representation as used in 
+  [FOV][], Camera Position or [Frustum][]: The currently viewed area of the pointcloud.
+  
+  The frustum is optional to give a way to query all nodes
+
+  [FOV]: https://en.wikipedia.org/wiki/Field_of_view
+  [Frustum]: https://en.wikipedia.org/wiki/Viewing_frustum
+*/
+message PerspectiveCamera {
+  required Matrix4 matrix = 1;
+}

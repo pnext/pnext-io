@@ -1,16 +1,18 @@
+import "google/protobuf/wrappers.proto";
+
 service PnextIO {
   /**
-   * Information about a tree given in the 
+   * Information about a tree given in the data input
    */
-  rpc getTree (TreeQuery) returns (Tree) {}
+  rpc getTrees (TreeQuery) returns (stream Tree) {}
 
   /**
    * Query for a set of points based on the camera position
    */
-  rpc queryPoints (Query) returns (QueryResponse) {}
+  rpc getNodes (NodeQuery) returns (stream Node) {}
 
   /**
    * Requesting the actual node data from the server.
    */
-  rpc getNodes (NodeRequest) returns (stream NodeData) {}
+  rpc getPoints (PointQuery) returns (stream google.protobuf.BytesValue) {}
 }

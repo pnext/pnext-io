@@ -1,0 +1,21 @@
+message NodeQuery {
+
+  /*
+    The currently viewed areas of the pointcloud.
+  */
+  repeated Display display = 1;
+
+  /*
+    In order to limit based on the memory/cpu limits of the device it needs to be
+    able to limit towards the maximum amount of points renderable (max amount of points).
+    Once the browser did ask for a given max set though it should also be able to download further parts of the query
+    by limiting it also to exclude the first set of points.
+  */
+  optional PointRange pointRange = 2;
+
+  /*
+    One common problem of pointclouds is to create slices of data for profiles. By providing a bounding
+    box its possible for the browser to receive only a slice of data.
+  */
+  repeated Box cut = 4;
+}

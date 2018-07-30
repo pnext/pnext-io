@@ -1,0 +1,5 @@
+message TreeQuery {
+  repeated string ids = 1; // Optional list of ids to look for
+  optional boolean all = 2; // Set to true if you want to receive all ids
+  repeated string metadataProperties = 3; // Optional filter for metadata properties to to be returned. Using minimatch patterns with ! support for negation. If missing, all metadata will be returned, "!*" specifies no metadata.
+}
