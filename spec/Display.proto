@@ -1,0 +1,18 @@
+message Display {
+   /*
+    [FOV][], Camera Position or [Frustum][]: The currently viewed area of the pointcloud.
+    
+    The frustum is optional to give a way to query all nodes
+
+    [FOV]: https://en.wikipedia.org/wiki/Field_of_view
+    [Frustum]: https://en.wikipedia.org/wiki/Viewing_frustum
+   */
+  required Frustum frustum = 1;
+
+  /*
+    The browser might be working on a small device that might be capable to render all the points
+    but it wouldn't matter because the user couldn't see more detail on the device (screen size).
+    It has to be able to define the density of nodes it is maximally interested in.
+  */
+  optional DensityRange density = 2;
+}
