@@ -6,5 +6,12 @@ export default interface INodeQuery {
   frustum: IFrustum
   relevance?: IRange
   density?: IRange
-  cut?: IBox3
+
+  /**
+   * Multiple cut boxes.
+   * 
+   * Cut boxes are additive: If a node intersects
+   * with any cut box it will be returned.
+   */
+  cut?: IBox3[]
 }
