@@ -48,6 +48,7 @@
     "typescript-eslint-parser": "^16.0.1"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "long": "^4.0.0",
     "protobufjs": "^6.8.6",
     "three": "^0.94.0",

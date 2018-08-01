@@ -27,7 +27,7 @@ function createTreeNode (node: INode): INodeTree {
   return {
     node,
     boundingSphere: getBoundingSphere(node),
-    children: null
+    children: () => Promise.resolve(null)
   }
 }
 

@@ -4,5 +4,5 @@ import { Sphere } from 'three'
 export default interface INodeTree {
   node: INode,
   boundingSphere: Sphere,
-  children: INodeTree[]
+  children (): PromiseLike<INodeTree[]> | null
 }

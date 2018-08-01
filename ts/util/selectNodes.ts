@@ -16,6 +16,7 @@ import IDisplay from '../api/IDisplay'
 import ILongRange from '../api/ILongRange'
 import Long from 'long'
 import IDensityRange from '../api/IDensityRange'
+import bb from 'bluebird'
 
 function getPerspectiveCamera (input: IPerspectiveCamera): PerspectiveCamera {
   if (input instanceof PerspectiveCamera) {
@@ -181,8 +182,14 @@ function filterAndSortByWeight (nodeList: INodeTree[], fDisplays: IFrustumDispla
     .map(weightedNode => weightedNode.node)
 }
 
-function allChildren (nodeList: INodeTree[]): INodeTree[] | null {
-  const childrenList = nodeList.map(node => node.children).filter(Boolean)
+async function allChildren (nodeList: INodeTree[]): Promise<INodeTree[] | null> {
+  const childrenList = await bb.map(
+    nodeList,
+    (node: INodeTree) => node.children(),
+    {
+      concurrency: 15
+    }
+  ).filter(Boolean)
   if (childrenList.length === 0) {
     return null
   }
@@ -228,7 +235,7 @@ export default async function selectNodes (query: INodeQuery, treeNodeList: INod
       }
       output.addNode(node.node)
     }
-    treeNodeList = allChildren(treeNodeList)
+    treeNodeList = await allChildren(treeNodeList)
   }
   output.end()
   return true
