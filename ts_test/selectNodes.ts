@@ -27,7 +27,7 @@ function createTreeNode (node: INode): INodeTree {
   return {
     node,
     boundingSphere: getBoundingSphere(node),
-    children: () => Promise.resolve(null)
+    children: () => null
   }
 }
 
@@ -45,13 +45,6 @@ function gatherNodes (output: INode[]) {
       return
     }
   }
-}
-
-function box3 (a: IVector3, b: IVector3): Box3 {
-  return new Box3(
-    new Vector3(a.x, a.y, a.z),
-    new Vector3(b.x, b.y, b.z)
-  )
 }
 
 test('select everything on an empty list should just end', async t => {
@@ -139,7 +132,7 @@ test('Only points in the cut should be returned', async t => {
   const { a, b, c, d, e } = createABNodes()
   const output = await selectInABNodes([e, d, c, b, a], {
     cut: [
-      box3({ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 })
+      { min: { x: 0, y: 0, z: 0 }, max: { x: 1, y: 1, z: 1 } }
     ]
   })
   t.deepEquals(output, [b, a])
@@ -149,8 +142,8 @@ test('With multiple cuts, nodes that cut any of those should be returned', async
   const { a, b, c, d, e } = createABNodes()
   const output = await selectInABNodes([e, d, c, b, a], {
     cut: [
-      box3({ x:  .0, y:  .0, z:  .0 }, { x:  1.0, y:  1.0, z:  1.0 }),
-      box3({ x: 9.0, y: 9.0, z: 9.0 }, { x: 10.0, y: 10.0, z: 10.0 })
+      { min: { x:  .0, y:  .0, z:  .0 }, max: { x:  1.0, y:  1.0, z:  1.0 } },
+      { min: { x: 9.0, y: 9.0, z: 9.0 }, max: { x: 10.0, y: 10.0, z: 10.0 } }
     ]
   })
   t.deepEquals(output, [e, d, b, a])
