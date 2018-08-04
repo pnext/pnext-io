@@ -1,0 +1,11 @@
+{
+  "pipeline":[
+    "data/lidar_raleigh_nc_spm_height_feet.las",
+    {
+      "type":"writers.las",
+      "filename":  "data/lidar_raleigh_nc_spm_height_feet.laz",
+      "a_srs" : "EPSG:2264",
+      "compression": "laszip"
+    }
+  ]
+}
