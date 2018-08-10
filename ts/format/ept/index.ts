@@ -4,6 +4,7 @@ import INodeQuery from '../../api/INodeQuery'
 import IPointQuery from '../../api/IPointQuery'
 import INode from '../../api/INode'
 import ITree from '../../api/ITree'
+import IFeature from '../../api/IFeature'
 import AbstractIO from '../../util/AbstractIO'
 import { Stream, ReadableStream } from 'ts-stream'
 import selectNodes from '../../util/selectNodes'
@@ -11,6 +12,19 @@ import IInput from '../IInput'
 import INodeTree from '../../util/INodeTree'
 import loadTree from './tree'
 import loadRootNodes from './nodes'
+import INodeSelector from '../../api/INodeSelector'
+import IReader from '../../reader/IReader'
+
+function createBinReader (schema: IFeature[], request: IFeature[]): IReader {
+  
+}
+
+function createReader (dataType: string, schema: IFeature[]): IReader {
+  if (dataType === 'bin') {
+    return createBinReader(schema)
+  }
+  throw new Error(`Unsupported dataType: ${dataType}`)
+}
 
 export class EPT extends AbstractIO implements IPNextIO {
 
@@ -32,6 +46,11 @@ export class EPT extends AbstractIO implements IPNextIO {
       this.tree = loadTree(this.input)
     }
     return this.tree
+  }
+
+  loadReader (): Promise<IReader> {
+    return this.loadTree()
+      .then((tree: ITree) => createReader(tree.metadata.dataType, tree.schema))
   }
 
   getNodes (query?: INodeQuery): ReadableStream <INode> {
@@ -58,7 +77,28 @@ export class EPT extends AbstractIO implements IPNextIO {
     return this.rootNodes
   }
 
+  loadNodes (selectors?: INodeSelector[]): ReadableStream<INode> {
+    if (selectors) {
+      // TODO: Implement me!
+    }
+    return this.getNodes()
+  }
+
+  getNodePoints (node: INode, treeFeatures: IReader, output: Stream<{ [k: string]: any }>): void {
+    this.input.binaryStream(`${node.id}`)
+  }
+
   getPoints (query?: IPointQuery): ReadableStream<{ [k: string]: any }> {
-    throw new Error('Method not implemented.')
+    const pointStream = new Stream<{ [k: string]: any }>()
+    this.loadReader()
+      .then(reader => {
+        const nodeStream = this.loadNodes(query.nodes)
+        nodeStream.forEach(node =>
+          this.getNodePoints(node, reader, pointStream)
+        ).then(() => {
+          pointStream.end()
+        })
+      })
+    return pointStream
   }
 }

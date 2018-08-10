@@ -20,10 +20,15 @@ interface INodeInfo {
   offset: IVector3
   sphereRadius: number
   hierarchyStep: number
+  ticks: number
 }
 
 function scaleAndOffset (point: IVector3, nodeInfo: INodeInfo): IVector3 {
   return addToPoint(multiplyWithPoint(point, nodeInfo.size), nodeInfo.offset)
+}
+
+function eptSpacing (loc: SlippyMap, nodeInfo: INodeInfo): number {
+
 }
 
 function eptBounds (loc: SlippyMap, nodeInfo: INodeInfo): IBox3 {
@@ -59,7 +64,8 @@ async function loadNodes (input: IInput, parent: SlippyMap, parentId: string, no
     const nodeTree: INodeTree = {
       node: {
         numPoints,
-        bounds: eptBounds(loc, nodeInfo)
+        bounds: eptBounds(loc, nodeInfo),
+        spacing: eptSpacing(loc, nodeInfo)
       },
       boundingSphere: eptSphere(loc, nodeInfo),
       children: nullOp
@@ -91,7 +97,8 @@ export default function loadRootNodes (input: IInput, tree: ITree): Promise<INod
     size: differencePointPoint(tree.bounds.max, tree.bounds.min),
     sphereRadius: distancePointPoint(tree.bounds.max, tree.bounds.min),
     offset: tree.bounds.min,
-    hierarchyStep
+    hierarchyStep,
+    ticks: tree.metadata.ticks
   }
   return loadNodes(input, SLIPPY_ZERO, '0-0-0-0', nodeInfo)
 }
