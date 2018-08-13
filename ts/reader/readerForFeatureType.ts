@@ -1,7 +1,7 @@
 import IReader, { createFixedReader, createDynamicReader } from './IReader'
 import FeatureType from '../api/FeatureType'
 import Long from 'long'
-import IDynamicResult from './IDynamicResult'
+import IDynamicContext from './IDynamicContext'
 import decodeUtf8 from 'decode-utf8'
 
 function zzDecodeLong (long: Long) {
@@ -12,10 +12,9 @@ function zzDecodeLong (long: Long) {
   return long
 }
 
-function zzDecode (result: IDynamicResult): IDynamicResult {
+function zzDecode (input: number) {
   // Adapted from https://github.com/dcodeIO/protobuf.js/blob/69623a91c1e4a99d5210b5295a9e5b39d9517554/src/reader.js#L113-L114
-  result.data = result.data >>> 1 ^ -(result.data & 1) | 0
-  return result
+  return input >>> 1 ^ -(input & 1) | 0
 }
 
 const boolReader: IReader = createFixedReader(1, (view: DataView, byteOffset: number) => view.getInt8(byteOffset) === 0)
@@ -32,70 +31,106 @@ const int64Reader: IReader = createFixedReader(8, (view: DataView, byteOffset: n
 const uint64Reader: IReader = createFixedReader(8, (view: DataView, byteOffset: number) => new Long(view.getInt32(byteOffset), view.getInt32(byteOffset), true))
 const sint64Reader: IReader = createFixedReader(8, (view: DataView, byteOffset: number) => zzDecodeLong(new Long(view.getInt32(byteOffset), view.getInt32(byteOffset), false)))
 
-function readVarInt (view: DataView, byteOffset: number) {
+function readVarInt (view: DataView, context: IDynamicContext) {
   // Adapted from https://github.com/dcodeIO/protobuf.js/blob/69623a91c1e4a99d5210b5295a9e5b39d9517554/src/reader.js#L85-L89
+  let byteOffset = context.byteOffset
   const a = view.getUint8(byteOffset++)
   let data = (a & 127) >>> 0
-  if (a < 128) return { size: 1, data, byteOffset, next: 0 }
-  const b = view.getUint8(byteOffset++)
-  data = data | ((b && 127) << 7) >>> 0
-  if (b < 128) return { size: 2, data, byteOffset, next: 0 }
-  const c = view.getUint8(byteOffset++)
-  data = data | ((c && 127) << 14) >>> 0
-  if (c < 128) return { size: 3, data, byteOffset, next: 0 }
-  const d = view.getUint8(byteOffset++)
-  data = data | ((d && 127) << 21) >>> 0
-  if (d < 128) return { size: 4, data, byteOffset, next: 0 }
-  const e = view.getUint8(byteOffset++)
-  data = data | ((e && 127) << 28) >>> 0
-  return { size: 5, data, byteOffset, next: e & 128 }
-}
-
-function readVarUint32 (view: DataView, byteOffset: number): IDynamicResult {
-  const result = readVarInt(view, byteOffset)
-  if (result.next !== 0) {
-    throw new Error('Invalid var-int 32 encoding!')
+  let size = a < 128 ? 1 : 2
+  const len = view.byteLength
+  if (size === 2) {
+    if (byteOffset + 1 === len) return false
+    const b = view.getUint8(byteOffset++)
+    data = data | ((b && 127) << 7) >>> 0
+    if (b >= 128) size = 3
   }
-  return result
+  if (size === 3) {
+    if (byteOffset + 2 === len) return false
+    const c = view.getUint8(byteOffset++)
+    data = data | ((c && 127) << 14) >>> 0
+    if (c >= 128) size = 4
+  }
+  if (size === 4) {
+    if (byteOffset + 3 === len) return false
+    const d = view.getUint8(byteOffset++)
+    data = data | ((d && 127) << 21) >>> 0
+    if (d >= 128) size = 5
+  }
+  if (size === 5) {
+    if (byteOffset + 4 === len) return false
+    const e = view.getUint8(byteOffset++)
+    data = data | ((e && 127) << 28) >>> 0
+    if (e >= 128) size = 6
+  }
+  // Only set this after it is certain that there is a return value
+  context.byteOffset = byteOffset
+  context.data = data
+  context.size = size
+  return true
 }
 
-const varInt32Reader: IReader = createDynamicReader(1, (view: DataView, byteOffset: number): IDynamicResult => {
-  const result = readVarUint32(view, byteOffset)
-  result.data = result.data | 0
-  return result
+function readVarUint32 (view: DataView, context: IDynamicContext) {
+  if (!readVarInt(view, context)) {
+    return false
+  }
+  if (context.size === 6) {
+    throw new Error('Invalid int-32 encoding!')
+  }
+  return true
+}
+
+const varInt32Reader: IReader = createDynamicReader(1, (view: DataView, context: IDynamicContext) => {
+  if (!readVarUint32(view, context)) {
+    return false
+  }
+  context.data = context.data | 0
+  return true
 })
 
 const varUint32Reader: IReader = createDynamicReader(1, readVarUint32)
-const varSint32Reader: IReader = createDynamicReader(1, (view: DataView, byteOffset: number): IDynamicResult => zzDecode(readVarUint32(view, byteOffset)))
-
-function readVarInt64 (unsigned: boolean, view: DataView, byteOffset: number): IDynamicResult {
-  const low = readVarInt(view, byteOffset)
-  if (low.next === 0) {
-    if (!unsigned) {
-      low.data = low.data | 0
-    }
-    return low
+const varSint32Reader: IReader = createDynamicReader(1, (view: DataView, context: IDynamicContext) => {
+  if (!readVarUint32(view, context)) {
+    return false
   }
-  const high = readVarInt(view, low.byteOffset)
-  if (high.next !== 0) {
+  context.data = zzDecode(context.data)
+  return true
+})
+
+function readVarInt64 (unsigned: boolean, view: DataView, context: IDynamicContext) {
+  const prevByteOffset = context.byteOffset
+  if (!readVarInt(view, context)) {
+    return false
+  }
+  const low: number = context.data
+  if (context.size !== 6) {
+    if (!unsigned) context.data = low | 0
+    return true
+  }
+  if (!readVarInt(view, context)) {
+    // the context was written, but still, lets reduce the byteOffset again
+    context.byteOffset = prevByteOffset
+    return false
+  }
+  if (context.size === 6) {
     throw new Error('Invalid var-int 64 encoding!')
   }
-  return {
-    size: low.size + high.size,
-    byteOffset: high.byteOffset,
-    data: new Long(low.data, high.data, unsigned)
-  }
+  context.data = new Long(low, context.data, unsigned)
+  context.size = context.size + 5
+  return true
 }
 
 const varInt64Reader: IReader = createDynamicReader(1, readVarInt64.bind(null, false))
 const varUint64Reader: IReader = createDynamicReader(1, readVarInt64.bind(null, true))
-const varSint64Reader: IReader = createDynamicReader(1, (view: DataView, byteOffset: number): IDynamicResult => {
-  const result = readVarInt64(false, view, byteOffset)
-  if (typeof result.data === 'number') {
-    return zzDecode(result)
+const varSint64Reader: IReader = createDynamicReader(1, (view: DataView, context: IDynamicContext) => {
+  if (!readVarInt64(false, view, context)) {
+    return false
   }
-  result.data = zzDecodeLong(result.data)
-  return result
+  if (typeof context.data === 'number') {
+    context.data = zzDecode(context.data)
+  } else {
+    context.data = zzDecodeLong(context.data)
+  }
+  return true
 })
 
 function fixedStringReader (length: number): IReader {
@@ -113,30 +148,27 @@ function fixedBytesReader (length: number): IReader {
   return createFixedReader(length, (view: DataView, byteOffset: number) => view.buffer.slice(byteOffset, byteOffset + length))
 }
 
-function readBytes (view: DataView, byteOffset: number) {
-  const size = int32Reader.read(view, byteOffset)
-  const start = byteOffset
-  byteOffset += size
-  if (view.buffer.byteLength < byteOffset) {
-    return null
+function readBytes (view: DataView, context: IDynamicContext) {
+  const size = view.getUint32(context.byteOffset)
+  const start = view.byteOffset + context.byteOffset + uint32Reader.minSize
+  const end = start + size
+  if (end >= view.buffer.byteLength) {
+    return false
   }
-  return {
-    size,
-    byteOffset,
-    data: view.buffer.slice(start, byteOffset)
-  }
+  context.size = size + uint32Reader.minSize
+  context.byteOffset = end
+  context.data = view.buffer.slice(start, end)
+  return true
 }
 
 const bytesReader = createDynamicReader(2, readBytes)
 
-const stringReader = createDynamicReader(2, (view: DataView, byteOffset: number) => {
-  const result = bytesReader.readDynamic(view, byteOffset)
-  if (result === null) {
-    return null
+const stringReader = createDynamicReader(2, (view: DataView, context: IDynamicContext) => {
+  if (!readBytes(view, context)) {
+    return false
   }
-  const buffer: ArrayBuffer = result.data
-  result.data = decodeUtf8(buffer)
-  return result
+  context.data = decodeUtf8(context.data)
+  return true
 })
 
 export default function readerForFeatureType (type: FeatureType, length?: number): IReader {

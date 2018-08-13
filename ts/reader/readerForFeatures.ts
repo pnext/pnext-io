@@ -1,32 +1,42 @@
 import IFeature from '../api/IFeature'
 import IReader, { createDynamicReader, createFixedReader } from './IReader'
 import readerForFeatureType from './readerForFeatureType'
-import IDynamicResult from './IDynamicResult'
-
+import IDynamicContext from './IDynamicContext'
+const workContext: IDynamicContext = {
+  byteOffset: 0,
+  data: null,
+  size: 0
+}
 function readerForDynamicFeatures (features: IFeature[], readers: IReader[]): IReader {
   const minSize = readers.reduce((minSize: number, reader: IReader) => minSize + reader.minSize, 0)
-  return createDynamicReader(minSize, (view: DataView, byteOffset: number): IDynamicResult => {
-    const result: IDynamicResult = {
-      size: 0,
-      byteOffset,
-      data: {}
-    }
-    readers.forEach((reader, index): void => {
-      const feature = features[index]
-      // TODO: Implement a size check
+  return createDynamicReader(minSize, (view: DataView, context: IDynamicContext): boolean => {
+    const data = {}
+    let size = 0
+    let index = 0
+    // Some of the sub-readers could finish successfully and thus change the byteOffset for
+    // Operation this would break the IDynamicContext contract because it wouldn't have actually
+    // finished its work. To prevent this the workContext is used to check and later passed
+    // on the to the actual context
+    workContext.byteOffset = context.byteOffset
+    for (const reader of readers) {
+      const feature = features[index++]
       if (reader.fixedSize) {
-        const featureResult = reader.read(view, byteOffset)
-        result.size += reader.size
-        result.data[feature.name] = featureResult.data
-        byteOffset += reader.size
+        data[feature.name] = reader.read(view, workContext.byteOffset)
+        workContext.byteOffset += reader.minSize
+        size += reader.minSize
       } else {
-        const featureResult = reader.readDynamic(view, byteOffset)
-        result.size += featureResult.size
-        result.data[feature.name] = featureResult.data
-        byteOffset = featureResult.byteOffset
+        if (!reader.readDynamic(view, workContext)) {
+          return false
+        }
+        data[feature.name] = workContext.data
+        size += workContext.size
       }
-    })
-    return result
+    }
+    // Reapply the new sub
+    context.byteOffset = workContext.byteOffset
+    context.size = size
+    context.data = data
+    return true
   })
 }
 
