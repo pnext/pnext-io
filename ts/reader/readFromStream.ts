@@ -12,7 +12,7 @@ function combine (a: Uint8Array, b: Uint8Array) {
 function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader) {
   let leftOver = null
   return inStream.forEach((data: Uint8Array) => {
-    let end = reader.size
+    let end = reader.minSize
     let start = 0
     if (leftOver !== null) {
       data = combine(leftOver, data)
@@ -24,7 +24,7 @@ function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, 
       }
       entries.push(reader.read(new DataView(data.buffer), start))
       start = end
-      end += reader.size
+      end += reader.minSize
     }
     if (end === data.length) {
       leftOver = null

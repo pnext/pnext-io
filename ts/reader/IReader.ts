@@ -2,7 +2,6 @@ import IDynamicResult from './IDynamicResult'
 
 export default interface IReader {
   fixedSize: boolean
-  size?: number
   minSize: number
   readDynamic (view: DataView, byteOffset): IDynamicResult
   read (view: DataView, byteOffset: number): any
@@ -12,7 +11,6 @@ export function createFixedReader (size: number, read: (view: DataView, byteOffs
   return {
     fixedSize: true,
     minSize: size,
-    size,
     readDynamic: (view: DataView, byteOffset: number): IDynamicResult => ({
       size,
       byteOffset: byteOffset + size,
