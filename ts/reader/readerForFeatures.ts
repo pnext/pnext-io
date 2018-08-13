@@ -36,7 +36,7 @@ function readerForFixedFeatures (features: IFeature[], readers: IReader[]): IRea
     const reader = readers[index]
     const offset = size
     const target = feature.name
-    size += reader.size
+    size += reader.minSize
     return (view: DataView, byteOffset: number, result: { [k: string]: any }) => {
       result[target] = reader.read(view, byteOffset + offset)
     }
