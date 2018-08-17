@@ -3,7 +3,7 @@ enum FeatureType {
   uint8 = 2,        // fixed size 1 byte number: 0~255
 
   int16 = 3,        // fixed size 2 byte number: -32768~32768
-  int16LE = 5,      // fixed size 2 byte number: -32768~32768 (little endian)
+  int16LE = 4,      // fixed size 2 byte number: -32768~32768 (little endian)
   uint16 = 5,       // fixed size 2 byte number: 0~255 + (0~255)<<16 => 0~65536
   uint16LE = 6,     // fixed size 2 byte number: 0~65536 (little endian)
 
@@ -23,20 +23,24 @@ enum FeatureType {
   uint64LE = 19,    // fixed size 8 byte number: 0~18446744073709552000 (little endian)
   sint64 = 20,      // fixed size 8 byte, reverse stored number: 9223372036854776000~-9223372036854776000
   sint64LE = 21,    // fixed size 8 byte, reverse stored number: 9223372036854776000~-9223372036854776000 (little endian)
-  varint64 = 13,    // variable size 1~9 byte number: [0~127 + (1bit] + [(0~127)<<7) + (1bit] + (0~127)<<14) + (1bit] + [0~127) + (1bit] + 0~15)... => 9223372036854776000~-9223372036854776000
-  varuint64 = 14,   // variable size 1~9 byte number: (same like varint) 0~18446744073709552000
-  varsint64 = 15,   // variable size 1~9 byte, reverse stored number: -9223372036854776000~9223372036854776000
+  varint64 = 22,    // variable size 1~9 byte number: [0~127 + (1bit] + [(0~127)<<7) + (1bit] + (0~127)<<14) + (1bit] + [0~127) + (1bit] + 0~15)... => 9223372036854776000~-9223372036854776000
+  varuint64 = 23,   // variable size 1~9 byte number: (same like varint) 0~18446744073709552000
+  varsint64 = 24,   // variable size 1~9 byte, reverse stored number: -9223372036854776000~9223372036854776000
 
-  bytes = 16,       // variable size bytes: uint32-size-number + amount of bytes
-  string = 17,      // variable size string: utf-8 encoded bytes
+  bytes = 25,       // variable size bytes: uint32-size-number + amount of bytes
+  bytesLE = 26,     // variable size bytes: uint32LE-size-number + amount of bytes
+  varbytes = 27,    // variable size bytes: varint32-size-number + amount of bytes
+  string = 28,      // variable size string: utf-8 encoded bytes
+  stringLE = 29,    // variable size string: utf-8 encoded bytesLE
+  varstring = 30,   // variable size string: utf-8 encoded varbytes
 
-  bool = 18,        // 0 = false, 1~7 = true
+  bool = 31,        // 0 = false, 1~7 = true
 
-  float = 19,       // fixed size 4 byte floating point
-  double = 21,      // fixed size 8 byte floating point
+  float = 32,       // fixed size 4 byte floating point
+  double = 33,      // fixed size 8 byte floating point
 
-  fixedstring = 22, // fixed amount of string
-  fixedbytes = 23   // fixed amount of bytes
+  fixedstring = 34, // fixed amount of string
+  fixedbytes = 35   // fixed amount of bytes
 }
 
 export default FeatureType

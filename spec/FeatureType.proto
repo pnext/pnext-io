@@ -24,15 +24,14 @@ enum FeatureType {
   varint64 = 23;                   // variable size 2~9 byte number: 0~18446744073709552000
   varsint64 = 24;                  // variable size 2~9 byte, reverse stored number: -9223372036854776000~9223372036854776000
   bytes = 25;                      // variable size bytes: uint32-size-number + amount of bytes
-  bytesLE = 26;                    // variable size bytes: uint32-size-number + amount of bytes
+  bytesLE = 26;                    // variable size bytes: uint32LE-size-number + amount of bytes
   varbytes = 27;                   // variable size bytes with varsize length: varuint32-number + amount of bytes
-  varbytes = 28;                   // variable size bytes with varsize length: varuint32-number + amount of bytes
-  string = 29;                     // variable size string: utf-8 encoded bytes
-  stringLE = 30;                   // variable size string: utf-8 encoded bytes
-  varstring = 31;                  // variable size string with varsize length: utf-8 encoded varbytes
-  bool = 32;                       // 0 = false, 1~7 = true
-  float = 33;                      // fixed size 4 byte floating point
-  double = 34;                     // fixed size 8 byte floating point
-  fixedstring = 35[(length) = -1]; // fixed amount of string
-  fixedbytes = 36[(length) = -1];  // fixed amount of bytes
+  string = 28;                     // variable size string: utf-8 encoded bytes
+  stringLE = 29;                   // variable size string: utf-8 encoded bytes
+  varstring = 30;                  // variable size string with varsize length: utf-8 encoded varbytes
+  bool = 31;                       // 0 = false, 1~7 = true
+  float = 32;                      // fixed size 4 byte floating point
+  double = 33;                     // fixed size 8 byte floating point
+  fixedstring = 34[(length) = -1]; // fixed amount of string
+  fixedbytes = 35[(length) = -1];  // fixed amount of bytes
 }

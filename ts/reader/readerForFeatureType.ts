@@ -168,8 +168,7 @@ function fixedBytesReader (length: number): IReader {
   return createFixedReader(length, (view: DataView, byteOffset: number) => view.buffer.slice(byteOffset, byteOffset + length))
 }
 
-function readBytes (view: DataView, context: IDynamicContext) {
-  const size = view.getUint32(context.byteOffset)
+function readBytesBase (size: number, view: DataView, context: IDynamicContext) {
   const start = view.byteOffset + context.byteOffset + uint32Reader.minSize
   const end = start + size
   if (end >= view.buffer.byteLength) {
@@ -181,15 +180,33 @@ function readBytes (view: DataView, context: IDynamicContext) {
   return true
 }
 
-const bytesReader = createDynamicReader(2, readBytes)
+function readBytes (view: DataView, context: IDynamicContext) {
+  return readBytesBase(view.getUint32(context.byteOffset), view, context)
+}
 
-const stringReader = createDynamicReader(2, (view: DataView, context: IDynamicContext) => {
-  if (!readBytes(view, context)) {
+function readBytesLE (view: DataView, context: IDynamicContext) {
+  return readBytesBase(view.getUint32(context.byteOffset, true), view, context)
+}
+
+function readVarbytes (view: DataView, context: IDynamicContext) {
+  if (!readVarUint32(view, context)) {
     return false
   }
+  return readBytesBase(context.data, view, context)
+}
+
+function decodeUtf8Context (context) {
   context.data = decodeUtf8(context.data)
   return true
-})
+}
+
+const bytesReader = createDynamicReader(2, readBytes)
+const bytesLEReader = createDynamicReader(2, readBytesLE)
+const varbytesReader = createDynamicReader(2, readVarbytes)
+
+const stringReader = createDynamicReader(2, (view: DataView, context: IDynamicContext) => readBytes(view, context) && decodeUtf8Context(context))
+const stringLEReader = createDynamicReader(2, (view: DataView, context: IDynamicContext) => readBytesLE(view, context) && decodeUtf8Context(context))
+const varstringReader = createDynamicReader(2, (view: DataView, context: IDynamicContext) => readVarbytes(view, context) && decodeUtf8Context(context))
 
 export default function readerForFeatureType (type: FeatureType, length?: number): IReader {
   switch (type) {
@@ -225,7 +242,11 @@ export default function readerForFeatureType (type: FeatureType, length?: number
     case FeatureType.varuint64: return varUint64Reader
     case FeatureType.varsint64: return varSint64Reader
     case FeatureType.bytes: return bytesReader
+    case FeatureType.bytesLE: return bytesLEReader
+    case FeatureType.varbytes: return varbytesReader
     case FeatureType.string: return stringReader
+    case FeatureType.stringLE: return stringLEReader
+    case FeatureType.varstring: return varstringReader
     case FeatureType.bool: return boolReader
     case FeatureType.float: return floatReader
     case FeatureType.double: return doubleReader
