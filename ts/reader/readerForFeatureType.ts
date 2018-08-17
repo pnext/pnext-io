@@ -23,13 +23,33 @@ const floatReader: IReader = createFixedReader(4, (view: DataView, byteOffset: n
 const int8Reader: IReader = createFixedReader(1, (view: DataView, byteOffset: number) => view.getInt8(byteOffset))
 const uint8Reader: IReader = createFixedReader(1, (view: DataView, byteOffset: number) => view.getUint8(byteOffset))
 const int16Reader: IReader = createFixedReader(2, (view: DataView, byteOffset: number) => view.getInt16(byteOffset))
+const int16LEReader: IReader = createFixedReader(2, (view: DataView, byteOffset: number) => view.getInt16(byteOffset, true))
 const uint16Reader: IReader = createFixedReader(2, (view: DataView, byteOffset: number) => view.getUint16(byteOffset))
+const uint16LEReader: IReader = createFixedReader(2, (view: DataView, byteOffset: number) => view.getUint16(byteOffset, true))
 const int32Reader: IReader = createFixedReader(4, (view: DataView, byteOffset: number) => view.getInt32(byteOffset))
+const int32LEReader: IReader = createFixedReader(4, (view: DataView, byteOffset: number) => view.getInt32(byteOffset, true))
 const uint32Reader: IReader = createFixedReader(4, (view: DataView, byteOffset: number) => view.getUint32(byteOffset))
+const uint32LEReader: IReader = createFixedReader(4, (view: DataView, byteOffset: number) => view.getUint32(byteOffset, true))
 const sint32Reader: IReader = createFixedReader(4, (view: DataView, byteOffset: number) => view.getInt32(byteOffset) | 0)
+const sint32LEReader: IReader = createFixedReader(4, (view: DataView, byteOffset: number) => view.getInt32(byteOffset, true) | 0)
 const int64Reader: IReader = createFixedReader(8, (view: DataView, byteOffset: number) => new Long(view.getInt32(byteOffset), view.getInt32(byteOffset), false))
+const int64LEReader: IReader = createFixedReader(8, (view: DataView, byteOffset: number) => {
+  const high = view.getInt32(byteOffset, true)
+  const low = view.getInt32(byteOffset, true)
+  return new Long(low, high, false)
+})
 const uint64Reader: IReader = createFixedReader(8, (view: DataView, byteOffset: number) => new Long(view.getInt32(byteOffset), view.getInt32(byteOffset), true))
+const uint64LEReader: IReader = createFixedReader(8, (view: DataView, byteOffset: number) => {
+  const high = view.getInt32(byteOffset, true)
+  const low = view.getInt32(byteOffset, true)
+  return new Long(low, high, true)
+})
 const sint64Reader: IReader = createFixedReader(8, (view: DataView, byteOffset: number) => zzDecodeLong(new Long(view.getInt32(byteOffset), view.getInt32(byteOffset), false)))
+const sint64LEReader: IReader = createFixedReader(8, (view: DataView, byteOffset: number) => {
+  const high = view.getInt32(byteOffset, true)
+  const low = view.getInt32(byteOffset, true)
+  return zzDecodeLong(new Long(low, high, false))
+})
 
 function readVarInt (view: DataView, context: IDynamicContext) {
   // Adapted from https://github.com/dcodeIO/protobuf.js/blob/69623a91c1e4a99d5210b5295a9e5b39d9517554/src/reader.js#L85-L89
@@ -183,16 +203,24 @@ export default function readerForFeatureType (type: FeatureType, length?: number
     case FeatureType.int8: return int8Reader
     case FeatureType.uint8: return uint8Reader
     case FeatureType.int16: return int16Reader
+    case FeatureType.int16LE: return int16LEReader
     case FeatureType.uint16: return uint16Reader
+    case FeatureType.uint16LE: return uint16LEReader
     case FeatureType.int32: return int32Reader
+    case FeatureType.int32LE: return int32LEReader
     case FeatureType.uint32: return uint32Reader
+    case FeatureType.uint32LE: return uint32LEReader
     case FeatureType.sint32: return sint32Reader
+    case FeatureType.sint32LE: return sint32LEReader
     case FeatureType.varint32: return varInt32Reader
     case FeatureType.varuint32: return varUint32Reader
     case FeatureType.varsint32: return varSint32Reader
     case FeatureType.int64: return int64Reader
+    case FeatureType.int64LE: return int64LEReader
     case FeatureType.uint64: return uint64Reader
+    case FeatureType.uint64LE: return uint64LEReader
     case FeatureType.sint64: return sint64Reader
+    case FeatureType.sint64LE: return sint64LEReader
     case FeatureType.varint64: return varInt64Reader
     case FeatureType.varuint64: return varUint64Reader
     case FeatureType.varsint64: return varSint64Reader

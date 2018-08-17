@@ -3,18 +3,26 @@ enum FeatureType {
   uint8 = 2,        // fixed size 1 byte number: 0~255
 
   int16 = 3,        // fixed size 2 byte number: -32768~32768
-  uint16 = 4,       // fixed size 2 byte number: 0~255 + (0~255)<<16 => 0~65536
+  int16LE = 5,      // fixed size 2 byte number: -32768~32768 (little endian)
+  uint16 = 5,       // fixed size 2 byte number: 0~255 + (0~255)<<16 => 0~65536
+  uint16LE = 6,     // fixed size 2 byte number: 0~65536 (little endian)
 
-  int32 = 4,        // fixed size 4 byte number: 0~255 + (0~255)<<16 + (0~255)<<24 + (0~256)<<32 -2147483648 => 2147483648~-2147483648
-  uint32 = 5,       // fixed size 4 byte number: 0~255 + (0~255)<<16 + (0~255)<<24 + (0~256)<<32 => 0~4294967296
-  sint32 = 6,       // fixed size 4 byte, reverse stored number: -2147483648~2147483648
-  varint32 = 7,     // variable size 1~5 byte number: [0~127 + (1bit] + [(0~127)<<7) + (1bit] + (0~127)<<14) + (1bit] + [0~127) + (1bit] + 0~15) => 2147483648~-2147483648
-  varuint32 = 8,    // variable size 1~5 byte number: (same like varint) 0~4294967296
-  varsint32 = 9,    // variable size 1~5 byte, reverse stored number: -2147483648~2147483648
+  int32 = 7,        // fixed size 4 byte number: 0~255 + (0~255)<<16 + (0~255)<<24 + (0~256)<<32 -2147483648 => 2147483648~-2147483648
+  int32LE = 8,      // fixed size 4 byte number: 2147483648~-2147483648 (little endian)
+  uint32 = 9,       // fixed size 4 byte number: 0~255 + (0~255)<<16 + (0~255)<<24 + (0~256)<<32 => 0~4294967296
+  uint32LE = 10,    // fixed size 4 byte number: 0~4294967296 (little endian)
+  sint32 = 11,      // fixed size 4 byte, reverse stored number: -2147483648~2147483648
+  sint32LE = 12,    // fixed size 4 byte, reverse stored number: -2147483648~2147483648 (little endian)
+  varint32 = 13,    // variable size 1~5 byte number: [0~127 + (1bit] + [(0~127)<<7) + (1bit] + (0~127)<<14) + (1bit] + [0~127) + (1bit] + 0~15) => 2147483648~-2147483648
+  varuint32 = 14,   // variable size 1~5 byte number: (same like varint) 0~4294967296
+  varsint32 = 15,   // variable size 1~5 byte, reverse stored number: -2147483648~2147483648
 
-  int64 = 10,       // fixed size 8 byte number: -9223372036854776000~9223372036854776000
-  uint64 = 11,      // fixed size 8 byte number: 0~18446744073709552000
-  sint64 = 12,      // fixed size 8 byte, reverse stored number: 9223372036854776000~-9223372036854776000
+  int64 = 16,       // fixed size 8 byte number: -9223372036854776000~9223372036854776000
+  int64LE = 17,     // fixed size 8 byte number: -9223372036854776000~9223372036854776000 (little endian)
+  uint64 = 18,      // fixed size 8 byte number: 0~18446744073709552000
+  uint64LE = 19,    // fixed size 8 byte number: 0~18446744073709552000 (little endian)
+  sint64 = 20,      // fixed size 8 byte, reverse stored number: 9223372036854776000~-9223372036854776000
+  sint64LE = 21,    // fixed size 8 byte, reverse stored number: 9223372036854776000~-9223372036854776000 (little endian)
   varint64 = 13,    // variable size 1~9 byte number: [0~127 + (1bit] + [(0~127)<<7) + (1bit] + (0~127)<<14) + (1bit] + [0~127) + (1bit] + 0~15)... => 9223372036854776000~-9223372036854776000
   varuint64 = 14,   // variable size 1~9 byte number: (same like varint) 0~18446744073709552000
   varsint64 = 15,   // variable size 1~9 byte, reverse stored number: -9223372036854776000~9223372036854776000
