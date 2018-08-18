@@ -1,7 +1,7 @@
 import Stream, { ReadableStream } from 'ts-stream'
 import IReader from './IReader'
 import { mapSeries } from 'bluebird'
-import IDynamicContext from './IDynamicContext'
+import IDynamicContext from './util/IDynamicContext'
 
 function combine (a: Uint8Array, b: Uint8Array) {
   const combined = new Uint8Array(a.length + b.length)

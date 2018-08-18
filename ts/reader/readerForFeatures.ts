@@ -1,7 +1,10 @@
 import IFeature from '../api/IFeature'
-import IReader, { createDynamicReader, createFixedReader } from './IReader'
+import IReader from './IReader'
 import readerForFeatureType from './readerForFeatureType'
-import IDynamicContext from './IDynamicContext'
+import IDynamicContext from './util/IDynamicContext'
+import createDynamicReader from './util/createDynamicReader'
+import createFixedReader from './util/createFixedReader'
+
 const workContext: IDynamicContext = {
   byteOffset: 0,
   data: null,
