@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
-    "test:unit": "tap -- ts_test/*.ts",
+    "test:unit": "tap -- ts_test/*.ts ts_test/**/*.ts",
     "test:lint": "tslint -c .tslintrc.json ts/**/*.ts && standard",
     "build:types-js": "pbjs -t static-module -w commonjs -l \"eslint-disable one-var, no-mixed-operators\" --es6 spec/*.proto -o ts/Types.js && standard --fix ts/Types.js",
     "build:types-ts": "npm run build:types-js && pbts ts/Types.js -o ts/Types.d.ts && tslint -c .tslintrc.json --fix ts/Types.d.ts",
@@ -48,6 +48,7 @@
     "typescript-eslint-parser": "^16.0.1"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "long": "^4.0.0",
     "protobufjs": "^6.8.6",
     "three": "^0.94.0",

@@ -1,8 +1,8 @@
 import INode from '../api/INode'
-import { Sphere } from 'three'
+import ISphere from './ISphere'
 
 export default interface INodeTree {
   node: INode,
-  boundingSphere: Sphere,
-  children: INodeTree[]
+  boundingSphere: ISphere,
+  children (): PromiseLike<INodeTree[]> | null
 }
