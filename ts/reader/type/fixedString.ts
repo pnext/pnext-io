@@ -4,6 +4,9 @@ import decodeUtf8 from 'decode-utf8'
 import fixedBytes from './fixedBytes'
 
 export default function fixedString (length: number): IReader {
+  if (length === 0) {
+    return createFixedReader(0, (view: DataView, byteOffset: number) => '')
+  }
   if (isNaN(length)) {
     throw new Error(`A fixed string needs a length: ${length}`)
   }
