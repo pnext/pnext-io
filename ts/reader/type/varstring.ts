@@ -1,6 +1,5 @@
-import createDynamicReader from '../util/createDynamicReader'
-import readVarbytes from '../util/readVarbytes'
-import IDynamicContext from '../util/IDynamicContext'
-import decodeUtf8Context from '../util/decodeUtf8Context'
+import twoPartReader from '../util/twoPartReader'
+import varuint32 from './varuint32'
+import fixedString from './fixedString'
 
-export default createDynamicReader(2, (view: DataView, context: IDynamicContext) => readVarbytes(view, context) && decodeUtf8Context(context))
+export default twoPartReader(varuint32, fixedString)

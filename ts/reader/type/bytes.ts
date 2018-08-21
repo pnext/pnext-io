@@ -1,4 +1,5 @@
-import createDynamicReader from '../util/createDynamicReader'
-import readBytes from '../util/readBytes'
+import twoPartReader from '../util/twoPartReader'
+import uint32 from './uint32'
+import fixedBytes from './fixedBytes'
 
-export default createDynamicReader(5, readBytes)
+export default twoPartReader(uint32, fixedBytes)
