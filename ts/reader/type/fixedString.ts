@@ -3,7 +3,7 @@ import IReader from '../IReader'
 import decodeUtf8 from 'decode-utf8'
 import fixedBytes from './fixedBytes'
 
-export default function fixedStringReader (length: number): IReader {
+export default function fixedString (length: number): IReader {
   if (isNaN(length)) {
     throw new Error(`A fixed string needs a length: ${length}`)
   }
