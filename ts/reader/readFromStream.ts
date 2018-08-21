@@ -10,8 +10,9 @@ function combine (a: Uint8Array, b: Uint8Array) {
   return combined
 }
 
-function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader) {
+function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader, limit: number = undefined) {
   let leftOver = null
+  let count = 0
   return inStream.forEach((data: Uint8Array) => {
     let end = reader.minSize
     let start = 0
@@ -19,10 +20,11 @@ function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, 
       data = combine(leftOver, data)
     }
     let entries: any[]
-    while (end <= data.length) {
+    while (end <= data.length && (limit === undefined || count < limit)) {
       if (entries === undefined) {
         entries = []
       }
+      count += 1
       entries.push(reader.read(new DataView(data.buffer), start))
       start = end
       end += reader.minSize
@@ -45,11 +47,12 @@ const workContext: IDynamicContext = {
   data: null
 }
 
-function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader) {
+function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader, limit: number = undefined) {
   let leftOver = null
   const context = {
     byteOffset: 0
   }
+  let count = 0
   return inStream.forEach((data: Uint8Array) => {
     let end = reader.minSize
     workContext.byteOffset = 0
@@ -57,13 +60,14 @@ function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>
       data = combine(leftOver, data)
     }
     let entries: any[]
-    while (end <= data.length) {
+    while (end <= data.length && (limit === undefined || count < limit)) {
       if (entries === undefined) {
         entries = []
       }
       if (!reader.readDynamic(new DataView(data.buffer), workContext)) {
         break
       }
+      count += 1
       entries.push(workContext.data)
       end = workContext.byteOffset + workContext.size + reader.minSize
     }
@@ -79,11 +83,11 @@ function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>
   }).then(() => leftOver)
 }
 
-export default function readFromStream (inStream: ReadableStream<Uint8Array>, reader: IReader): ReadableStream<any> {
+export default function readFromStream (inStream: ReadableStream<Uint8Array>, reader: IReader, limit: number = undefined): ReadableStream<any> {
   const out = new Stream<any>()
   let process = reader.fixedSize
-    ? readFixedSize(out, inStream, reader)
-    : readDynamicSize(out, inStream, reader)
+    ? readFixedSize(out, inStream, reader, limit)
+    : readDynamicSize(out, inStream, reader, limit)
 
   process
     .then((leftOver) => out.end(null, leftOver))
