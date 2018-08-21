@@ -11,7 +11,7 @@ import IBox3 from '../api/IBox3'
 import IFeature from '../api/IFeature'
 import FeatureType from '../api/FeatureType'
 import Feature from '../api/Feature'
-import AbstractIO from '../util/AbstractIO'
+import AbstractSingleTreeIO from '../util/AbstractSingleTreeIO'
 import expandBox from '../util/expandBox'
 import featureMatch from '../util/featureMatch'
 
@@ -82,47 +82,28 @@ class TreeInfo implements ITree {
   }
 }
 
-export default class RawIO extends AbstractIO implements IPNextIO {
-  info: TreeInfo
+export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
   pointData: IPoint[][]
   ids: number[]
 
   constructor (id: string, pointData: IPoint[][]) {
-    super()
-    this.info = new TreeInfo(id, pointData)
+    super(Promise.resolve(new TreeInfo(id, pointData)))
     this.pointData = pointData
     this.ids = pointData.map((value: IPoint[], index: number) => index)
-  }
-
-  getTrees (query?: ITreeQuery): Stream<ITree> {
-    const stream = new Stream<ITree>()
-    setImmediate(() => {
-      if (query && query.ids) {
-        for (const id of query.ids) {
-          if (id !== this.info.id) {
-            stream.end(new Error(`Unknown tree ${id}`)).catch(ignoreError)
-            return
-          }
-        }
-      }
-      stream.write(this.info)
-      stream.end()
-    })
-    return stream
   }
 
   getNodes (query?: INodeQuery): Stream<INode> {
     const stream = new Stream<INode>()
     let first = true
-    setImmediate(() => {
+    this.treeP.then(tree => {
       let index = 0
       for (const points of this.pointData) {
         const node: INode = {
           id: index.toString(),
-          numPoints: this.info.numPoints
+          numPoints: tree.numPoints
         }
         if (first) {
-          node.treeId = this.info.id
+          node.treeId = tree.id
         }
         stream.write(node)
         index ++
@@ -134,12 +115,12 @@ export default class RawIO extends AbstractIO implements IPNextIO {
 
   getPoints (query?: IPointQuery): Stream<{ [k: string]: any; }> {
     const stream = new Stream<{ [k: string ]: any }>()
-    setImmediate(() => {
+    this.treeP.then(tree => {
       let ids: number[] = this.ids
       if (query && query.nodes) {
         ids = []
         for (const node of query.nodes) {
-          if (node.treeId !== this.info.id) {
+          if (node.treeId !== tree.id) {
             stream.end(new Error(`Invalid tree id "${node.treeId}" requested!`)).catch(ignoreError)
             return
           }
@@ -159,7 +140,7 @@ export default class RawIO extends AbstractIO implements IPNextIO {
         }
       }
       if (query && query.schema) {
-        const error = featureMatch(this.info.schema, query.schema)
+        const error = featureMatch(tree.schema, query.schema)
         if (error) {
           stream.end(new Error(error)).catch(ignoreError)
           return
