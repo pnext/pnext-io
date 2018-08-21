@@ -6,7 +6,7 @@ export default function readVarUint32 (view: DataView, context: IDynamicContext)
     return false
   }
   if (context.size === 6) {
-    throw new Error('Invalid int-32 encoding!')
+    throw new Error('Invalid var-uint-32 encoding!')
   }
   return true
 }
