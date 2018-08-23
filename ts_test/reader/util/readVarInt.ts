@@ -2,7 +2,6 @@
 import { test } from 'tap'
 import readVarInt from '../../../ts/reader/util/readVarInt'
 import IDynamicContext from '../../../ts/reader/util/IDynamicContext'
-import { Texture } from 'three'
 
 function dArr (arr: number[]): DataView {
   const buff = new Uint8Array(arr)
