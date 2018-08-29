@@ -10,7 +10,6 @@ import IVector3 from '../api/IVector3'
 import IBox3 from '../api/IBox3'
 import IFeature from '../api/IFeature'
 import FeatureType from '../api/FeatureType'
-import Feature from '../api/Feature'
 import AbstractSingleTreeIO from '../util/AbstractSingleTreeIO'
 import expandBox from '../util/expandBox'
 import featureMatch from '../util/featureMatch'
@@ -64,7 +63,11 @@ class TreeInfo implements ITree {
   scale: IVector3 = { x: 1, y: 1, z: 1 }
   offset: IVector3 = { x: 0, y: 0, z: 0 }
   numPoints: number | Long
-  schema = [ Feature.x, Feature.y, Feature.z ]
+  schema = [
+    { type: FeatureType.double, name: 'x' },
+    { type: FeatureType.double, name: 'y' },
+    { type: FeatureType.double, name: 'z' }
+  ]
   metadata: { [k: string]: any }
   boundsForPoints: IBox3[]
 
@@ -92,8 +95,7 @@ export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
     this.ids = pointData.map((value: IPoint[], index: number) => index)
   }
 
-  getNodes (query?: INodeQuery): Stream<INode> {
-    const stream = new Stream<INode>()
+  _getNodes (stream: Stream<INode>, query?: INodeQuery) {
     let first = true
     this.treeP.then(tree => {
       let index = 0
@@ -110,11 +112,9 @@ export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
       }
       stream.end()
     })
-    return stream
   }
 
-  getPoints (query?: IPointQuery): Stream<{ [k: string]: any; }> {
-    const stream = new Stream<{ [k: string ]: any }>()
+  _getPoints (stream: Stream<{ [k: string]: any; }>, query?: IPointQuery): void {
     this.treeP.then(tree => {
       let ids: number[] = this.ids
       if (query && query.nodes) {
@@ -153,6 +153,5 @@ export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
       }
       stream.end()
     })
-    return stream
   }
 }

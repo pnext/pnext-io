@@ -7,7 +7,7 @@ function ignoreError () {
   return
 }
 
-export default class AbstractSingleTreeIO extends AbstractIO {
+export default abstract class AbstractSingleTreeIO extends AbstractIO {
   treeP: Promise<ITree>
 
   constructor (treeP: Promise<ITree>) {
@@ -15,8 +15,7 @@ export default class AbstractSingleTreeIO extends AbstractIO {
     this.treeP = treeP
   }
 
-  getTrees (query?: ITreeQuery): Stream<ITree> {
-    const stream = new Stream<ITree>()
+  _getTrees (stream: Stream<ITree>, query?: ITreeQuery) {
     this.treeP.then(tree => {
       if (query && query.ids) {
         for (const id of query.ids) {
@@ -29,6 +28,5 @@ export default class AbstractSingleTreeIO extends AbstractIO {
       stream.write(tree)
       stream.end()
     })
-    return stream
   }
 }

@@ -1,11 +1,13 @@
 import ITree from '../api/ITree'
 import ITreeQuery from '../api/ITreeQuery'
-import { ReadableStream } from 'ts-stream'
+import Stream, { ReadableStream, Writable, WritableStream } from 'ts-stream'
 import INode from '../api/INode'
 import INodeWithTree from '../api/INodeWithTree'
 import INodeQuery from '../api/INodeQuery'
+import IPNextIO from '../api/IPNextIO'
+import IPointQuery from '../api/IPointQuery'
 
-export default class AbstractIO {
+export default abstract class AbstractIO implements IPNextIO {
 
   constructor () {
     // TODO: The trees are fetched every time again
@@ -14,12 +16,23 @@ export default class AbstractIO {
     //       requests
   }
 
-  getTrees (query: ITreeQuery): ReadableStream<ITree> {
-    throw new Error('not implemented!')
+  abstract _getTrees (output: Stream<ITree>, query: ITreeQuery): void
+  abstract _getNodes (output: Stream<INode>, query?: INodeQuery): void
+  abstract _getPoints (output: Stream<{ [k: string]: any; }>, query?: IPointQuery): void
+
+  getTrees (query: ITreeQuery, byos: Stream<ITree> = new Stream<ITree>()): ReadableStream<ITree> {
+    this._getTrees(byos, query)
+    return byos
   }
 
-  getNodes (query?: INodeQuery): ReadableStream<INode> {
-    throw new Error('not implemented')
+  getNodes (query?: INodeQuery, byos: Stream<INode> = new Stream<INode>()): ReadableStream<INode> {
+    this._getNodes(byos, query)
+    return byos
+  }
+
+  getPoints (query?: IPointQuery, byos: Stream<{ [k: string]: any; }> = new Stream<{ [k: string]: any; }>()): ReadableStream<{ [k: string]: any; }> {
+    this._getPoints(byos, query)
+    return byos
   }
 
   async getTree (id: string, metadataProperties?: string[]): Promise<ITree> {
