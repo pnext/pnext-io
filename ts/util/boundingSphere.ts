@@ -5,7 +5,7 @@ import distancePointPoint from './distancePointPoint'
 import centerPointPoint from './centerPointPoint'
 import ISphere from './ISphere'
 
-export default function getBoundingSphere (box: IBox3, target: ISphere): void {
+export default function boundingSphere (box: IBox3, target: ISphere): void {
   centerPointPoint(box.max, box.min, target.center)
   target.radius = distancePointPoint(box.max, box.min) * 0.5
 }
