@@ -2,8 +2,10 @@
 import { test } from 'tap'
 import readFromStream from '../../ts/reader/readFromStream'
 import Stream from 'ts-stream'
-import readerForFeatures from '../../ts/reader/readerForFeatures'
-import FeatureType from '../../ts/api/FeatureType'
+import uint8 from '../../ts/reader/type/uint8'
+import fixedString from '../../ts/reader/type/fixedString'
+import string from '../../ts/reader/type/string'
+import readerForReaders from '../../ts/reader/readerForReaders'
 
 function c (char: string): number {
   return char.charCodeAt(0)
@@ -14,10 +16,10 @@ test('reading simple stream of features', async t => {
     new Uint8Array([1, 2, c('a'), c('b')]),
     new Uint8Array([c('c'), 3]),
     new Uint8Array([4, c('d'), c('e'), c('f')])
-  ]), readerForFeatures([
-    { name: 'x', type: FeatureType.uint8 },
-    { name: 'y', type: FeatureType.uint8 },
-    { name: 'desc', type: FeatureType.fixedstring, length: 3 }
+  ]), readerForReaders([
+    { name: 'x', reader: uint8 },
+    { name: 'y', reader: uint8 },
+    { name: 'desc', reader: fixedString(3) }
   ])).toArray()
 
   t.deepEquals(points, [
@@ -43,11 +45,11 @@ test('reading dynamic simple stream of features', async t => {
     new Uint8Array(data.slice(0, 7)),
     new Uint8Array(data.slice(7, 14)),
     new Uint8Array(data.slice(14))
-  ]), readerForFeatures([
-    { name: 'x', type: FeatureType.uint8 },
-    { name: 'y', type: FeatureType.uint8 },
-    { name: 'desc', type: FeatureType.string },
-    { name: 'z', type: FeatureType.uint8 }
+  ]), readerForReaders([
+    { name: 'x', reader: uint8 },
+    { name: 'y', reader: uint8 },
+    { name: 'desc', reader: string },
+    { name: 'z', reader: uint8 }
   ])).toArray()
 
   t.deepEquals(points, [
