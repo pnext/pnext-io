@@ -1,4 +1,12 @@
 import createFixedReader from '../util/createFixedReader'
 import Long from 'long'
+import FeatureType from '../../api/FeatureType'
 
-export default createFixedReader(8, (view: DataView, byteOffset: number) => new Long(view.getInt32(byteOffset), view.getInt32(byteOffset), true))
+export default createFixedReader(8, FeatureType.uint64, (view: DataView, byteOffset: number) => {
+  const low = view.getInt32(byteOffset, true)
+  const high = view.getInt32(byteOffset, true)
+  if (high === 0) {
+    return low
+  }
+  return new Long(low, high, false)
+})

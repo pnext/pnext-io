@@ -1,9 +1,9 @@
 import IFeature from '../api/IFeature'
 import IReader from './IReader'
-import readerForFeatureType from './readerForFeatureType'
 import IDynamicContext from './util/IDynamicContext'
 import createDynamicReader from './util/createDynamicReader'
 import createFixedReader from './util/createFixedReader'
+import FeatureType from '../api/FeatureType'
 
 const workContext: IDynamicContext = {
   byteOffset: 0,
@@ -11,8 +11,18 @@ const workContext: IDynamicContext = {
   size: 0
 }
 function readerForDynamicFeatures (namedReaders: INamedReader[]): IReader {
-  const minSize = namedReaders.reduce((minSize: number, { reader }) => minSize + reader.minSize, 0)
-  return createDynamicReader(minSize, (view: DataView, context: IDynamicContext): boolean => {
+  const featuresByName: { [k: string]: FeatureType | IFeature[] } = {}
+  const minSize = namedReaders.reduce((minSize: number, { reader, name }) => {
+    if (featuresByName[name]) {
+      throw new Error(`Feature ${name} was defined twice!`)
+    }
+    featuresByName[name] = reader.type
+    return minSize + reader.minSize
+  }, 0)
+  const features: IFeature[] = Object.keys(featuresByName).map(name => {
+    return { name, type: featuresByName[name] }
+  })
+  return createDynamicReader(minSize, features, (view: DataView, context: IDynamicContext): boolean => {
     const data = {}
     let size = 0
     let index = 0
@@ -44,14 +54,31 @@ function readerForDynamicFeatures (namedReaders: INamedReader[]): IReader {
 
 function readerForFixedFeatures (namedReaders: INamedReader[]): IReader {
   let size = 0
+  const featuresByName: { [k: string]: FeatureType | IFeature[] } = {}
   const readFns = namedReaders.map(({ reader, name }, index) => {
     const offset = size
     size += reader.minSize
     return (view: DataView, byteOffset: number, result: { [k: string]: any }) => {
       result[name] = reader.read(view, byteOffset + offset)
+      if (Array.isArray(reader.type)) {
+        for (const feature of reader.type) {
+          if (featuresByName[feature.name]) {
+            throw new Error(`Feature ${feature.name} was defined twice!`)
+          }
+          featuresByName[feature.name] = feature.type
+        }
+      } else {
+        if (featuresByName[name]) {
+          throw new Error(`Feature ${name} was defined twice!`)
+        }
+        featuresByName[name] = reader.type
+      }
     }
   })
-  return createFixedReader(size, (view: DataView, byteOffset: number) => {
+  const features: IFeature[] = Object.keys(featuresByName).map(name => {
+    return { name, type: featuresByName[name] }
+  })
+  return createFixedReader(size, features, (view: DataView, byteOffset: number) => {
     const result = {}
     for (const readFn of readFns) {
       readFn(view, byteOffset, result)

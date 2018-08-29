@@ -1,5 +1,7 @@
 import createFixedReader from './createFixedReader'
 import IReader from '../IReader'
+import FeatureType from '../../api/FeatureType'
+import IFeature from '../../api/IFeature'
 
 export interface IBits {
   0?: string,
@@ -28,7 +30,11 @@ export default function bits (bits: IBits): IReader {
     nextFlag *= 2
     return { name: field, offset, flag }
   })
-  return createFixedReader(1, (view: DataView, byteOffset: number) => {
+  const types: IFeature[] = Object.keys(offsets).map(name => ({
+    type: FeatureType.uint8,
+    name
+  }))
+  return createFixedReader(1, types, (view: DataView, byteOffset: number) => {
     const num = view.getUint8(byteOffset)
     const result = {}
     for (const bitShift of bitShifts) {
