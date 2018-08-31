@@ -1,0 +1,17 @@
+{
+  "pipeline":[
+    {
+      "type":"readers.las",
+      "filename":"lasdump/tmp.las"
+    },
+    {
+      "type":"filters.assign",
+      "assignment" : "Classification[0:0]=0"
+    },
+    {
+      "type":"writers.las",
+      "forward": "minor_version, dataformat_id",
+      "filename":"lasdump/tmp.las"
+    }
+  ]
+}
