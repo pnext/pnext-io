@@ -1,0 +1,20 @@
+{
+  "pipeline": [
+    "lasdump/*.las",
+    {
+      "type": "filters.merge"
+    },
+    {
+      "type":"filters.randomize"
+    },
+    {
+      "type":"filters.head",
+      "count":"10"
+    },
+    {
+      "type":"writers.las",
+      "forward": "minor_version, dataformat_id",
+      "filename":"v1d1.las"
+    }
+  ]
+}

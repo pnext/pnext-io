@@ -1,0 +1,21 @@
+{
+  "pipeline":[
+    {
+      "type":"readers.faux",
+      "bounds":"([0,1000],[0,1000],[0,1000])",
+      "count":"100",
+      "mode":"random"
+    },
+    {
+      "type":"filters.divider",
+      "capacity":"10"
+    },
+    {
+      "type":"writers.las",
+      "a_srs" : "EPSG:6676",
+      "minor_version": 1,
+      "dataformat_id": 1,
+      "filename":"lasdump/tmp#.las"
+    }
+  ]
+}
