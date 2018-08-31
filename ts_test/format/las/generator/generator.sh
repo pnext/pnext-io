@@ -843,7 +843,9 @@ pdal pipeline merge.json --writers.las.filename=v4d3.las
 data format id 6 #
 ###################
 
-pdal pipeline generator.json --writers.las.minor_version=4 \
+# classification adheres to slightly different standard in v1.4
+pdal pipeline generator.json --readers.faux.count=190 \
+    --writers.las.minor_version=4 \
     --writers.las.dataformat_id=6
 
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp1.las \
@@ -886,13 +888,54 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp11.las \
+    --readers.las.filename=lasdump/tmp11.las \
+    --filters.assign.assignment=Classification[0:0]=10
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp12.las \
+    --readers.las.filename=lasdump/tmp12.las \
+    --filters.assign.assignment=Classification[0:0]=11
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp13.las \
+    --readers.las.filename=lasdump/tmp13.las \
+    --filters.assign.assignment=Classification[0:0]=12
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp14.las \
+    --readers.las.filename=lasdump/tmp14.las \
+    --filters.assign.assignment=Classification[0:0]=13
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp15.las \
+    --readers.las.filename=lasdump/tmp15.las \
+    --filters.assign.assignment=Classification[0:0]=14
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp16.las \
+    --readers.las.filename=lasdump/tmp16.las \
+    --filters.assign.assignment=Classification[0:0]=15
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp17.las \
+    --readers.las.filename=lasdump/tmp17.las \
+    --filters.assign.assignment=Classification[0:0]=16
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp18.las \
+    --readers.las.filename=lasdump/tmp18.las \
+    --filters.assign.assignment=Classification[0:0]=17
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp18.las \
+    --readers.las.filename=lasdump/tmp18.las \
+    --filters.assign.assignment=Classification[0:0]=17
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp19.las \
+    --readers.las.filename=lasdump/tmp19.las \
+    --filters.assign.assignment=Classification[0:0]=18
+
 pdal pipeline merge.json --writers.las.filename=v4d6.las
 
 ####################
 # data format id 7 #
 ####################
 
-pdal pipeline generator.json --writers.las.minor_version=4 \
+pdal pipeline generator.json --readers.faux.count=190 \
+    --writers.las.minor_version=4 \
     --writers.las.dataformat_id=7
 
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp1.las \
@@ -935,13 +978,54 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp11.las \
+    --readers.las.filename=lasdump/tmp11.las \
+    --filters.assign.assignment=Classification[0:0]=10
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp12.las \
+    --readers.las.filename=lasdump/tmp12.las \
+    --filters.assign.assignment=Classification[0:0]=11
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp13.las \
+    --readers.las.filename=lasdump/tmp13.las \
+    --filters.assign.assignment=Classification[0:0]=12
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp14.las \
+    --readers.las.filename=lasdump/tmp14.las \
+    --filters.assign.assignment=Classification[0:0]=13
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp15.las \
+    --readers.las.filename=lasdump/tmp15.las \
+    --filters.assign.assignment=Classification[0:0]=14
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp16.las \
+    --readers.las.filename=lasdump/tmp16.las \
+    --filters.assign.assignment=Classification[0:0]=15
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp17.las \
+    --readers.las.filename=lasdump/tmp17.las \
+    --filters.assign.assignment=Classification[0:0]=16
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp18.las \
+    --readers.las.filename=lasdump/tmp18.las \
+    --filters.assign.assignment=Classification[0:0]=17
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp18.las \
+    --readers.las.filename=lasdump/tmp18.las \
+    --filters.assign.assignment=Classification[0:0]=17
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp19.las \
+    --readers.las.filename=lasdump/tmp19.las \
+    --filters.assign.assignment=Classification[0:0]=18
+
 pdal pipeline merge.json --writers.las.filename=v4d7.las
 
 ####################
 # data format id 8 #
 ####################
 
-pdal pipeline generator.json --writers.las.minor_version=4 \
+pdal pipeline generator.json --readers.faux.count=190 \
+    --writers.las.minor_version=4 \
     --writers.las.dataformat_id=8
 
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp1.las \
@@ -983,6 +1067,46 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp9.las \
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp11.las \
+    --readers.las.filename=lasdump/tmp11.las \
+    --filters.assign.assignment=Classification[0:0]=10
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp12.las \
+    --readers.las.filename=lasdump/tmp12.las \
+    --filters.assign.assignment=Classification[0:0]=11
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp13.las \
+    --readers.las.filename=lasdump/tmp13.las \
+    --filters.assign.assignment=Classification[0:0]=12
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp14.las \
+    --readers.las.filename=lasdump/tmp14.las \
+    --filters.assign.assignment=Classification[0:0]=13
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp15.las \
+    --readers.las.filename=lasdump/tmp15.las \
+    --filters.assign.assignment=Classification[0:0]=14
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp16.las \
+    --readers.las.filename=lasdump/tmp16.las \
+    --filters.assign.assignment=Classification[0:0]=15
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp17.las \
+    --readers.las.filename=lasdump/tmp17.las \
+    --filters.assign.assignment=Classification[0:0]=16
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp18.las \
+    --readers.las.filename=lasdump/tmp18.las \
+    --filters.assign.assignment=Classification[0:0]=17
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp18.las \
+    --readers.las.filename=lasdump/tmp18.las \
+    --filters.assign.assignment=Classification[0:0]=17
+
+pdal pipeline classify.json --writers.las.filename=lasdump/tmp19.las \
+    --readers.las.filename=lasdump/tmp19.las \
+    --filters.assign.assignment=Classification[0:0]=18
 
 pdal pipeline merge.json --writers.las.filename=v4d8.las
 
