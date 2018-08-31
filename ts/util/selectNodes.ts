@@ -3,8 +3,8 @@ import INode from '../api/INode'
 import INodeTree from './INodeTree'
 import ITree from '../api/ITree'
 import { Frustum, Matrix4, PerspectiveCamera, Sphere } from 'three'
-import boxIntersectsFrustum from './boxIntersectsFrustum'
-import boxIntersectsBox from './boxIntersectsBox'
+import boxIntersectsOneBox from './boxIntersectsBox'
+import boxIntersectsOneFrustum from './boxIntersectsOneFrustum'
 import distancePointPoint from './distancePointPoint'
 import IPerspectiveCamera from '../api/IPerspectiveCamera'
 import boundingSphere from './boundingSphere'
@@ -93,24 +93,6 @@ interface IFrustumDisplay {
 interface IWeightedNode {
   weight: number,
   node: INodeTree
-}
-
-function boxIntersectsOneBox (bounds: IBox3, cutList: IBox3[]): boolean {
-  for (const cut of cutList) {
-    if (boxIntersectsBox(bounds, cut)) {
-      return true
-    }
-  }
-  return false
-}
-
-function boxIntersectsOneFrustum (bounds: IBox3, fDisplays: IFrustumDisplay[]): boolean {
-  for (const fDisplay of fDisplays) {
-    if (boxIntersectsFrustum(bounds, fDisplay.frustum)) {
-      return true
-    }
-  }
-  return false
 }
 
 function sortByWeight (a: IWeightedNode, b: IWeightedNode): number {
