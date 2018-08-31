@@ -5,5 +5,8 @@ import FeatureType from '../../api/FeatureType'
 export default createFixedReader(8, FeatureType.int64, (view: DataView, byteOffset: number) => {
   const high = view.getInt32(byteOffset, true)
   const low = view.getInt32(byteOffset, true)
+  if (high === 0) {
+    return low
+  }
   return new Long(low, high, false)
 })
