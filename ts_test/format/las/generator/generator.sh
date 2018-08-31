@@ -220,7 +220,7 @@ pdal pipeline merge.json --writers.las.filename=v1d3.las
 # data format id 0 #
 ####################
 
-pdal pipeline generator.json --writers.las.minor_version=1 \
+pdal pipeline generator.json --writers.las.minor_version=2 \
     --writers.las.dataformat_id=0
 
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp1.las \
@@ -263,14 +263,14 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v1d0.las
+pdal pipeline merge.json --writers.las.filename=v2d0.las
 
 ####################
 # data format id 1 #
 ####################
 
 # generate 10 files of random points
-pdal pipeline generator.json --writers.las.minor_version=1 \
+pdal pipeline generator.json --writers.las.minor_version=2 \
     --writers.las.dataformat_id=1
 
 # using placeholder classify script and repeat
@@ -315,13 +315,13 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
 # merge all class groups together
-pdal pipeline merge.json --writers.las.filename=v1d1.las
+pdal pipeline merge.json --writers.las.filename=v2d1.las
 
 ####################
 # data format id 2 #
 ####################
 
-pdal pipeline generator.json --writers.las.minor_version=1 \
+pdal pipeline generator.json --writers.las.minor_version=2 \
     --writers.las.dataformat_id=2
 
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp1.las \
@@ -364,13 +364,13 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v1d2.las
+pdal pipeline merge.json --writers.las.filename=v2d2.las
 
 ####################
 # data format id 3 #
 ####################
 
-pdal pipeline generator.json --writers.las.minor_version=1 \
+pdal pipeline generator.json --writers.las.minor_version=2 \
     --writers.las.dataformat_id=3
 
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp1.las \
@@ -413,7 +413,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v1d3.las
+pdal pipeline merge.json --writers.las.filename=v2d3.las
 
 
 #########################################
@@ -426,7 +426,7 @@ pdal pipeline merge.json --writers.las.filename=v1d3.las
 # data format id 0 #
 ####################
 
-pdal pipeline generator.json --writers.las.minor_version=1 \
+pdal pipeline generator.json --writers.las.minor_version=3 \
     --writers.las.dataformat_id=0
 
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp1.las \
@@ -469,14 +469,14 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v1d0.las
+pdal pipeline merge.json --writers.las.filename=v3d0.las
 
 ####################
 # data format id 1 #
 ####################
 
 # generate 10 files of random points
-pdal pipeline generator.json --writers.las.minor_version=1 \
+pdal pipeline generator.json --writers.las.minor_version=3 \
     --writers.las.dataformat_id=1
 
 # using placeholder classify script and repeat
@@ -521,13 +521,13 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
 # merge all class groups together
-pdal pipeline merge.json --writers.las.filename=v1d1.las
+pdal pipeline merge.json --writers.las.filename=v3d1.las
 
 ####################
 # data format id 2 #
 ####################
 
-pdal pipeline generator.json --writers.las.minor_version=1 \
+pdal pipeline generator.json --writers.las.minor_version=3 \
     --writers.las.dataformat_id=2
 
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp1.las \
@@ -570,13 +570,13 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v1d2.las
+pdal pipeline merge.json --writers.las.filename=v3d2.las
 
 ####################
 # data format id 3 #
 ####################
 
-pdal pipeline generator.json --writers.las.minor_version=1 \
+pdal pipeline generator.json --writers.las.minor_version=3 \
     --writers.las.dataformat_id=3
 
 pdal pipeline classify.json --writers.las.filename=lasdump/tmp1.las \
@@ -619,7 +619,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v1d3.las
+pdal pipeline merge.json --writers.las.filename=v3d3.las
 
 
 #########################################
