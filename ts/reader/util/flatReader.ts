@@ -3,7 +3,7 @@ import IFeature from '../../api/IFeature'
 import FeatureType from '../../api/FeatureType'
 import postOp from './postOp'
 
-export default function flattenReader (reader: IReader): IReader {
+export default function flatReader (reader: IReader): IReader {
   if (!Array.isArray(reader.type)) {
     // Not an array, doesn't need flattening
     return reader

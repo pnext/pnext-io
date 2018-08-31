@@ -5,7 +5,7 @@ import bits from '../../../reader/util/bits'
 import unsignedChar from '../../../reader/type/uint8'
 import IFeature from '../../../api/IFeature'
 import readerForReaders from '../../../reader/readerForReaders'
-import flattenReader from '../../../reader/util/flatReader'
+import flatReader from '../../../reader/util/flatReader'
 
 export const base = [
   /*
@@ -125,4 +125,4 @@ export const pdrf0Parts = base.concat([
   { reader: char, name: '`Scan Angle' }
 ]).concat(bottom)
 
-export default flattenReader(readerForReaders(pdrf0Parts))
+export default flatReader(readerForReaders(pdrf0Parts))

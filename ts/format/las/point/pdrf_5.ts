@@ -3,9 +3,9 @@ import { gpsTime } from './pdrf_1'
 import { rgb } from './pdrf_2'
 import { extended } from './pdrf_4'
 import readerForReaders from '../../../reader/readerForReaders'
-import flattenReader from '../../../reader/util/flatReader'
+import flatReader from '../../../reader/util/flatReader'
 
-export default flattenReader(readerForReaders(
+export default flatReader(readerForReaders(
   pdrf0Parts
     .concat(gpsTime)
     .concat(rgb)

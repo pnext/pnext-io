@@ -6,7 +6,7 @@ import char from '../../../reader/type/int8'
 import bits from '../../../reader/util/bits'
 import unsignedChar from '../../../reader/type/uint8'
 import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
-import flattenReader from '../../../reader/util/flatReader'
+import flatReader from '../../../reader/util/flatReader'
 
 export const pdrf6Parts: INamedReader[] =
   base
@@ -119,6 +119,6 @@ export const pdrf6Parts: INamedReader[] =
   .concat(bottom)
   .concat(gpsTime)
 
-export default flattenReader(readerForReaders(
+export default flatReader(readerForReaders(
   pdrf6Parts
 ))
