@@ -77,9 +77,9 @@ function getWeight (node: INodeTree, fDisplays?: IFrustumDisplay[]): number {
 }
 
 interface IOutput {
-  addNode: (node: INode) => void,
-  isClosed: () => boolean,
-  end: () => void
+  write: (node: INode) => any,
+  isEndingOrEnded: () => boolean,
+  end: (error?: Error) => void
 }
 
 interface IFrustumDisplay {
@@ -213,7 +213,7 @@ export default async function selectNodes (query: INodeQuery, treeNodeList: INod
       }
     }
     for (const node of treeNodeList) {
-      if (output.isClosed()) {
+      if (output.isEndingOrEnded()) {
         return false
       }
       if (query.pointRange) {
@@ -226,7 +226,7 @@ export default async function selectNodes (query: INodeQuery, treeNodeList: INod
           continue
         }
       }
-      output.addNode(node.node)
+      output.write(node.node)
     }
     treeNodeList = allChildren(treeNodeList)
   }

@@ -37,11 +37,11 @@ function createTreeNodes (nodes: INode[]): INodeTree[] {
 
 function gatherNodes (output: INode[]) {
   return {
-    isClosed: () => false,
-    addNode (node: INode): void {
+    isEndingOrEnded: () => false,
+    write (node: INode): void {
       output.push(node)
     },
-    end () {
+    end (error?: Error) {
       return
     }
   }
@@ -57,8 +57,8 @@ function box3 (a: IVector3, b: IVector3): Box3 {
 test('select everything on an empty list should just end', async t => {
   let ended = false
   const done = await selectNodes({}, [], {
-    isClosed: () => false,
-    addNode (node: INode): void {
+    isEndingOrEnded: () => false,
+    write (node: INode): void {
       return
     },
     end (): void {
