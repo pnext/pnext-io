@@ -7,6 +7,7 @@ import fixedString from '../../../ts/reader/type/fixedString'
 import nullReader from '../../../ts/reader/type/null'
 import IDynamicContext from '../../../ts/reader/util/IDynamicContext'
 import IReader from '../../../ts/reader/IReader'
+import FeatureType from '../../../ts/api/FeatureType'
 
 const BYTE_128_STRING = '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567'
 
@@ -31,7 +32,7 @@ function createRead (reader: IReader) {
 }
 
 test('fixed, fixed', async t => {
-  const reader = twoPartReader(uint32, fixedString)
+  const reader = twoPartReader(uint32, fixedString, FeatureType.string)
   t.equals(reader.fixedSize, false)
   t.equals(reader.minSize, 4, 'minSize should be equal partA minSize')
 
@@ -44,7 +45,7 @@ test('fixed, dynamic', async t => {
   const reader = twoPartReader(uint32, num => {
     t.equals(num, 4, 'former number properly read')
     return varuint32
-  })
+  }, FeatureType.uint32)
   t.equals(reader.fixedSize, false)
   t.equals(reader.minSize, 4, 'minSize should be equal partA minSize')
 
@@ -55,7 +56,7 @@ test('fixed, dynamic', async t => {
 })
 
 test('dynamic, fixed', async t => {
-  const reader = twoPartReader(varuint32, fixedString)
+  const reader = twoPartReader(varuint32, fixedString, FeatureType.string)
   t.equals(reader.fixedSize, false, 'isnt fixed size')
   t.equals(reader.minSize, 1, 'minsize should be equal partA minSize')
 
@@ -69,7 +70,7 @@ test('dynamic, fixed', async t => {
 test('dynamic, dynamic', async t => {
   const reader = twoPartReader(varuint32, num => {
     return varuint32
-  })
+  }, FeatureType.uint32)
   t.equals(reader.fixedSize, false, 'isnt fixed size')
   t.equals(reader.minSize, 1, 'minsize should be equal partA minSize')
 
