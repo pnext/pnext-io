@@ -57,7 +57,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v1d0.las
+pdal pipeline merge.json --writers.las.filename=../v1d0.las
 
 ####################
 # data format id 1 #
@@ -109,7 +109,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
 # merge all class groups together
-pdal pipeline merge.json --writers.las.filename=v1d1.las
+pdal pipeline merge.json --writers.las.filename=../v1d1.las
 
 ####################
 # data format id 2 #
@@ -158,7 +158,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v1d2.las
+pdal pipeline merge.json --writers.las.filename=../v1d2.las
 
 ####################
 # data format id 3 #
@@ -207,7 +207,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v1d3.las
+pdal pipeline merge.json --writers.las.filename=../v1d3.las
 
 
 #########################################
@@ -263,7 +263,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v2d0.las
+pdal pipeline merge.json --writers.las.filename=../v2d0.las
 
 ####################
 # data format id 1 #
@@ -315,7 +315,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
 # merge all class groups together
-pdal pipeline merge.json --writers.las.filename=v2d1.las
+pdal pipeline merge.json --writers.las.filename=../v2d1.las
 
 ####################
 # data format id 2 #
@@ -364,7 +364,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v2d2.las
+pdal pipeline merge.json --writers.las.filename=../v2d2.las
 
 ####################
 # data format id 3 #
@@ -413,7 +413,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v2d3.las
+pdal pipeline merge.json --writers.las.filename=../v2d3.las
 
 
 #########################################
@@ -469,7 +469,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v3d0.las
+pdal pipeline merge.json --writers.las.filename=../v3d0.las
 
 ####################
 # data format id 1 #
@@ -521,7 +521,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
 # merge all class groups together
-pdal pipeline merge.json --writers.las.filename=v3d1.las
+pdal pipeline merge.json --writers.las.filename=../v3d1.las
 
 ####################
 # data format id 2 #
@@ -570,7 +570,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v3d2.las
+pdal pipeline merge.json --writers.las.filename=../v3d2.las
 
 ####################
 # data format id 3 #
@@ -619,7 +619,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v3d3.las
+pdal pipeline merge.json --writers.las.filename=../v3d3.las
 
 
 #########################################
@@ -675,7 +675,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v4d0.las
+pdal pipeline merge.json --writers.las.filename=../v4d0.las
 
 ####################
 # data format id 1 #
@@ -727,7 +727,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
 # merge all class groups together
-pdal pipeline merge.json --writers.las.filename=v4d1.las
+pdal pipeline merge.json --writers.las.filename=../v4d1.las
 
 ####################
 # data format id 2 #
@@ -776,7 +776,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v4d2.las
+pdal pipeline merge.json --writers.las.filename=../v4d2.las
 
 ####################
 # data format id 3 #
@@ -825,7 +825,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp10.las \
     --readers.las.filename=lasdump/tmp10.las \
     --filters.assign.assignment=Classification[0:0]=9
 
-pdal pipeline merge.json --writers.las.filename=v4d3.las
+pdal pipeline merge.json --writers.las.filename=../v4d3.las
 
 ####################
 # data format id 4 #
@@ -928,7 +928,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp19.las \
     --readers.las.filename=lasdump/tmp19.las \
     --filters.assign.assignment=Classification[0:0]=18
 
-pdal pipeline merge.json --writers.las.filename=v4d6.las
+pdal pipeline merge.json --writers.las.filename=../v4d6.las
 
 ####################
 # data format id 7 #
@@ -1018,7 +1018,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp19.las \
     --readers.las.filename=lasdump/tmp19.las \
     --filters.assign.assignment=Classification[0:0]=18
 
-pdal pipeline merge.json --writers.las.filename=v4d7.las
+pdal pipeline merge.json --writers.las.filename=../v4d7.las
 
 ####################
 # data format id 8 #
@@ -1108,7 +1108,7 @@ pdal pipeline classify.json --writers.las.filename=lasdump/tmp19.las \
     --readers.las.filename=lasdump/tmp19.las \
     --filters.assign.assignment=Classification[0:0]=18
 
-pdal pipeline merge.json --writers.las.filename=v4d8.las
+pdal pipeline merge.json --writers.las.filename=../v4d8.las
 
 ####################
 # data format id 9 #
