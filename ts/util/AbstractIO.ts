@@ -16,11 +16,11 @@ export default abstract class AbstractIO implements IPNextIO {
     //       requests
   }
 
-  abstract _getTrees (output: Stream<ITree>, query: ITreeQuery): void
+  abstract _getTrees (output: Stream<ITree>, query?: ITreeQuery): void
   abstract _getNodes (output: Stream<INode>, query?: INodeQuery): void
   abstract _getPoints (output: Stream<{ [k: string]: any; }>, query?: IPointQuery): void
 
-  getTrees (query: ITreeQuery, byos: Stream<ITree> = new Stream<ITree>()): ReadableStream<ITree> {
+  getTrees (query?: ITreeQuery, byos: Stream<ITree> = new Stream<ITree>()): ReadableStream<ITree> {
     this._getTrees(byos, query)
     return byos
   }
