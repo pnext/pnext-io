@@ -26,7 +26,7 @@ export default interface ITree {
    * LAZ header since individual files may be serialized with a local offset.
    */
   offset?: IVector3
-  numPoints?: (number | Long)
+  numPoints: (number | Long)
 
   /**
    * The narrowest bounds conforming to the maximal extents of the data.
