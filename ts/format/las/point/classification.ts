@@ -31,6 +31,9 @@ export const LidarPointClasses1 = {
   */
   12: PointClass.OVERLAP_POINTS
 }
+for (let classification = 13; classification <= 31; classification++) {
+  LidarPointClasses1[classification] = PointClass.USER_CLASS
+}
 
 export const LidarPointClasses2 = {
   0: PointClass.NEVER_CLASSIFIED,
@@ -51,6 +54,9 @@ export const LidarPointClasses2 = {
   17: PointClass.BRIDGE_DECK,
   18: PointClass.HIGH_NOISE
 }
+for (let classification = 64; classification <= 255; classification++) {
+  LidarPointClasses2[classification] = PointClass.USER_CLASS
+}
 
 export interface ILasClassificationConverter {
   isReserved: (classification: number) => boolean,
@@ -67,7 +73,6 @@ export enum ClassificationFlag {
 }
 
 export interface ILasClassification {
-  name: string,
   classification: number
   // Old classification flags are evaluable directly, new ones are stored in the separate 'Classification Flag' entry
   flag?: number,
@@ -83,7 +88,6 @@ const version2: ILasClassificationConverter = {
   map: LidarPointClasses2,
   read (classification: number): ILasClassification {
     return {
-      name: this.toString(classification),
       classification
     }
   }
@@ -99,7 +103,6 @@ const version1: ILasClassificationConverter = {
   map: LidarPointClasses1,
   read (classification: number): ILasClassification {
     return {
-      name: this.toString(classification),
       classification,
       flag: classification >>> 5
     }
