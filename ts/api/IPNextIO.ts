@@ -5,6 +5,7 @@ import IPointQuery from './IPointQuery'
 import INode from './INode'
 import INodeWithTree from './INodeWithTree'
 import Stream, { ReadableStream } from 'ts-stream'
+import IPoint from './IPoint'
 
 export default interface IPNextIO {
   /**
@@ -32,5 +33,5 @@ export default interface IPNextIO {
   /**
    * Requesting the actual node data from the server.
    */
-  getPoints (query?: IPointQuery, byos?: Stream<{ [k: string]: any }>): ReadableStream<{ [k: string]: any }>
+  getPoints (query?: IPointQuery, byos?: Stream<IPoint>): ReadableStream<IPoint>
 }

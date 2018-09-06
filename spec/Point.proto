@@ -1,0 +1,26 @@
+message Point {
+  required uint64 x = 1;
+  required uint64 y = 2;
+  required uint64 z = 3;
+  optional uint32 classificiation = 4;
+  optional boolean synthetic = 5;
+  optional boolean keyPoint = 6;
+  optional boolean withheld = 7;
+  optional boolean overlap = 8;
+  optional uint32 r = 9;
+  optional uint32 g = 10;
+  optional uint32 b = 11;
+  optional uint32 returnNumber = 12;
+  optional uint32 numberOfReturns = 13;
+  optional boolean edge = 14;
+  optional uint32 nir = 15;
+  optional uint64 xt = 16;
+  optional uint64 yt = 17;
+  optional uint64 zt = 18;
+  optional int32 scanAngle = 19,
+  optional uint32 scannerChannel = 20,
+  optional boolean direction = 21,
+  optional uint64 time = 22,
+  optional uint32 returnPointLocation = 23,
+}
+

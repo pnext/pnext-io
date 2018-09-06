@@ -6,6 +6,7 @@ import INodeWithTree from '../api/INodeWithTree'
 import INodeQuery from '../api/INodeQuery'
 import IPNextIO from '../api/IPNextIO'
 import IPointQuery from '../api/IPointQuery'
+import IPoint from '../api/IPoint'
 
 export default abstract class AbstractIO implements IPNextIO {
 
@@ -18,7 +19,7 @@ export default abstract class AbstractIO implements IPNextIO {
 
   abstract _getTrees (output: Stream<ITree>, query?: ITreeQuery): void
   abstract _getNodes (output: Stream<INode>, query?: INodeQuery): void
-  abstract _getPoints (output: Stream<{ [k: string]: any; }>, query?: IPointQuery): void
+  abstract _getPoints (output: Stream<IPoint>, query?: IPointQuery): void
 
   getTrees (query?: ITreeQuery, byos: Stream<ITree> = new Stream<ITree>()): ReadableStream<ITree> {
     this._getTrees(byos, query)
@@ -30,7 +31,7 @@ export default abstract class AbstractIO implements IPNextIO {
     return byos
   }
 
-  getPoints (query?: IPointQuery, byos: Stream<{ [k: string]: any; }> = new Stream<{ [k: string]: any; }>()): ReadableStream<{ [k: string]: any; }> {
+  getPoints (query?: IPointQuery, byos: Stream<IPoint> = new Stream<IPoint>()): ReadableStream<IPoint> {
     this._getPoints(byos, query)
     return byos
   }

@@ -2,6 +2,7 @@ import IPNextIO from '../api/IPNextIO'
 import Stream from 'ts-stream'
 import ITree from '../api/ITree'
 import INode from '../api/INode'
+import IPoint from '../api/IPoint'
 import INodeSelector from '../api/INodeSelector'
 import IPointQuery from '../api/IPointQuery'
 import ITreeQuery from '../api/ITreeQuery'
@@ -13,12 +14,6 @@ import FeatureType from '../api/FeatureType'
 import AbstractSingleTreeIO from '../util/AbstractSingleTreeIO'
 import expandBox from '../util/expandBox'
 import featureMatch from '../util/featureMatch'
-
-export interface IPoint {
-  x: number,
-  y: number,
-  z: number
-}
 
 function ignoreError () {
   return

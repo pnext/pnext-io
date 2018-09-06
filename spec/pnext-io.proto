@@ -14,5 +14,5 @@ service PnextIO {
   /**
    * Requesting the actual node data from the server.
    */
-  rpc getPoints (PointQuery) returns (stream google.protobuf.BytesValue) {}
+  rpc getPoints (PointQuery) returns (stream Point) {}
 }
