@@ -1,7 +1,8 @@
 import LasPointFormat from '../LasPointFormat'
+import PointClass from '../../../api/PointClass'
 
-export enum LidarPointClasses1 {
-  'Created, never classified' = 0,
+export const LidarPointClasses1 = {
+  0: PointClass.NEVER_CLASSIFIED,
   /*
     We are using both 0 and 1 as Unclassified to maintain
     compatibility with current popular classification software
@@ -13,49 +14,49 @@ export enum LidarPointClasses1 {
     having been assigned as belonging to structures could be
     remapped from class 0 to class 1.
   */
-  'Unclassified' = 1,
-  'Ground' = 2,
-  'Low Vegetation' = 3,
-  'Medium Vegetation' = 4,
-  'High Vegetation' = 5,
-  'Building' = 6,
-  'Low Point (noise)' = 7,
-  'Model Key-point (mass point)' = 8,
-  'Water' = 9,
+  1: PointClass.UNCLASSIFIED,
+  2: PointClass.GROUND,
+  3: PointClass.LOW_VEGETATION,
+  4: PointClass.MEDIUM_VEGETATION,
+  5: PointClass.HIGH_VEGETATION,
+  6: PointClass.BUILDING,
+  7: PointClass.LOW_POINT,
+  8: PointClass.MODEL_KEY_POINT,
+  9: PointClass.WATER,
   /*
     Overlap Points are those points that were immediately culled
     during the merging of overlapping flight lines. In general,
     the Withheld bit should be set since these points are not
     subsequently classified.
   */
-  'Overlap Points' = 12
+  12: PointClass.OVERLAP_POINTS
 }
 
-export enum LidarPointClasses2 {
-  'Created, never classified' = 0,
-  'Unclassified' = 1,
-  'Ground' = 2,
-  'Low Vegetation' = 3,
-  'Medium Vegetation' = 4,
-  'High Vegetation' = 5,
-  'Building' = 6,
-  'Low Point (noise)' = 7,
-  'Water' = 9,
-  'Rail' = 10,
-  'Road Surface' = 11,
-  'Wire – Guard (Shield)' = 13,
-  'Wire – Conductor (Phase)' = 14,
-  'Transmission Tower' = 15,
-  'Wire-structure Connector (e.g. Insulator)' = 16,
-  'Bridge Deck' = 17,
-  'High Noise' = 18
+export const LidarPointClasses2 = {
+  0: PointClass.NEVER_CLASSIFIED,
+  1: PointClass.UNCLASSIFIED,
+  2: PointClass.GROUND,
+  3: PointClass.LOW_VEGETATION,
+  4: PointClass.MEDIUM_VEGETATION,
+  5: PointClass.HIGH_VEGETATION,
+  6: PointClass.BUILDING,
+  7: PointClass.LOW_POINT,
+  9: PointClass.WATER,
+  10: PointClass.RAIL,
+  11: PointClass.ROAD_SURFACE,
+  13: PointClass.WIRE_GUARD,
+  14: PointClass.WIRE_CONDUCTOR,
+  15: PointClass.TRANSMISSION_TOWER,
+  16: PointClass.WIRE_STRUCTURE_CONNECTOR,
+  17: PointClass.BRIDGE_DECK,
+  18: PointClass.HIGH_NOISE
 }
 
 export interface ILasClassificationConverter {
   isReserved: (classification: number) => boolean,
   toString (classification?: number): string,
   read (classification: number): ILasClassification,
-  map: { [classification: number]: string }
+  map: { [classification: number]: PointClass }
 }
 
 export enum ClassificationFlag {
@@ -67,7 +68,7 @@ export enum ClassificationFlag {
 
 export interface ILasClassification {
   name: string,
-  classification: number,
+  classification: number
   // Old classification flags are evaluable directly, new ones are stored in the separate 'Classification Flag' entry
   flag?: number,
 }
@@ -79,15 +80,7 @@ const version2: ILasClassificationConverter = {
     if (classification >= 19 && classification <= 63) return true
     return false
   },
-  map: Object.keys(LidarPointClasses2).reduce((map: { [value: number]: string }, name) => {
-    map[LidarPointClasses2[name]] = name
-    return map
-  }, {}),
-  toString (classification?: number): string {
-    if (classification === undefined) return super.toString()
-    if (this.isReserved(classification)) return 'Reserved'
-    return this.map[classification] || `User definable [${classification}]`
-  },
+  map: LidarPointClasses2,
   read (classification: number): ILasClassification {
     return {
       name: this.toString(classification),
@@ -103,15 +96,7 @@ const version1: ILasClassificationConverter = {
     if (classification >= 13 && classification <= 31) return true
     return false
   },
-  map: Object.keys(LidarPointClasses1).reduce((map: { [value: number]: string }, name) => {
-    map[LidarPointClasses1[name]] = name
-    return map
-  }, {}),
-  toString (classification?: number): string {
-    if (classification === undefined) return super.toString()
-    if (this.isReserved(classification)) return 'Reserved'
-    return this.map[classification] || `User definable [${classification}]`
-  },
+  map: LidarPointClasses1,
   read (classification: number): ILasClassification {
     return {
       name: this.toString(classification),

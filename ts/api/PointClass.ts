@@ -17,7 +17,8 @@ enum PointClass {
   TRANSMISSION_TOWER = 15,
   WIRE_STRUCTURE_CONNECTOR = 16,
   BRIDGE_DECK = 17,
-  HIGH_NOISE = 18
+  HIGH_NOISE = 18,
+  USER_CLASS = 19 // Defined by the user.
 }
 
 export default PointClass
