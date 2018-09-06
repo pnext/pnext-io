@@ -1,6 +1,7 @@
 import IBox3 from './IBox3'
 import IVector3 from './IVector3'
 import IFeature from './IFeature'
+import PointClass from './PointClass'
 
 export default interface ITree {
   id: string
@@ -37,4 +38,13 @@ export default interface ITree {
   boundsConforming?: IBox3
   schema: IFeature[]
   metadata?: { [k: string]: any }
+
+  /**
+   * Specificies all the classifications found in this tree, mapping
+   * them to common PointClasses.
+   *
+   * This needs to happen because the classification allows for user-defined
+   * classifications that exceed the common classification map.
+   */
+  classificationMap?: { [classification: number]: PointClass }
 }
