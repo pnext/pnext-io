@@ -1,7 +1,6 @@
 import { pdrf0Parts } from './pdrf_0'
 import readerForReaders from '../../../reader/readerForReaders'
 import unsignedShort from '../../../reader/type/uint16LE'
-import flatReader from '../../../reader/util/flatReader'
 
 export const rgb = [
   /*
@@ -15,7 +14,7 @@ export const rgb = [
   { reader: unsignedShort, name: 'b' }
 ]
 
-export default flatReader(readerForReaders(
+export default readerForReaders(
   pdrf0Parts
     .concat(rgb)
-))
+)

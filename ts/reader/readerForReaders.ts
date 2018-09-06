@@ -1,8 +1,8 @@
 import IFeature from '../api/IFeature'
 import IReader from './IReader'
 import IDynamicContext from './util/IDynamicContext'
-import createDynamicReader from './util/createDynamicReader'
-import createFixedReader from './util/createFixedReader'
+import { createDynamicObjectReader } from './util/createDynamicReader'
+import { createFixedObjectReader } from './util/createFixedReader'
 import FeatureType from '../api/FeatureType'
 
 const workContext: IDynamicContext = {
@@ -10,80 +10,99 @@ const workContext: IDynamicContext = {
   data: null,
   size: 0
 }
-function readerForDynamicFeatures (namedReaders: INamedReader[]): IReader {
-  const featuresByName: { [k: string]: FeatureType | IFeature[] } = {}
-  const minSize = namedReaders.reduce((minSize: number, { reader, name }) => {
-    if (featuresByName[name]) {
-      throw new Error(`Feature ${name} was defined twice!`)
+
+function convertToObjectReader (name: string, reader: IReader): IReader {
+  if (typeof reader.type === 'object') {
+    return reader
+  }
+  if (reader.fixedSize) {
+    return createFixedObjectReader(reader.minSize, { [name]: reader.type }, (view: DataView, byteOffset: number, target: { [key: string]: any }) => {
+      target[name] = reader.read(view, byteOffset)
+    })
+  }
+  return createDynamicObjectReader(reader.minSize, { [name]: reader.type }, (view: DataView, context: IDynamicContext, target: { [key: string]: any }) => {
+    if (reader.readDynamic(view, context)) {
+      target[name] = context.data
+      context.data = target
+      return true
     }
-    featuresByName[name] = reader.type
-    return minSize + reader.minSize
-  }, 0)
-  const features: IFeature[] = Object.keys(featuresByName).map(name => {
-    return { name, type: featuresByName[name] }
-  })
-  return createDynamicReader(minSize, features, (view: DataView, context: IDynamicContext): boolean => {
-    const data = {}
-    let size = 0
-    let index = 0
-    // Some of the sub-readers could finish successfully and thus change the byteOffset for
-    // Operation this would break the IDynamicContext contract because it wouldn't have actually
-    // finished its work. To prevent this the workContext is used to check and later passed
-    // on the to the actual context
-    workContext.byteOffset = context.byteOffset
-    for (const { reader, name } of namedReaders) {
-      if (reader.fixedSize) {
-        data[name] = reader.read(view, workContext.byteOffset)
-        workContext.byteOffset += reader.minSize
-        size += reader.minSize
-      } else {
-        if (!reader.readDynamic(view, workContext)) {
-          return false
-        }
-        data[name] = workContext.data
-        size += workContext.size
-      }
-    }
-    // Reapply the new sub
-    context.byteOffset = workContext.byteOffset
-    context.size = size
-    context.data = data
-    return true
+    return false
   })
 }
 
-function readerForFixedFeatures (namedReaders: INamedReader[]): IReader {
-  let size = 0
-  const featuresByName: { [k: string]: FeatureType | IFeature[] } = {}
-  const readFns = namedReaders.map(({ reader, name }, index) => {
-    const offset = size
-    size += reader.minSize
-    return (view: DataView, byteOffset: number, result: { [k: string]: any }) => {
-      result[name] = reader.read(view, byteOffset + offset)
-      if (Array.isArray(reader.type)) {
-        for (const feature of reader.type) {
-          if (featuresByName[feature.name]) {
-            throw new Error(`Feature ${feature.name} was defined twice!`)
-          }
-          featuresByName[feature.name] = feature.type
-        }
-      } else {
-        if (featuresByName[name]) {
-          throw new Error(`Feature ${name} was defined twice!`)
-        }
-        featuresByName[name] = reader.type
+function convertToObjectReaders (namedReaders: INamedReader[]) {
+  let minSize = 0
+  const readers = namedReaders.map(({ reader, name }, index) => {
+    minSize += reader.minSize
+    return convertToObjectReader(name, reader)
+  })
+  return {
+    minSize,
+    readers
+  }
+}
+
+function collectTypes (namedReaders: INamedReader[]): { [k: string]: FeatureType } {
+  const featuresByName: { [k: string]: FeatureType } = {}
+  function addToFeatures (name, type: FeatureType) {
+    if (featuresByName[name] !== undefined) {
+      throw new Error(`${name} has been defined more than once in this combined reader.`)
+    }
+    featuresByName[name] = type
+  }
+  for (const { name, reader } of namedReaders) {
+    const type = reader.type
+    if (typeof type === 'object') {
+      for (const typeName in type) {
+        addToFeatures(typeName, type[typeName])
       }
+    } else {
+      addToFeatures(name, type)
     }
-  })
-  const features: IFeature[] = Object.keys(featuresByName).map(name => {
-    return { name, type: featuresByName[name] }
-  })
-  return createFixedReader(size, features, (view: DataView, byteOffset: number) => {
-    const result = {}
-    for (const readFn of readFns) {
-      readFn(view, byteOffset, result)
+  }
+  return featuresByName
+}
+
+function readerForDynamicFeatures (namedReaders: INamedReader[]): IReader {
+  const { minSize, readers } = convertToObjectReaders(namedReaders)
+  return createDynamicObjectReader(
+    minSize,
+    collectTypes(namedReaders),
+    (view: DataView, context: IDynamicContext, target: { [key: string]: any }): boolean => {
+      let size = 0
+      // Some of the sub-readers could finish successfully and thus change the byteOffset for
+      // Operation this would break the IDynamicContext contract because it wouldn't have actually
+      // finished its work. To prevent this the workContext is used to check and later passed
+      // on the to the actual context
+      workContext.byteOffset = context.byteOffset
+      for (const reader of readers) {
+        if (reader.fixedSize) {
+          reader.readTo(view, workContext.byteOffset, target)
+          workContext.byteOffset += reader.minSize
+          size += reader.minSize
+        } else {
+          if (!reader.readDynamicTo(view, workContext, target)) {
+            return false
+          }
+          size += workContext.size
+        }
+      }
+      // Reapply the new sub
+      context.byteOffset = workContext.byteOffset
+      context.size = size
+      context.data = target
+      return true
     }
-    return result
+  )
+}
+
+function readerForFixedFeatures (namedReaders: INamedReader[]): IReader {
+  const { minSize, readers } = convertToObjectReaders(namedReaders)
+  return createFixedObjectReader(minSize, collectTypes(namedReaders), (view: DataView, byteOffset: number, target: { [key: string]: any }) => {
+    for (const reader of readers) {
+      reader.readTo(view, byteOffset, target)
+      byteOffset += reader.minSize
+    }
   })
 }
 

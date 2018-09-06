@@ -101,6 +101,6 @@ test('fetching features that dont exist', async t => {
     const p = await io.getPoints({ schema: [Feature.r] }).toArray()
     t.fail('There should have been an error here')
   } catch (e) {
-    t.equals(e.message, '#0: r is not available.')
+    t.equals(e.message, '#0: r[uint32] is not available.')
   }
 })

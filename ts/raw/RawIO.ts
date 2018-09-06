@@ -137,7 +137,7 @@ export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
       if (query && query.schema) {
         const error = featureMatch(tree.schema, query.schema)
         if (error) {
-          stream.end(new Error(error)).catch(ignoreError)
+          stream.end(new Error(error.map(error => error.message).join(';'))).catch(ignoreError)
           return
         }
       }
