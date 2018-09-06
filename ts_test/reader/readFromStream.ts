@@ -41,16 +41,24 @@ test('reading dynamic simple stream of features', async t => {
     c('d'), c('e'),
     7
   ]
-  const points = await readFromStream(Stream.from([
-    new Uint8Array(data.slice(0, 7)),
-    new Uint8Array(data.slice(7, 14)),
-    new Uint8Array(data.slice(14))
-  ]), readerForReaders([
+  const reader = readerForReaders([
     { name: 'x', reader: uint8 },
     { name: 'y', reader: uint8 },
     { name: 'desc', reader: string },
     { name: 'z', reader: uint8 }
-  ])).toArray()
+  ])
+  const points = await readFromStream(Stream.from([
+    //
+    // The stream-reader checks if enough data (minSize) is
+    // available to continue reading. There was an arithmetic
+    // error that dismissed a block if it was at the end
+    // just the minSize. By cutting it at the minSize we can
+    // make sure that this particular edge-case is accounted for.
+    //
+    new Uint8Array(data.slice(0, reader.minSize)),
+    new Uint8Array(data.slice(reader.minSize, 14)),
+    new Uint8Array(data.slice(14))
+  ]), reader).toArray()
 
   t.deepEquals(points, [
     { x: 1, y: 2, z: 3, desc: 'abc' },

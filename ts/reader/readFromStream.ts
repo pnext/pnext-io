@@ -54,27 +54,32 @@ function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>
   }
   let count = 0
   return inStream.forEach((data: Uint8Array) => {
-    let end = reader.minSize
     workContext.byteOffset = 0
     if (leftOver !== null) {
       data = combine(leftOver, data)
     }
     let entries: any[]
-    while (end <= data.length && (limit === undefined || count < limit)) {
-      if (entries === undefined) {
-        entries = []
+    if (data.byteLength >= reader.minSize) {
+      let nextMinSize = 0
+      const view = new DataView(data.buffer)
+      while (nextMinSize <= view.byteLength && (limit === undefined || count < limit)) {
+        if (entries === undefined) {
+          entries = []
+        }
+        if (!reader.readDynamic(view, workContext)) {
+          break
+        }
+        count += 1
+        entries.push(workContext.data)
+        nextMinSize = workContext.byteOffset + workContext.size + reader.minSize
       }
-      if (!reader.readDynamic(new DataView(data.buffer), workContext)) {
-        break
+      if (nextMinSize === data.length) {
+        leftOver = null
+      } else {
+        leftOver = data.subarray(workContext.byteOffset)
       }
-      count += 1
-      entries.push(workContext.data)
-      end = workContext.byteOffset + workContext.size + reader.minSize
-    }
-    if (end === data.length) {
-      leftOver = null
     } else {
-      leftOver = data.subarray(workContext.byteOffset)
+      leftOver = data
     }
     if (entries === undefined) {
       return
