@@ -169,10 +169,9 @@ function minLong (range?: ILongRange): Long | number {
 }
 
 function getFrustumsForDisplays (fDisplays?: IFrustumDisplay[]) {
-  if (!fDisplays) {
-    return null
+  if (fDisplays) {
+    return fDisplays.map(fDisplay => getFrustumFromCam(fDisplay.cam))
   }
-  return fDisplays.map(fDisplay => getFrustumFromCam(fDisplay.cam))
 }
 
 export default async function selectNodes (query: INodeQuery, treeNodeList: INodeTree[], output: IOutput): Promise<boolean> {
@@ -183,10 +182,10 @@ export default async function selectNodes (query: INodeQuery, treeNodeList: INod
   const min: Long | number = minLong(query.pointRange)
 
   while (treeNodeList) {
-    if (nodeVisible !== null) {
+    if (nodeVisible !== undefined) {
       treeNodeList = treeNodeList.filter(({ node }) => nodeVisible(node))
     }
-    if (fDisplays !== null) {
+    if (fDisplays !== undefined) {
       treeNodeList = filterAndSortByWeight(treeNodeList, fDisplays)
     }
     for (const node of treeNodeList) {
