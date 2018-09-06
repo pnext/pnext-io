@@ -16,6 +16,8 @@ import IDisplay from '../api/IDisplay'
 import ILongRange from '../api/ILongRange'
 import Long from 'long'
 import IDensityRange from '../api/IDensityRange'
+import IFrustum from './IFrustum'
+import isNodeVisible from './isNodeVisible'
 
 function getPerspectiveCamera (input: IPerspectiveCamera): PerspectiveCamera {
   if (input instanceof PerspectiveCamera) {
@@ -83,7 +85,6 @@ interface IOutput {
 }
 
 interface IFrustumDisplay {
-  frustum: Frustum,
   cam: PerspectiveCamera,
   display: IDisplay,
   f: number,
@@ -118,37 +119,22 @@ function normalizeDensity (density?: IDensityRange): IRange | null {
   }
 }
 
-function getFrustumDisplays (display?: IDisplay[]): IFrustumDisplay[] | null {
+function getFrustumDisplays (display?: IDisplay[]): IFrustumDisplay[] | undefined {
   if (!display) {
-    return null
+    return undefined
   }
 
   return display.map(display => {
     const cam = getPerspectiveCamera(display.cam)
     const slope = Math.tan(cam.fov * Math.PI / 180)
-    const frustum = getFrustumFromCam(display.cam)
     const f = 1 / slope
     return {
       f,
-      frustum,
       cam,
       display,
       normalDensity: normalizeDensity(display.density)
     }
   })
-}
-
-function filterInvisibleNodes (nodeList: INodeTree[], cut?: IBox3[], fDisplays?: IFrustumDisplay[]): INodeTree[] {
-  return nodeList
-    .filter(({ node }) => {
-      if (cut && !boxIntersectsOneBox(node.bounds, cut)) {
-        return false
-      }
-      if (fDisplays && !boxIntersectsOneFrustum(node.bounds, fDisplays)) {
-        return false
-      }
-      return true
-    })
 }
 
 function filterAndSortByWeight (nodeList: INodeTree[], fDisplays: IFrustumDisplay[]): INodeTree[] {
@@ -182,17 +168,26 @@ function minLong (range?: ILongRange): Long | number {
   return range.min
 }
 
+function getFrustumsForDisplays (fDisplays?: IFrustumDisplay[]) {
+  if (!fDisplays) {
+    return null
+  }
+  return fDisplays.map(fDisplay => getFrustumFromCam(fDisplay.cam))
+}
+
 export default async function selectNodes (query: INodeQuery, treeNodeList: INodeTree[], output: IOutput): Promise<boolean> {
-  let fDisplays: IFrustumDisplay[] | null = getFrustumDisplays(query.display)
+  const fDisplays = getFrustumDisplays(query.display)
+  const frustums = getFrustumsForDisplays(fDisplays)
+  const nodeVisible = isNodeVisible(query.cut, frustums)
   let totalPoints: Long = new Long(0)
   const min: Long | number = minLong(query.pointRange)
 
   while (treeNodeList) {
-    if (query.cut || fDisplays) {
-      treeNodeList = filterInvisibleNodes(treeNodeList, query.cut, fDisplays)
-      if (fDisplays) {
-        treeNodeList = filterAndSortByWeight(treeNodeList, fDisplays)
-      }
+    if (nodeVisible !== null) {
+      treeNodeList = treeNodeList.filter(({ node }) => nodeVisible(node))
+    }
+    if (fDisplays !== null) {
+      treeNodeList = filterAndSortByWeight(treeNodeList, fDisplays)
     }
     for (const node of treeNodeList) {
       if (output.isEndingOrEnded()) {
