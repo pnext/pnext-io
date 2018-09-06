@@ -20,6 +20,19 @@ enum FeatureType {
   double = 13       // fixed size 8 byte floating point
 }
 
+/* Number Space of positive integers that fit in JavaScripts "Number" space */
+export const UInt32: FeatureType[] = [ FeatureType.uint8, FeatureType.uint16, FeatureType.uint32 ]
+/* Number Space of positive and negative integers that fit in JavaScripts "Number" space */
+export const Int32: FeatureType[] = [ FeatureType.int8, FeatureType.int16, FeatureType.int32 ].concat(UInt32)
+/* Number Space of positive integers that might require "Long" numbers */
+export const UInt64: FeatureType[] = UInt32.concat([ FeatureType.uint64 ])
+/* Number Space of positive and negative integers that might require "Long" numbers */
+export const Int64: FeatureType[] = Int32.concat([ FeatureType.int64, FeatureType.uint64 ])
+/* Number Space of floating point numbers that fit in the Number space */
+export const Double: FeatureType[] = [ FeatureType.float, FeatureType.double ].concat(Int32)
+/* Number Space of floating point numbers that might require "Long" numbers */
+export const LongDouble: FeatureType[] = Double.concat([ FeatureType.int64, FeatureType.uint64 ])
+
 export default FeatureType
 
 export function parseFeatureString (type: string): FeatureType {
