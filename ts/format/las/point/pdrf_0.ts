@@ -121,7 +121,7 @@ export const pdrf0Parts = base.concat([
     from - 90 to +90. The Scan Angle Rank is the angle (rounded to the
     nearest integer in the absolute
   */
-  { reader: char, name: '`Scan Angle' }
+  { reader: char, name: 'Scan Angle' }
 ]).concat(bottom)
 
 export default readerForReaders(pdrf0Parts)
