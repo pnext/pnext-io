@@ -36,7 +36,7 @@ function readPartB (partB: IReader, view: DataView, context: IDynamicContext) {
   return true
 }
 
-function twoPartFixedSizeReader (partA: IReader, template: (readerResult) => IReader, type: FeatureType) {
+function fixedSizeImpl (partA: IReader, template: (readerResult) => IReader, type: FeatureType) {
   return (view: DataView, context: IDynamicContext) => {
     const afterPartA = view.byteOffset + partA.minSize
     contextA.data = partA.read(view, context.byteOffset)
@@ -46,7 +46,7 @@ function twoPartFixedSizeReader (partA: IReader, template: (readerResult) => IRe
   }
 }
 
-function twoPartDynamicReader (partA: IReader, template: (readerResult) => IReader, type: FeatureType) {
+function dynamicImpl (partA: IReader, template: (readerResult) => IReader, type: FeatureType) {
   return (view: DataView, context: IDynamicContext) => {
     contextA.byteOffset = context.byteOffset
     if (!partA.readDynamic(view, contextA)) {
@@ -56,12 +56,17 @@ function twoPartDynamicReader (partA: IReader, template: (readerResult) => IRead
   }
 }
 
+function getReaderImpl (partA, template: (readerResult) => IReader, type: FeatureType) {
+  if (partA.fixedSize) {
+    return fixedSizeImpl(partA, template, type)
+  }
+  return dynamicImpl(partA, template, type)
+}
+
 export default function twoPartReader (partA: IReader, template: (readerResult) => IReader, type: FeatureType) {
   return createDynamicReader(
     partA.minSize,
     type,
-    partA.fixedSize
-      ? twoPartFixedSizeReader(partA, template, type)
-      : twoPartDynamicReader(partA, template, type)
+    getReaderImpl(partA, template, type)
   )
 }
