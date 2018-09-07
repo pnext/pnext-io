@@ -15,6 +15,7 @@ export default interface IPoint {
   r?: number,
   g?: number,
   b?: number,
+  a?: number,
   returnNumber?: number,
   numberOfReturns?: number,
   edge?: boolean,
