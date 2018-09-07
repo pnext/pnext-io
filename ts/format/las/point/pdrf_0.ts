@@ -25,14 +25,14 @@ export const base = [
     this value must be set to zero. This normalization is required to ensure that
     data from different sensors can be correctly merged.
   */
-  { reader: unsignedShort, name: 'Intensity' }
+  { reader: unsignedShort, name: 'intensity' }
 ]
 
 export const bottom = [
   /*
     This field may be used at the user’s discretion.
   */
-  { reader: unsignedChar, name: 'User Data' },
+  { reader: unsignedChar, name: 'userData' },
   /*
     This value indicates the file from which this point originated. Valid values for
     this field are 1 to 65,535 inclusive with zero being used for a special case
@@ -42,7 +42,7 @@ export const bottom = [
     implies that processing software should set the Point Source ID equal to the File
     Source ID of the file containing this point at some time during processing.
   */
-  { reader: unsignedShort, name: 'Point Source ID' }
+  { reader: unsignedShort, name: 'pointSourceId' }
 ]
 
 export const pdrf0Parts = base.concat([
@@ -54,17 +54,17 @@ export const pdrf0Parts = base.concat([
         sequence of return. The first return will have a Return Number of one, the
         second a Return Number of two, and so on up to five returns.
       */
-      0: 'Return Number',
-      1: 'Return Number',
-      2: 'Return Number',
+      0: 'returnNumber',
+      1: 'returnNumber',
+      2: 'returnNumber',
       /*
         The Number of Returns is the total number of returns for a given pulse.
         For example, a laser data point may be return two (Return Number) within
         a total number of five returns.
       */
-      3: 'Number of Returns (given pulse)',
-      4: 'Number of Returns (given pulse)',
-      5: 'Number of Returns (given pulse)',
+      3: 'numberOfReturns',
+      4: 'numberOfReturns',
+      5: 'numberOfReturns',
       /*
         The Scan Direction Flag denotes the direction at which the scanner mirror
         was traveling at the time of the output pulse. A bit value of 1 is a
@@ -72,13 +72,13 @@ export const pdrf0Parts = base.concat([
         (where positive scan direction is a scan moving from the left side of the
         in-track direction to the right side and negative the opposite).
       */
-      6: 'Scan Direction Flag',
+      6: 'direction',
       /*
         The Edge of Flight Line data bit has a value of 1 only when the point is
         at the end of a scan. It is the last point on a given scan line before it
         changes direction.
       */
-      7: 'Edge of Flight Line'
+      7: 'edge'
     }),
     name: 'mixed'
   },
@@ -115,13 +115,13 @@ export const pdrf0Parts = base.concat([
     the lower five bits set to 2 would be a ground point that had been
     Synthetically collected and marked as a model key-point.
    */
-  { reader: unsignedChar, name: 'Classification' },
+  { reader: unsignedChar, name: 'classification' },
   /*
     The Scan Angle Rank is a signed one-byte number with a valid range
     from - 90 to +90. The Scan Angle Rank is the angle (rounded to the
     nearest integer in the absolute
   */
-  { reader: char, name: 'Scan Angle' }
+  { reader: char, name: 'scanAngle' }
 ]).concat(bottom)
 
 export default readerForReaders(pdrf0Parts)

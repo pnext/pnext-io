@@ -14,7 +14,7 @@ export const extended: INamedReader[] = [
     packet are supported. A value of zero indicates that there is no waveform data
     associated with this LIDAR point record.
   */
-  { reader: unsignedChar, name: 'Wave Packet Descriptor Index' },
+  { reader: unsignedChar, name: 'wavePacketDescriptor' },
   /*
     The waveform packet data are stored in the LAS file in an Extended Variable Length
     Record or in an auxiliary WPD file. The Byte Offset represents the location of the
@@ -31,7 +31,7 @@ export const extended: INamedReader[] = [
 
     for data stored in an auxiliary file
   */
-  { reader: unsignedLongLong, name: 'Byte offset to waveform data' },
+  { reader: unsignedLongLong, name: 'wavePacketByteOffset' },
   /*
     The size, in bytes, of the waveform packet associated with this return. Note that
     each waveform can be of a different size (even those with the same Waveform
@@ -39,12 +39,12 @@ export const extended: INamedReader[] = [
     packets can be located only via the Byte offset to Waveform Packet Data value
     since there is no requirement that records be stored sequentially.
   */
-  { reader: unsignedLong, name: 'Waveform packet size in bytes' },
+  { reader: unsignedLong, name: 'wavePacketSize' },
   /*
     The offset in picoseconds (10-12) from the first digitized value to the location
     within the waveform packet that the associated return pulse was detected.
   */
-  { reader: float, name: 'Return Point Waveform Location' },
+  { reader: float, name: 'returnPointLocation' },
   /*
     These parameters define a parametric line equation for extrapolating points along
     the associated waveform. The position along the wave is given by:
@@ -60,9 +60,9 @@ export const extended: INamedReader[] = [
     the coordinate systems of the LAS data. If the coordinate system is geographic,
     the horizontal units are decimal degrees and the vertical units are meters.
   */
-  { reader: float, name: 'x(t)' },
-  { reader: float, name: 'y(t)' },
-  { reader: float, name: 'z(t)' }
+  { reader: float, name: 'xt' },
+  { reader: float, name: 'yt' },
+  { reader: float, name: 'zt' }
 ]
 
 export default readerForReaders(

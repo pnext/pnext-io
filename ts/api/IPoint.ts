@@ -28,4 +28,6 @@ export default interface IPoint {
   direction?: ScanDirection,
   time?: number,
   returnPointLocation?: number,
+  pointSourceId?: number,
+  userData?: number
 }

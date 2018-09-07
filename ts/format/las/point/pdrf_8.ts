@@ -5,7 +5,7 @@ import unsignedShort from '../../../reader/type/uint16LE'
 /*
   The NIR (near infrared) channel value associated with this point.
 */
-export const NIR = { reader: unsignedShort, name: 'NIR' }
+export const NIR = { reader: unsignedShort, name: 'nir' }
 export const pdrf8Parts: INamedReader[] =
   pdrf7Parts
     .concat(NIR)

@@ -19,19 +19,19 @@ export const pdrf6Parts: INamedReader[] =
           the second a Return Number of two, and so on up to fifteen returns. The
           Return Number must be between 1 and the Number of Returns, inclusive.
         */
-        0: 'Return Number',
-        1: 'Return Number',
-        2: 'Return Number',
-        3: 'Return Number',
+        0: 'returnNumber',
+        1: 'returnNumber',
+        2: 'returnNumber',
+        3: 'returnNumber',
         /*
           The Number of Returns is the total number of returns for a given pulse.
           For example, a laser data point may be return two (Return Number) within
           a total number of up to fifteen returns.
         */
-        4: 'Number of Returns (given pulse)',
-        5: 'Number of Returns (given pulse)',
-        6: 'Number of Returns (given pulse)',
-        7: 'Number of Returns (given pulse)'
+        4: 'numberOfReturns',
+        5: 'numberOfReturns',
+        6: 'numberOfReturns',
+        7: 'numberOfReturns'
       }),
       name: 'mixedA'
     },
@@ -70,17 +70,17 @@ export const pdrf6Parts: INamedReader[] =
           that had been synthetically collected and marked as a model
           key-point.
         */
-        0: 'Classification Flags',
-        1: 'Classification Flags',
-        2: 'Classification Flags',
-        3: 'Classification Flags',
+        0: 'classificationFlags',
+        1: 'classificationFlags',
+        2: 'classificationFlags',
+        3: 'classificationFlags',
         /*
           Scanner Channel is used to indicate the channel (scanner head) of a
           multi- channel system. Channel 0 is used for single scanner systems.
           Up to four channels are supported (0-3).
         */
-        4: 'Scanner Channel',
-        5: 'Scanner Channel',
+        4: 'scannerChannel',
+        5: 'scannerChannel',
         /*
           The Scan Direction Flag denotes the direction at which the scanner
           mirror was traveling at the time of the output pulse. A bit value
@@ -89,7 +89,7 @@ export const pdrf6Parts: INamedReader[] =
           the left side of the in-track direction to the right side and
           negative the opposite).
         */
-        6: 'Scan Direction Flag',
+        6: 'direction',
         /*
           The Edge of Flight Line data bit has a value of 1 only when the point
           is at the end of a scan. It is the last point on a given scan line
@@ -97,11 +97,11 @@ export const pdrf6Parts: INamedReader[] =
           this field has no meaning for 360° Field of View scanners (such as
           Mobile LIDAR scanners) and should not be set.
         */
-        7: 'Edge of Flight Line'
+        7: 'edge'
       }),
       name: 'mixedB'
     },
-    { reader: unsignedChar, name: 'Classification' },
+    { reader: unsignedChar, name: 'classification' },
     /*
       The Scan Angle is a signed short that represents the rotational position
       of the emitted laser pulse with respect to the vertical of the coordinate
@@ -113,7 +113,7 @@ export const pdrf6Parts: INamedReader[] =
       data). The maximum value in the negative direction is -30.000 which is
       also directly up.
     */
-    { reader: char, name: '`Scan Angle' }
+    { reader: char, name: 'scanAngle' }
   ])
   .concat(bottom)
   .concat(gpsTime)
