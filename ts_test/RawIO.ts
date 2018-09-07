@@ -3,6 +3,17 @@ import { test } from 'tap'
 import RawIO from '../ts/raw/RawIO'
 import FeatureType from '../ts/api/FeatureType'
 import Feature from '../ts/api/Feature'
+import { ReadableStream } from 'ts-stream'
+
+function toArray<T> (stream: ReadableStream<T>): Promise<T[]> {
+  const promise = new Promise<T[]>((resolve: (value?: T[] | PromiseLike <T[]>) => void, reject: (error?: Error) => void) => {
+    const arr = []
+    stream.forEach((val: T) => {
+      arr.push(val)
+    }, (error?: Error) => error ? reject(error) : resolve(arr)).catch(reject)
+  })
+  return promise
+}
 
 test('Simple tree info', async t => {
   const io = new RawIO('abc', [[]])
@@ -35,6 +46,10 @@ test('Simple tree info', async t => {
 })
 
 const POINT_ZERO = { x: 0, y: 0, z: 0 }
+const POINT_ONE = { x: 1, y: 1, z: 1 }
+const POINT_TWO = { x: 2, y: 2, z: 2 }
+const POINT_THREE = { x: 3, y: 3, z: 3 }
+const POINT_FOUR = { x: 4, y: 4, z: 4 }
 
 test('bounds for multiple points', async t => {
   const io = new RawIO('abc', [[
@@ -103,4 +118,27 @@ test('fetching features that dont exist', async t => {
   } catch (e) {
     t.equals(e.message, '#0: r[uint32] is not available.')
   }
+})
+
+test('fetching start/end of points', async t => {
+  const io = new RawIO('abc', [[POINT_ZERO, POINT_ONE], [POINT_TWO], [POINT_THREE, POINT_FOUR]])
+  t.deepEquals(await io.getPoints({
+    start: 1,
+    end: 4
+  }).toArray(), [
+    POINT_ONE,
+    POINT_TWO,
+    POINT_THREE
+  ])
+  t.deepEquals(await io.getPoints({
+    start: 1,
+    end: 1
+  }).toArray(), [])
+})
+
+test('invalid start/end queries', async t => {
+  const io = new RawIO('abc', [[POINT_ZERO, POINT_ONE], [POINT_TWO], [POINT_THREE, POINT_FOUR]])
+  t.rejects(toArray(io.getPoints({ start: -1 })), 'Too small start will end in error')
+  t.rejects(toArray(io.getPoints({ end: 100 })), 'Too big start will also end in error')
+  t.rejects(toArray(io.getPoints({ start: 2, end: 1 })), 'Start needs to be before end')
 })
