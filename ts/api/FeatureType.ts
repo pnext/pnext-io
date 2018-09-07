@@ -20,8 +20,10 @@ enum FeatureType {
   double = 13       // fixed size 8 byte floating point
 }
 
+/* Number Space of positive integers that fit in common color spaces */
+export const UInt16: FeatureType[] = [ FeatureType.uint8, FeatureType.uint16 ]
 /* Number Space of positive integers that fit in JavaScripts "Number" space */
-export const UInt32: FeatureType[] = [ FeatureType.uint8, FeatureType.uint16, FeatureType.uint32 ]
+export const UInt32: FeatureType[] = UInt16.concat([ FeatureType.uint32 ])
 /* Number Space of positive and negative integers that fit in JavaScripts "Number" space */
 export const Int32: FeatureType[] = [ FeatureType.int8, FeatureType.int16, FeatureType.int32 ].concat(UInt32)
 /* Number Space of positive integers that might require "Long" numbers */
