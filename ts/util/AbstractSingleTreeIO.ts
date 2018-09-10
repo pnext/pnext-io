@@ -17,15 +17,14 @@ export default abstract class AbstractSingleTreeIO extends AbstractIO {
 
   _getTrees (stream: Stream<ITree>, query?: ITreeQuery) {
     this.treeP.then(tree => {
-      if (query && query.ids) {
-        for (const id of query.ids) {
-          if (id !== tree.id) {
-            stream.end(new Error(`Unknown tree ${id}`)).catch(ignoreError)
-            return
-          }
+      const ids = query && query.ids ? query.ids : [ null ]
+      for (const id of ids) {
+        if (id !== null && id !== tree.id) {
+          stream.end(new Error(`Unknown tree ${id}`)).catch(ignoreError)
+          return
         }
+        stream.write(tree)
       }
-      stream.write(tree)
       stream.end()
     })
   }
