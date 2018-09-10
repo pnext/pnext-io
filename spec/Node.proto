@@ -6,5 +6,5 @@ message Node {
   // if no octadr is given
   optional string id = 3;
   // Amount of points in the node
-  required uint64 numPoints = 3;
+  required uint32 numPoints = 3;
 }

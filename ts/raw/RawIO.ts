@@ -97,7 +97,7 @@ export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
       for (const points of this.pointData) {
         const node: INode = {
           id: index.toString(),
-          numPoints: tree.numPoints
+          numPoints: points.length
         }
         if (first) {
           node.treeId = tree.id
@@ -109,65 +109,11 @@ export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
     })
   }
 
-  _getPoints (stream: Stream<{ [k: string]: any; }>, query?: IPointQuery): void {
-    this.treeP.then(tree => {
-      let start = query && query.start || 0
-      let end = query && query.end || tree.numPoints
-      if (start < 0) {
-        return stream.end(new Error(`Invalid query: start(${start}) needs to be bigger 0`))
-      }
-      if (end > tree.numPoints) {
-        return stream.end(new Error(`Invalid query: end(${end}) needs to be within the size of this tree(${tree.numPoints})`))
-      }
-      if (end < start) {
-        return stream.end(new Error(`Invalid query: End before start ${start}:${end}`))
-      }
-      let ids: number[] = this.ids
-      if (query && query.nodes) {
-        ids = []
-        for (const node of query.nodes) {
-          if (node.treeId !== tree.id) {
-            return stream.end(new Error(`Invalid tree id "${node.treeId}" requested!`)).catch(ignoreError)
-          }
-          if (node.address) {
-            return stream.end(new Error('This tree only supports id-ed nodes')).catch(ignoreError)
-          }
-          if (!node.id) {
-            return stream.end(new Error('Node id required!')).catch(ignoreError)
-          }
-          const num = parseInt(node.id, 10)
-          if (isNaN(num) || num < 0 || num >= this.pointData.length) {
-            return stream.end(new Error(`Invalid node: ${node.id}`)).catch(ignoreError)
-          }
-          ids.push(num)
-        }
-      }
-      if (query && query.schema) {
-        const error = featureMatch(tree.schema, query.schema)
-        if (error) {
-          return stream.end(new Error(error.map(error => error.message).join(';'))).catch(ignoreError)
-        }
-      }
-      let count = 0
-      for (const index of ids) {
-        const node = this.pointData[index]
-        if (count + node.length < start) {
-          // Skip this node as it is entirely not used
-          continue
-        }
-        for (const point of node) {
-          if (count < start) {
-            count += 1
-            continue
-          }
-          if (count >= end) {
-            return stream.end()
-          }
-          stream.write(point)
-          count += 1
-        }
-      }
-      stream.end()
-    })
+  async _getPoints (stream: Stream<{ [k: string]: any; }>, node: INode, start: number, numPoints: number): Promise<void> {
+    const points = this.pointData[node.id]
+    const end = start + numPoints
+    for (let i = start; i < end; i++) {
+      stream.write(points[i])
+    }
   }
 }
