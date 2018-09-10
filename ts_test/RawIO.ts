@@ -63,36 +63,25 @@ test('bounds for multiple points', async t => {
   t.deepEquals(tree.bounds, {
     min: POINT_ZERO,
     max: { x: 2, y: 2, z: 2 }
-  })
-  t.equals(tree.bounds, tree.boundsConforming)
+  }, 'automatic bounds calculation works')
+  t.equals(tree.bounds, tree.boundsConforming, 'the conforming bounds should be same for regular bounds')
 })
 
 test('getting nodes', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
   const nodes = await io.getNodes().toArray()
-  t.equals(nodes.length, 1)
+  t.equals(nodes.length, 1, 'One node should be returned for one array')
   const node = nodes[0]
-  t.equals(node.treeId, 'abc')
-  t.equals(node.address, undefined)
-  t.equals(node.id, '0')
-  t.equals(node.numPoints, 1)
-})
-
-test('fetching nodes', async t => {
-  const io = new RawIO('abc', [[POINT_ZERO]])
-  const nodes = await io.getNodes().toArray()
-  t.equals(nodes.length, 1)
-  const node = nodes[0]
-  t.equals(node.treeId, 'abc')
-  t.equals(node.address, undefined)
-  t.equals(node.id, '0')
-  t.equals(node.numPoints, 1)
+  t.equals(node.treeId, 'abc', 'TreeId fits the input ID')
+  t.equals(node.address, undefined, 'As its not an octree: no address')
+  t.equals(node.id, '0', 'The ID has been stringified')
+  t.equals(node.numPoints, 1, 'One point in the whole array.')
 })
 
 test('fetching nodes with trees', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
   const nodes = await io.getNodesWithTrees().toArray()
-  t.equals(nodes.length, 1)
+  t.equals(nodes.length, 1, 'Also with trees it should ')
   const node = nodes[0]
   t.equals(node.tree.id, 'abc')
 })
@@ -112,6 +101,7 @@ test('fetching with features should be able to return points with more propertie
   t.equals(points[0], POINT_ZERO)
 })
 
+/*
 test('fetching features that dont exist', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
   try {
@@ -121,26 +111,25 @@ test('fetching features that dont exist', async t => {
     t.equals(e.message, '#0: r[uint32] is not available.')
   }
 })
+*/
 
 test('fetching start/end of points', async t => {
   const io = new RawIO('abc', [[POINT_ZERO, POINT_ONE], [POINT_TWO], [POINT_THREE, POINT_FOUR]])
   t.deepEquals(await io.getPoints({
     start: 1,
-    end: 4
+    numPoints: 3
   }).toArray(), [
     POINT_ONE,
     POINT_TWO,
     POINT_THREE
-  ])
+  ], 'limiting to three points should pass node barriers')
   t.deepEquals(await io.getPoints({
     start: 1,
-    end: 1
-  }).toArray(), [])
+    numPoints: 0
+  }).toArray(), [], '"numPoints"=0 should return an empty array')
 })
 
 test('invalid start/end queries', async t => {
   const io = new RawIO('abc', [[POINT_ZERO, POINT_ONE], [POINT_TWO], [POINT_THREE, POINT_FOUR]])
   t.rejects(toArray(io.getPoints({ start: -1 })), 'Too small start will end in error')
-  t.rejects(toArray(io.getPoints({ end: 100 })), 'Too big start will also end in error')
-  t.rejects(toArray(io.getPoints({ start: 2, end: 1 })), 'Start needs to be before end')
 })
