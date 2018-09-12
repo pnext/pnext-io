@@ -1,7 +1,7 @@
 #!/usr/bin/env node --require ts-node/register
 import { test } from 'tap'
-import featureMatch from '../ts/util/featureMatch'
-import FeatureType from '../ts/api/FeatureType'
+import FeatureType from '../../ts/api/FeatureType'
+import featureMatch from '../../ts/util/featureMatch'
 
 const x = { type: FeatureType.uint16, name: 'x' }
 const y = { type: FeatureType.uint16, name: 'y' }

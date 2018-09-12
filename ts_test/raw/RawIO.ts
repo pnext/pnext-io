@@ -1,7 +1,7 @@
 #!/usr/bin/env node --require ts-node/register
 import { test } from 'tap'
-import RawIO from '../ts/raw/RawIO'
-import FeatureType, { Double } from '../ts/api/FeatureType'
+import RawIO from '../../ts/raw/RawIO'
+import FeatureType, { Double } from '../../ts/api/FeatureType'
 import { ReadableStream } from 'ts-stream'
 
 const x = { type: Double, name: 'x' }

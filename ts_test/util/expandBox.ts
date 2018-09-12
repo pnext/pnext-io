@@ -1,7 +1,7 @@
 #!/usr/bin/env node --require ts-node/register
 import { test } from 'tap'
-import expandBox from '../ts/util/expandBox'
-import IBox3 from '../ts/api/IBox3'
+import expandBox from '../../ts/util/expandBox'
+import IBox3 from '../../ts/api/IBox3'
 
 function createBox (): IBox3 {
   return {

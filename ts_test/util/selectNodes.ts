@@ -1,12 +1,12 @@
 #!/usr/bin/env node --require ts-node/register
 import { test } from 'tap'
-import selectNodes from '../ts/util/selectNodes'
-import INode from '../ts/api/INode'
-import INodeTree from '../ts/util/INodeTree'
-import INodeQuery from '../ts/api/INodeQuery'
-import IVector3 from '../ts/api/IVector3'
-import { Box3, Vector3, PerspectiveCamera } from 'three'
-import getBoundingSphere from '../ts/util/getBoundingSphere'
+import { Box3, PerspectiveCamera, Vector3 } from 'three'
+import INode from '../../ts/api/INode'
+import INodeQuery from '../../ts/api/INodeQuery'
+import IVector3 from '../../ts/api/IVector3'
+import INodeTree from '../../ts/util/INodeTree'
+import getBoundingSphere from '../../ts/util/getBoundingSphere'
+import selectNodes from '../../ts/util/selectNodes'
 
 function createNode (name, points: IVector3[]) {
   const bounds = new Box3()
