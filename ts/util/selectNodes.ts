@@ -80,8 +80,7 @@ function getWeight (node: INodeTree, fDisplays?: IFrustumDisplay[]): number {
 
 interface IOutput {
   write: (node: INode) => any,
-  isEndingOrEnded: () => boolean,
-  end: (error?: Error) => void
+  isEndingOrEnded: () => boolean
 }
 
 interface IFrustumDisplay {
@@ -137,8 +136,8 @@ function getFrustumDisplays (display?: IDisplay[]): IFrustumDisplay[] | undefine
   })
 }
 
-function filterAndSortByWeight (nodeList: INodeTree[], fDisplays: IFrustumDisplay[]): INodeTree[] {
-  return nodeList.map(node => {
+function filterAndSortByWeight (treeNodeList: INodeTree[], fDisplays: IFrustumDisplay[]): INodeTree[] {
+  return treeNodeList.map(node => {
     return {
       weight: getWeight(node, fDisplays),
       node
@@ -149,8 +148,50 @@ function filterAndSortByWeight (nodeList: INodeTree[], fDisplays: IFrustumDispla
     .map(weightedNode => weightedNode.node)
 }
 
-function allChildren (nodeList: INodeTree[]): INodeTree[] | null {
-  const childrenList = nodeList.map(node => node.children).filter(Boolean)
+function getFrustumsForDisplays (fDisplays?: IFrustumDisplay[]) {
+  if (fDisplays) {
+    return fDisplays.map(fDisplay => getFrustumFromCam(fDisplay.cam))
+  }
+}
+
+export function createFilter (query?: INodeQuery): ((treeNodeList: INodeTree[]) => INodeTree[]) | null {
+  if (!query) {
+    return null
+  }
+  const fDisplays = getFrustumDisplays(query.display)
+  const frustums = getFrustumsForDisplays(fDisplays)
+  const nodeVisible = isNodeVisible(query.cut, frustums)
+  if (nodeVisible !== null) {
+    return (treeNodeList: INodeTree[]) => treeNodeList.filter(({ node }) => nodeVisible(node))
+  }
+  return null
+}
+
+export function createFilterAndSort (query?: INodeQuery): ((treeNodeList: INodeTree[]) => INodeTree[]) | null {
+  if (!query) {
+    return null
+  }
+  const fDisplays = getFrustumDisplays(query.display)
+  const frustums = getFrustumsForDisplays(fDisplays)
+  const nodeVisible = isNodeVisible(query.cut, frustums)
+
+  if (nodeVisible !== undefined) {
+    if (fDisplays !== undefined) {
+      return (treeNodeList: INodeTree[]) =>
+        filterAndSortByWeight(
+          treeNodeList.filter(({ node }) => nodeVisible(node))
+        , fDisplays)
+    }
+    return (treeNodeList: INodeTree[]) => treeNodeList.filter(({ node }) => nodeVisible(node))
+  }
+  if (fDisplays !== undefined) {
+    return (treeNodeList: INodeTree[]) => filterAndSortByWeight(treeNodeList, fDisplays)
+  }
+  return null
+}
+
+function allChildren (treeNodeList: INodeTree[]): INodeTree[] | null {
+  const childrenList = treeNodeList.map(node => node.children).filter(Boolean)
   if (childrenList.length === 0) {
     return null
   }
@@ -168,25 +209,14 @@ function minLong (range?: ILongRange): Long | number {
   return range.min
 }
 
-function getFrustumsForDisplays (fDisplays?: IFrustumDisplay[]) {
-  if (fDisplays) {
-    return fDisplays.map(fDisplay => getFrustumFromCam(fDisplay.cam))
-  }
-}
-
-export default async function selectNodes (query: INodeQuery, treeNodeList: INodeTree[], output: IOutput): Promise<boolean> {
-  const fDisplays = getFrustumDisplays(query.display)
-  const frustums = getFrustumsForDisplays(fDisplays)
-  const nodeVisible = isNodeVisible(query.cut, frustums)
+export default async function selectNodes (treeNodeList: INodeTree[], output: IOutput, query?: INodeQuery): Promise<boolean> {
   let totalPoints: Long = new Long(0)
   const min: Long | number = minLong(query.pointRange)
+  const filterAndSort = createFilterAndSort(query)
 
   while (treeNodeList) {
-    if (nodeVisible !== undefined) {
-      treeNodeList = treeNodeList.filter(({ node }) => nodeVisible(node))
-    }
-    if (fDisplays !== undefined) {
-      treeNodeList = filterAndSortByWeight(treeNodeList, fDisplays)
+    if (filterAndSort !== null) {
+      treeNodeList = filterAndSort(treeNodeList)
     }
     for (const node of treeNodeList) {
       if (output.isEndingOrEnded()) {
@@ -195,7 +225,6 @@ export default async function selectNodes (query: INodeQuery, treeNodeList: INod
       if (query.pointRange) {
         totalPoints = totalPoints.add(node.node.numPoints)
         if (totalPoints.greaterThan(query.pointRange.max)) {
-          output.end()
           return true
         }
         if (totalPoints.lessThan(min)) {
@@ -206,6 +235,5 @@ export default async function selectNodes (query: INodeQuery, treeNodeList: INod
     }
     treeNodeList = allChildren(treeNodeList)
   }
-  output.end()
   return true
 }

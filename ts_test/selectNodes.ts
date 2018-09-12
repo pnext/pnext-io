@@ -55,17 +55,12 @@ function box3 (a: IVector3, b: IVector3): Box3 {
 }
 
 test('select everything on an empty list should just end', async t => {
-  let ended = false
-  const done = await selectNodes({}, [], {
+  await selectNodes([], {
     isEndingOrEnded: () => false,
     write (node: INode): void {
       return
-    },
-    end (): void {
-      ended = true
     }
-  })
-  t.equals(ended, true, 'successfully ended')
+  }, {})
 })
 
 function createABNodes () {
@@ -80,9 +75,10 @@ function createABNodes () {
 
 async function selectInABNodes (list: INode[], query: INodeQuery): Promise<INode[]> {
   const output: INode[] = []
-  await selectNodes(query,
+  await selectNodes(
     createTreeNodes(list),
-    gatherNodes(output)
+    gatherNodes(output),
+    query
   )
   return output
 }

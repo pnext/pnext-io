@@ -33,5 +33,5 @@ export default interface IPNextIO {
   /**
    * Requesting the actual node data from the server.
    */
-  getPoints (query?: IPointQuery, byos?: Stream<IPoint>): ReadableStream<IPoint>
+  getPoints (query?: IPointQuery, byos?: Stream<IPoint[]>): ReadableStream<IPoint[]>
 }

@@ -1,23 +1,15 @@
-import IPNextIO from '../api/IPNextIO'
 import Stream from 'ts-stream'
-import ITree from '../api/ITree'
-import INode from '../api/INode'
-import IPoint from '../api/IPoint'
-import INodeSelector from '../api/INodeSelector'
-import IPointQuery from '../api/IPointQuery'
-import ITreeQuery from '../api/ITreeQuery'
-import INodeQuery from '../api/INodeQuery'
-import IVector3 from '../api/IVector3'
-import IBox3 from '../api/IBox3'
-import IFeature from '../api/IFeature'
 import FeatureType from '../api/FeatureType'
+import IBox3 from '../api/IBox3'
+import INode from '../api/INode'
+import INodeQuery from '../api/INodeQuery'
+import INodeWithTree from '../api/INodeWithTree'
+import IPNextIO from '../api/IPNextIO'
+import IPoint from '../api/IPoint'
+import ITree from '../api/ITree'
+import IVector3 from '../api/IVector3'
 import AbstractSingleTreeIO from '../util/AbstractSingleTreeIO'
 import expandBox from '../util/expandBox'
-import featureMatch from '../util/featureMatch'
-
-function ignoreError () {
-  return
-}
 
 function createBox (): IBox3 {
   return {
@@ -82,38 +74,30 @@ class TreeInfo implements ITree {
 
 export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
   pointData: IPoint[][]
+  nodes: INode[]
   ids: number[]
 
   constructor (id: string, pointData: IPoint[][]) {
     super(Promise.resolve(new TreeInfo(id, pointData)))
     this.pointData = pointData
     this.ids = pointData.map((value: IPoint[], index: number) => index)
-  }
-
-  _getNodes (stream: Stream<INode>, query?: INodeQuery) {
-    let first = true
-    this.treeP.then(tree => {
-      let index = 0
-      for (const points of this.pointData) {
-        const node: INode = {
-          id: index.toString(),
-          numPoints: points.length
-        }
-        if (first) {
-          node.treeId = tree.id
-        }
-        stream.write(node)
-        index ++
+    this.nodes = pointData.map((pointArray, index): INode => {
+      return {
+        id: index.toString(),
+        numPoints: pointArray.length
       }
-      stream.end()
     })
+    this.nodes[0].treeId = id
   }
 
-  async _getPoints (stream: Stream<{ [k: string]: any; }>, node: INode, start: number, numPoints: number): Promise<void> {
-    const points = this.pointData[node.id]
-    const end = start + numPoints
-    for (let i = start; i < end; i++) {
-      stream.write(points[i])
+  async _getNodes (stream: Stream<INode>, query?: INodeQuery) {
+    // TODO: Implement filtering based on query here.
+    for (const node of this.nodes) {
+      await stream.write(node)
     }
+  }
+
+  async _getPoints (stream: Stream<IPoint[]>, node: INodeWithTree) {
+    await stream.write(this.pointData[node.id])
   }
 }

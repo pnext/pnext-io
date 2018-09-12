@@ -80,17 +80,17 @@ test('getting nodes', async t => {
 
 test('fetching nodes with trees', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
+  const tree = await io.getTree('abc')
   const nodes = await io.getNodesWithTrees().toArray()
-  t.equals(nodes.length, 1, 'Also with trees it should ')
-  const node = nodes[0]
-  t.equals(node.tree.id, 'abc')
+  t.equals(nodes.length, 1, 'Also with trees it should stay 1')
+  t.equals(nodes[0].tree, tree, 'The tree is the one we expect.')
 })
 
 test('fetching points', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
   const points = await io.getPoints().toArray()
   t.equals(points.length, 1)
-  t.equals(points[0], POINT_ZERO)
+  t.equals(points[0][0], POINT_ZERO)
 })
 
 test('fetching with features should be able to return points with more properties than requested.', async t => {
@@ -98,7 +98,7 @@ test('fetching with features should be able to return points with more propertie
   const points = await io.getPoints({
     schema: [x]
   }).toArray()
-  t.equals(points[0], POINT_ZERO)
+  t.equals(points[0][0], POINT_ZERO)
 })
 
 /*
@@ -112,24 +112,3 @@ test('fetching features that dont exist', async t => {
   }
 })
 */
-
-test('fetching start/end of points', async t => {
-  const io = new RawIO('abc', [[POINT_ZERO, POINT_ONE], [POINT_TWO], [POINT_THREE, POINT_FOUR]])
-  t.deepEquals(await io.getPoints({
-    start: 1,
-    numPoints: 3
-  }).toArray(), [
-    POINT_ONE,
-    POINT_TWO,
-    POINT_THREE
-  ], 'limiting to three points should pass node barriers')
-  t.deepEquals(await io.getPoints({
-    start: 1,
-    numPoints: 0
-  }).toArray(), [], '"numPoints"=0 should return an empty array')
-})
-
-test('invalid start/end queries', async t => {
-  const io = new RawIO('abc', [[POINT_ZERO, POINT_ONE], [POINT_TWO], [POINT_THREE, POINT_FOUR]])
-  t.rejects(toArray(io.getPoints({ start: -1 })), 'Too small start will end in error')
-})
