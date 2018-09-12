@@ -1,12 +1,11 @@
+import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
 import long from '../../../reader/type/int32LE'
-import unsignedShort from '../../../reader/type/uint16LE'
 import char from '../../../reader/type/int8'
-import bits from '../../../reader/util/bits'
+import unsignedShort from '../../../reader/type/uint16LE'
 import unsignedChar from '../../../reader/type/uint8'
-import IFeature from '../../../api/IFeature'
-import readerForReaders from '../../../reader/readerForReaders'
+import bits from '../../../reader/util/bits'
 
-export const base = [
+export const base: INamedReader[] = [
   /*
     The X, Y, and Z values are stored as long integers. The X, Y, and Z values are
     used in conjunction with the scale values and the offset values to determine
@@ -28,7 +27,7 @@ export const base = [
   { reader: unsignedShort, name: 'intensity' }
 ]
 
-export const bottom = [
+export const bottom: INamedReader[] = [
   /*
     This field may be used at the user’s discretion.
   */

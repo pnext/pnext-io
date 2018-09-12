@@ -41,7 +41,7 @@ function getType (bitShifts) {
   return type
 }
 
-export default function bits (bits: IBits): IReader {
+export default function bits (bits: IBits): IReader<{ [key: string]: number}> {
   const bitShifts = getBitShifts(bits)
   const type = getType(bitShifts)
   return createFixedObjectReader(1, type, (view: DataView, byteOffset: number, target: { [key: string]: any }) => {

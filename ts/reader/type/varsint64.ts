@@ -1,11 +1,11 @@
-import createDynamicReader from '../util/createDynamicReader'
+import { createDynamicSimpleReader } from '../util/createDynamicReader'
 import IDynamicContext from '../util/IDynamicContext'
 import readVarInt64 from '../util/readVarInt64'
 import zzDecode from '../util/zzDecode'
 import zzDecodeLong from '../util/zzDecodeLong'
 import FeatureType from '../../api/FeatureType'
 
-export default createDynamicReader(1, FeatureType.int64, (view: DataView, context: IDynamicContext) => {
+export default createDynamicSimpleReader<number | Long>(1, FeatureType.int64, (view: DataView, context: IDynamicContext) => {
   if (!readVarInt64(false, view, context)) {
     return false
   }

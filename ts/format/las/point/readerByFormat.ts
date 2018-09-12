@@ -12,7 +12,7 @@ import pdrf_8 from './pdrf_8'
 import pdrf_9 from './pdrf_9'
 import pdrf_10 from './pdrf_10'
 
-const readerByFormat: { [ format: number ]: IReader } = {
+const readerByFormat: { [ format: number ]: IReader<any> } = {
   [ LasPointFormat.PDRF_0 ]: pdrf_0,
   [ LasPointFormat.PDRF_1 ]: pdrf_1,
   [ LasPointFormat.PDRF_2 ]: pdrf_2,

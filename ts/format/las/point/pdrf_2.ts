@@ -1,8 +1,8 @@
 import { pdrf0Parts } from './pdrf_0'
-import readerForReaders from '../../../reader/readerForReaders'
+import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
 import unsignedShort from '../../../reader/type/uint16LE'
 
-export const rgb = [
+export const rgb: INamedReader<any>[] = [
   /*
     The Red, Green, Blue values should always be normalized to 16 bit values.
     For example, when encoding an 8 bit per channel pixel, multiply each channel

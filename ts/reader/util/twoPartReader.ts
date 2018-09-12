@@ -15,7 +15,7 @@ const contextB: IDynamicContext = {
   byteOffset: 0
 }
 
-function readPartB (partB: IReader, view: DataView, context: IDynamicContext) {
+function readPartB (partB: IReader<any>, view: DataView, context: IDynamicContext) {
   const minSize = contextA.byteOffset + partB.minSize
   if (minSize > view.byteLength) {
     return false
@@ -36,7 +36,7 @@ function readPartB (partB: IReader, view: DataView, context: IDynamicContext) {
   return true
 }
 
-function fixedSizeImpl (partA: IReader, template: (readerResult) => IReader, type: FeatureType) {
+function fixedSizeImpl (partA: IReader<any>, template: (readerResult) => IReader<any>, type: FeatureType) {
   return (view: DataView, context: IDynamicContext) => {
     const afterPartA = view.byteOffset + partA.minSize
     contextA.data = partA.read(view, context.byteOffset)
@@ -46,7 +46,7 @@ function fixedSizeImpl (partA: IReader, template: (readerResult) => IReader, typ
   }
 }
 
-function dynamicImpl (partA: IReader, template: (readerResult) => IReader, type: FeatureType) {
+function dynamicImpl (partA: IReader<any>, template: (readerResult) => IReader<any>, type: FeatureType) {
   return (view: DataView, context: IDynamicContext) => {
     contextA.byteOffset = context.byteOffset
     if (!partA.readDynamic(view, contextA)) {
@@ -56,14 +56,14 @@ function dynamicImpl (partA: IReader, template: (readerResult) => IReader, type:
   }
 }
 
-function getReaderImpl (partA, template: (readerResult) => IReader, type: FeatureType) {
+function getReaderImpl (partA: IReader<any>, template: (readerResult) => IReader<any>, type: FeatureType) {
   if (partA.fixedSize) {
     return fixedSizeImpl(partA, template, type)
   }
   return dynamicImpl(partA, template, type)
 }
 
-export default function twoPartReader (partA: IReader, template: (readerResult) => IReader, type: FeatureType) {
+export default function twoPartReader <AType, TemplateType = any> (partA: IReader<AType>, template: (readerResult: AType) => IReader<TemplateType>, type: FeatureType) {
   return createDynamicReader(
     partA.minSize,
     type,

@@ -1,4 +1,4 @@
-import createFixedReader from '../util/createFixedReader'
+import { createFixedSimpleReader } from '../util/createFixedReader'
 import FeatureType from '../../api/FeatureType'
 
-export default createFixedReader(4, FeatureType.int32, (view: DataView, byteOffset: number) => view.getInt32(byteOffset, true) | 0)
+export default createFixedSimpleReader<number>(4, FeatureType.int32, (view: DataView, byteOffset: number) => view.getInt32(byteOffset, true) | 0)

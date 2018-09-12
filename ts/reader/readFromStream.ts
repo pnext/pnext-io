@@ -10,7 +10,7 @@ function combine (a: Uint8Array, b: Uint8Array) {
   return combined
 }
 
-function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader, limit: number = undefined) {
+function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader<any>, limit: number = undefined) {
   let leftOver = null
   let count = 0
   return inStream.forEach((data: Uint8Array) => {
@@ -47,7 +47,7 @@ const workContext: IDynamicContext = {
   data: null
 }
 
-function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader, limit: number = undefined) {
+function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader<any>, limit: number = undefined) {
   let leftOver = null
   const context = {
     byteOffset: 0
@@ -88,7 +88,7 @@ function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>
   }).then(() => leftOver)
 }
 
-export default function readFromStream (inStream: ReadableStream<Uint8Array>, reader: IReader, limit: number = undefined): ReadableStream<any> {
+export default function readFromStream <T> (inStream: ReadableStream<Uint8Array>, reader: IReader<T>, limit: number = undefined): ReadableStream<T> {
   const out = new Stream<any>()
   let process = reader.fixedSize
     ? readFixedSize(out, inStream, reader, limit)

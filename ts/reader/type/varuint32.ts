@@ -1,5 +1,5 @@
-import createDynamicReader from '../util/createDynamicReader'
+import { createDynamicSimpleReader } from '../util/createDynamicReader'
 import readVarUint32 from '../util/readVarUint32'
 import FeatureType from '../../api/FeatureType'
 
-export default createDynamicReader(1, FeatureType.uint32, readVarUint32)
+export default createDynamicSimpleReader<number>(1, FeatureType.uint32, readVarUint32)

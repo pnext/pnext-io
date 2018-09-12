@@ -9,11 +9,11 @@ const helperContext: IDynamicContext = {
   size: 0
 }
 
-export function createDynamicSimpleReader (
+export function createDynamicSimpleReader<T> (
   minSize: number,
   type: FeatureType,
   readDynamic: (view: DataView, context: IDynamicContext) => boolean
-): IReader {
+): IReader<T> {
   const read = (view: DataView, byteOffset: number) => {
     helperContext.byteOffset = byteOffset
     helperContext.data = undefined
@@ -44,7 +44,7 @@ export function createDynamicObjectReader (
   minSize: number,
   type: { [key: string]: FeatureType },
   readDynamicTo: (view: DataView, context: IDynamicContext, target: { [key: string]: any }) => boolean
-): IReader {
+): IReader<{ [key: string]: any }> {
   const readTo = (view: DataView, byteOffset: number, target: { [key: string]: any }) => {
     helperContext.byteOffset = byteOffset
     helperContext.data = undefined
@@ -62,11 +62,11 @@ export function createDynamicObjectReader (
   }
 }
 
-export default function createDynamicReader (
+export default function createDynamicReader <T> (
   minSize: number,
   type: FeatureType | { [key: string]: FeatureType },
   readDynamic: (view: DataView, context: IDynamicContext, target?: { [key: string]: any }) => boolean
-) {
+): IReader<any> {
   if (typeof type === 'object') {
     return createDynamicObjectReader(minSize, type, readDynamic)
   }

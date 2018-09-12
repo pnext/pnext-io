@@ -9,7 +9,7 @@ import double from '../../../reader/type/double'
   Time if the Global Encoding low bit is set (see Global Encoding in the Public Header
   Block description).
 */
-export const gpsTime: INamedReader = { reader: double, name: 'time' }
+export const gpsTime: INamedReader<any> = { reader: double, name: 'time' }
 
 export default readerForReaders(
   pdrf0Parts

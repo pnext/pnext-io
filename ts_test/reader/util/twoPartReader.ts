@@ -22,7 +22,7 @@ function chars (str: string) {
   return arr
 }
 
-function createRead (reader: IReader) {
+function createRead (reader: IReader<any>) {
   return (bytes: number[]) => {
     const ctx = { byteOffset: 0, data: null, size: 0 }
     const works = reader.readDynamic(new DataView(new Uint8Array(bytes).buffer), ctx)
