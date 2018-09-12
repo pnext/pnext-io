@@ -17,7 +17,7 @@ import ILongRange from '../api/ILongRange'
 import Long from 'long'
 import IDensityRange from '../api/IDensityRange'
 import IFrustum from './IFrustum'
-import isNodeVisible from './isNodeVisible'
+import isBoundsVisible from './isBoundsVisible'
 
 function getPerspectiveCamera (input: IPerspectiveCamera): PerspectiveCamera {
   if (input instanceof PerspectiveCamera) {
@@ -160,9 +160,9 @@ export function createFilter (query?: INodeQuery): ((treeNodeList: INodeTree[]) 
   }
   const fDisplays = getFrustumDisplays(query.display)
   const frustums = getFrustumsForDisplays(fDisplays)
-  const nodeVisible = isNodeVisible(query.cut, frustums)
-  if (nodeVisible !== null) {
-    return (treeNodeList: INodeTree[]) => treeNodeList.filter(({ node }) => nodeVisible(node))
+  const boundsVisible = isBoundsVisible(query.cut, frustums)
+  if (boundsVisible !== null) {
+    return (treeNodeList: INodeTree[]) => treeNodeList.filter(({ node }) => boundsVisible(node.bounds))
   }
   return null
 }
@@ -173,16 +173,16 @@ export function createFilterAndSort (query?: INodeQuery): ((treeNodeList: INodeT
   }
   const fDisplays = getFrustumDisplays(query.display)
   const frustums = getFrustumsForDisplays(fDisplays)
-  const nodeVisible = isNodeVisible(query.cut, frustums)
+  const boundsVisible = isBoundsVisible(query.cut, frustums)
 
-  if (nodeVisible !== undefined) {
+  if (boundsVisible !== undefined) {
     if (fDisplays !== undefined) {
       return (treeNodeList: INodeTree[]) =>
         filterAndSortByWeight(
-          treeNodeList.filter(({ node }) => nodeVisible(node))
+          treeNodeList.filter(({ node }) => boundsVisible(node.bounds))
         , fDisplays)
     }
-    return (treeNodeList: INodeTree[]) => treeNodeList.filter(({ node }) => nodeVisible(node))
+    return (treeNodeList: INodeTree[]) => treeNodeList.filter(({ node }) => boundsVisible(node.bounds))
   }
   if (fDisplays !== undefined) {
     return (treeNodeList: INodeTree[]) => filterAndSortByWeight(treeNodeList, fDisplays)
