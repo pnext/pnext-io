@@ -8,6 +8,7 @@ import IPointQuery from '../api/IPointQuery'
 import ITree from '../api/ITree'
 import ITreeQuery from '../api/ITreeQuery'
 import { strictPointQuery } from './strictQuery'
+import IPointData from '../api/IPointData'
 
 function ignoreError () {
   return
@@ -33,7 +34,7 @@ export default abstract class AbstractIO implements IPNextIO {
 
   abstract _getTrees (output: Stream<ITree>, query?: ITreeQuery): PromiseLike<void>
   abstract _getNodes (output: Stream<INode>, query?: INodeQuery): PromiseLike<void>
-  abstract _getPoints (output: Stream<IPoint[]>, node: INodeWithTree): PromiseLike<void>
+  abstract _getPoints (output: Stream<IPointData>, node: INodeWithTree): PromiseLike<void>
 
   getTrees (query?: ITreeQuery, byos?: Stream<ITree>): ReadableStream<ITree> {
     return processStream<ITree>(byos, (output: Stream<ITree>) =>
@@ -47,19 +48,21 @@ export default abstract class AbstractIO implements IPNextIO {
     )
   }
 
-  getPoints (query?: IPointQuery, byos?: Stream<IPoint[]>): ReadableStream<IPoint[]> {
-    return processStream<IPoint[]>(byos, (output: Stream<IPoint[]>) =>
+  getPoints (query?: IPointQuery, byos?: Stream<IPointData>): ReadableStream<IPointData> {
+    return processStream<IPointData>(byos, (output: Stream<IPointData>) =>
       this.getNodesWithTrees()
         .toArray()
         .then(nodesWithTrees => strictPointQuery(nodesWithTrees, query))
-        .then(async strictQuery => {
-          for (const nodeWithTree of strictQuery.nodesWithTrees) {
-            if (!output.isEndingOrEnded()) {
-              await this._getPoints(output, nodeWithTree)
-            }
-          }
-        })
+        .then(strictQuery => this._getAllPoints(output, strictQuery.nodesWithTrees))
     )
+  }
+
+  async _getAllPoints (output: Stream<IPointData>, nodesWithTrees: INodeWithTree[]) {
+    for (const nodeWithTree of nodesWithTrees) {
+      if (!output.isEndingOrEnded()) {
+        await this._getPoints(output, nodeWithTree)
+      }
+    }
   }
 
   async getTree (id: string, metadataProperties?: string[]): Promise<ITree> {

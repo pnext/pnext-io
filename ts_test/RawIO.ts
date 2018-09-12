@@ -90,7 +90,7 @@ test('fetching points', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
   const points = await io.getPoints().toArray()
   t.equals(points.length, 1)
-  t.equals(points[0][0], POINT_ZERO)
+  t.equals(points[0].points[0], POINT_ZERO)
 })
 
 test('fetching with features should be able to return points with more properties than requested.', async t => {
@@ -98,7 +98,7 @@ test('fetching with features should be able to return points with more propertie
   const points = await io.getPoints({
     schema: [x]
   }).toArray()
-  t.equals(points[0][0], POINT_ZERO)
+  t.equals(points[0].points[0], POINT_ZERO)
 })
 
 /*

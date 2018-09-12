@@ -6,6 +6,7 @@ import INodeQuery from '../api/INodeQuery'
 import INodeWithTree from '../api/INodeWithTree'
 import IPNextIO from '../api/IPNextIO'
 import IPoint from '../api/IPoint'
+import IPointData from '../api/IPointData'
 import ITree from '../api/ITree'
 import IVector3 from '../api/IVector3'
 import AbstractSingleTreeIO from '../util/AbstractSingleTreeIO'
@@ -97,7 +98,10 @@ export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
     }
   }
 
-  async _getPoints (stream: Stream<IPoint[]>, node: INodeWithTree) {
-    await stream.write(this.pointData[node.id])
+  async _getPoints (stream: Stream<IPointData>, node: INodeWithTree) {
+    await stream.write({
+      node,
+      points: this.pointData[node.id]
+    })
   }
 }
