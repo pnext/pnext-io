@@ -24,5 +24,6 @@ export function streamConv<t> (from: Readable): TsStream<t> {
         .then(() => callback())
         .catch(callback)
   }))
+  to.aborted().then(_ => from.destroy())
   return to
 }
