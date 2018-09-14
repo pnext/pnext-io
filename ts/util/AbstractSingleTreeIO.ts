@@ -11,9 +11,9 @@ function ignoreError () {
 }
 
 export default abstract class AbstractSingleTreeIO extends AbstractIO {
-  treeP: Promise<ITree>
+  treeP: PromiseLike<ITree>
 
-  constructor (treeP: Promise<ITree>) {
+  constructor (treeP: PromiseLike<ITree>) {
     super()
     this.treeP = treeP
   }
