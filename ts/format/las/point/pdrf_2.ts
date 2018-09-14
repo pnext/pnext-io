@@ -1,6 +1,7 @@
 import { pdrf0Parts } from './pdrf_0'
 import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
 import unsignedShort from '../../../reader/type/uint16LE'
+import IPoint from '../../../api/IPoint'
 
 export const rgb: INamedReader<any>[] = [
   /*
@@ -14,7 +15,7 @@ export const rgb: INamedReader<any>[] = [
   { reader: unsignedShort, name: 'b' }
 ]
 
-export default readerForReaders(
+export default readerForReaders<IPoint>(
   pdrf0Parts
     .concat(rgb)
 )

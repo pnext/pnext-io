@@ -63,7 +63,7 @@ function collectTypes (namedReaders: INamedReader[]): { [k: string]: FeatureType
   return featuresByName
 }
 
-function readerForDynamicFeatures (namedReaders: INamedReader[]): IReader<{ [key: string]: any }> {
+function readerForDynamicFeatures <T extends { [key: string]: any }> (namedReaders: INamedReader[]): IReader<T> {
   const { minSize, readers } = convertToObjectReaders(namedReaders)
   return createDynamicObjectReader(
     minSize,
@@ -96,9 +96,9 @@ function readerForDynamicFeatures (namedReaders: INamedReader[]): IReader<{ [key
   )
 }
 
-function readerForFixedFeatures (namedReaders: INamedReader[]): IReader<{ [key: string]: any }> {
+function readerForFixedFeatures <T> (namedReaders: INamedReader[]): IReader<T> {
   const { minSize, readers } = convertToObjectReaders(namedReaders)
-  return createFixedObjectReader(minSize, collectTypes(namedReaders), (view: DataView, byteOffset: number, target: { [key: string]: any }) => {
+  return createFixedObjectReader<T>(minSize, collectTypes(namedReaders), (view: DataView, byteOffset: number, target: { [key: string]: any }) => {
     for (const reader of readers) {
       reader.readTo(view, byteOffset, target)
       byteOffset += reader.minSize
@@ -111,10 +111,10 @@ export interface INamedReader<T = any> {
   reader: IReader<T>
 }
 
-export default function readerForReaders (namedReaders: INamedReader[]): IReader<{ [key: string]: any }> {
+export default function readerForReaders <T extends { [key: string]: any } = { [key: string]: any }> (namedReaders: INamedReader[]): IReader<T> {
   const fixedSize: boolean = namedReaders.find(({ reader }) => !reader.fixedSize) === undefined
   if (fixedSize) {
-    return readerForFixedFeatures(namedReaders)
+    return readerForFixedFeatures<T>(namedReaders)
   }
-  return readerForDynamicFeatures(namedReaders)
+  return readerForDynamicFeatures<T>(namedReaders)
 }

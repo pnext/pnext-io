@@ -3,4 +3,4 @@ import uint32 from './uint32'
 import fixedString from './fixedString'
 import FeatureType from '../../api/FeatureType'
 
-export default twoPartReader<number, string>(uint32, fixedString, FeatureType.string)
+export default twoPartReader(uint32, fixedString, FeatureType.string)

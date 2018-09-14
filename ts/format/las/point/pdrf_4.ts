@@ -5,6 +5,7 @@ import unsignedChar from '../../../reader/type/uint8'
 import unsignedLong from '../../../reader/type/uint32LE'
 import unsignedLongLong from '../../../reader/type/uint64LE'
 import float from '../../../reader/type/float'
+import IPoint from '../../../api/IPoint'
 
 export const extended: INamedReader[] = [
   /*
@@ -65,7 +66,7 @@ export const extended: INamedReader[] = [
   { reader: float, name: 'zt' }
 ]
 
-export default readerForReaders(
+export default readerForReaders<IPoint>(
   pdrf0Parts
     .concat(gpsTime)
     .concat(extended)

@@ -2,6 +2,7 @@ import { pdrf0Parts } from './pdrf_0'
 import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
 import postOp from '../../../reader/util/postOp'
 import double from '../../../reader/type/double'
+import IPoint from '../../../api/IPoint'
 
 /*
   The GPS Time is the double floating point time tag value at which the point was acquired.
@@ -11,7 +12,7 @@ import double from '../../../reader/type/double'
 */
 export const gpsTime: INamedReader<any> = { reader: double, name: 'time' }
 
-export default readerForReaders(
+export default readerForReaders<IPoint>(
   pdrf0Parts
     .concat(gpsTime)
 )

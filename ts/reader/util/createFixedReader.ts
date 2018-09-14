@@ -34,11 +34,11 @@ export function createFixedSimpleReader <T> (
   }
 }
 
-export function createFixedObjectReader (
+export function createFixedObjectReader <T extends { [key: string]: any } = { [key: string]: any }> (
   size: number,
   type: { [key: string]: FeatureType },
   readImpl: (view: DataView, byteOffset: number, target: { [key: string]: any }) => void
-): IReader<{ [key: string]: any }> {
+): IReader<T> {
   const readDynamicTo = (view: DataView, context: IDynamicContext, target: { [key: string]: any }) => {
     readImpl(view, context.byteOffset, target)
     context.data = target
@@ -57,7 +57,7 @@ export function createFixedObjectReader (
     readDynamicTo,
     readDynamic: (view: DataView, context: IDynamicContext) => readDynamicTo(view, context, {}),
     readTo,
-    read: (view: DataView, byteOffset: number) => readTo(view, byteOffset, {})
+    read: (view: DataView, byteOffset: number) => readTo(view, byteOffset, {}) as T
   }
 }
 
@@ -67,7 +67,7 @@ export default function createFixedReader <T> (
   read: (view: DataView, byteOffset: number, target?: { [key: string]: any }) => T
 ): IReader<any> {
   if (typeof type === 'object') {
-    return createFixedObjectReader(size, type, read)
+    return createFixedObjectReader<T>(size, type, read)
   }
   return createFixedSimpleReader<T>(size, type, read)
 }

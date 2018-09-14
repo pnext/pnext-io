@@ -4,6 +4,7 @@ import char from '../../../reader/type/int8'
 import unsignedShort from '../../../reader/type/uint16LE'
 import unsignedChar from '../../../reader/type/uint8'
 import bits from '../../../reader/util/bits'
+import IPoint from '../../../api/IPoint'
 
 export const base: INamedReader[] = [
   /*
@@ -123,4 +124,4 @@ export const pdrf0Parts = base.concat([
   { reader: char, name: 'scanAngle' }
 ]).concat(bottom)
 
-export default readerForReaders(pdrf0Parts)
+export default readerForReaders<IPoint>(pdrf0Parts)
