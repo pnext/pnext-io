@@ -38,7 +38,7 @@ export class FSFeed extends IdleItem {
   fs: IFeedFS
   interval
 
-  constructor (fs: IFeedFS, options: FolderFeedOptions = {}) {
+  constructor (fs: IFeedFS, options?: FolderFeedOptions) {
     super()
     this.fs = fs
     this.options = Object.assign({
@@ -134,6 +134,6 @@ export class FSFeed extends IdleItem {
   }
 }
 
-export function createFSFeed (fs: IFeedFS, options: FolderFeedOptions): FSFeed {
+export function createFSFeed (fs: IFeedFS, options?: FolderFeedOptions): FSFeed {
   return new FSFeed(fs, options)
 }
