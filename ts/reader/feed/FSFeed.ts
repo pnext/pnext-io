@@ -12,14 +12,12 @@ export interface FolderFeedOptions {
   max?: number
   maxAge?: number
   interval?: number
-  encoding?: string
   prefix?: string
 }
 
 export interface IFeedFS {
   createReadStream (path: string, options: {
     flags?: string;
-    encoding?: string;
     fd?: number;
     mode?: number;
     autoClose?: boolean;
@@ -47,7 +45,6 @@ export class FSFeed extends IdleItem {
       max: 5,
       maxAge: 1000,
       interval: 100,
-      encoding: 'utf8',
       prefix: ''
     }, options)
   }
@@ -56,18 +53,17 @@ export class FSFeed extends IdleItem {
     return this.cache === undefined
   }
 
-  createReadStream (range: IFeedRange) {
+  createReadStream (location: string, range: IFeedRange) {
     const stream = new Stream<Uint8Array>()
-    this.increase(range.location)
+    this.increase(location)
       .then((fd: number) => {
-        const fsStream = fs.createReadStream(range.location, {
+        const fsStream = fs.createReadStream(location, {
           fd,
-          encoding: this.options.encoding,
           autoClose: false,
           start: range.start,
           end: range.end
         })
-        fsStream.on('end', () => this.decrease(range.location))
+        fsStream.on('end', () => this.decrease(location))
         streamConv(fsStream, stream)
       })
     return stream
@@ -138,6 +134,6 @@ export class FSFeed extends IdleItem {
   }
 }
 
-export function createFSFeed (fs: IFeedFS, options: FolderFeedOptions): IFeed {
+export function createFSFeed (fs: IFeedFS, options: FolderFeedOptions): FSFeed {
   return new FSFeed(fs, options)
 }
