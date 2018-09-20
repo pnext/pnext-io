@@ -2,13 +2,7 @@ import Stream, { ReadableStream } from 'ts-stream'
 import IReader from './IReader'
 import { mapSeries } from 'bluebird'
 import IDynamicContext from './util/IDynamicContext'
-
-function combine (a: Uint8Array, b: Uint8Array) {
-  const combined = new Uint8Array(a.length + b.length)
-  combined.set(a, 0)
-  combined.set(b, a.length)
-  return combined
-}
+import { combine } from './util/combine'
 
 function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader<any>, limit: number = undefined) {
   let leftOver = null
@@ -17,7 +11,7 @@ function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, 
     let end = reader.minSize
     let start = 0
     if (leftOver !== null) {
-      data = combine(leftOver, data)
+      data = combine([leftOver, data])
     }
     let entries: any[]
     while (end <= data.length && (limit === undefined || count < limit)) {
@@ -56,7 +50,7 @@ function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>
   return inStream.forEach((data: Uint8Array) => {
     workContext.byteOffset = 0
     if (leftOver !== null) {
-      data = combine(leftOver, data)
+      data = combine([leftOver, data])
     }
     let entries: any[]
     if (data.byteLength >= reader.minSize) {
