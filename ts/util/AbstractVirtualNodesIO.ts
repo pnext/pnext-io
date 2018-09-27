@@ -1,11 +1,12 @@
 import Long from 'long'
-import Stream from 'ts-stream'
+import { IDuplex } from '../api/IDuplex'
 import INode from '../api/INode'
 import INodeQuery from '../api/INodeQuery'
+import IPoint from '../api/IPoint'
 import IPointData from '../api/IPointData'
 import ITree from '../api/ITree'
 import AbstractSingleTreeIO from './AbstractSingleTreeIO'
-import { add, sub, gt } from './long'
+import { add, gt, sub } from './long'
 
 function ignoreError () {
   return
@@ -16,7 +17,7 @@ export interface IRange {
   numPoints: number
 }
 
-export interface ITreeWithNodeLimit extends ITree {
+export interface INodeLimit {
   nodeLimit: number
 }
 
@@ -25,7 +26,7 @@ interface IRangesAndNodes {
   ranges: { [nodeId: string]: IRange }
 }
 
-export function calculateEqualNodes (tree: ITree, limit: number = Number.MAX_SAFE_INTEGER): IRangesAndNodes {
+export function calculateEqualNodes <Tree extends ITree> (tree: Tree, limit: number = Number.MAX_SAFE_INTEGER): IRangesAndNodes {
   if (limit > Number.MAX_SAFE_INTEGER) {
     throw new Error('Limit needs to be a safe-to-compute integer value')
   }
@@ -62,29 +63,33 @@ export function calculateEqualNodes (tree: ITree, limit: number = Number.MAX_SAF
   return { ranges, nodes }
 }
 
-export default abstract class AbstractVirtualNodesIO extends AbstractSingleTreeIO {
+export default abstract class AbstractVirtualNodesIO<
+  Tree extends ITree & INodeLimit,
+  Point extends IPoint = IPoint,
+> extends AbstractSingleTreeIO<Tree, INode, Point> {
   rangesAndNodesP: PromiseLike<IRangesAndNodes>
 
-  constructor (treeP: PromiseLike<ITreeWithNodeLimit>) {
+  constructor (treeP: PromiseLike<Tree>) {
     super(treeP)
     this.rangesAndNodesP = treeP.then(tree => this.calculateRangesAndNodes(tree))
   }
 
-  calculateRangesAndNodes (tree: ITreeWithNodeLimit): IRangesAndNodes {
+  calculateRangesAndNodes (tree: Tree): IRangesAndNodes {
     return calculateEqualNodes(tree, tree.nodeLimit)
   }
 
-  async _getNodes (output: Stream<INode>, query?: INodeQuery) {
+  async _getNodes (output: IDuplex<INode>, query?: INodeQuery) {
     // TODO: Implement filtering based on query here.
     for (const node of (await this.rangesAndNodesP).nodes) {
       await output.write(node)
     }
   }
 
-  async _getPoints (output: Stream<IPointData>, node: INode) {
+  async _getPoints (node: INode, tree: Tree): Promise<IPointData<Point>> {
     const ranges = (await this.rangesAndNodesP).ranges
-    await this._getRangePoints(output, node, ranges[node.id])
+    const data = await this._getRangePoints(node, ranges[node.id])
+    return data
   }
 
-  abstract _getRangePoints (output: Stream<IPointData>, node: INode, range: IRange): PromiseLike<void>
+  abstract _getRangePoints (node: INode, range: IRange): PromiseLike<IPointData<Point>>
 }

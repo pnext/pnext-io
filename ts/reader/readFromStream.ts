@@ -1,95 +1,86 @@
-import Stream, { ReadableStream } from 'ts-stream'
+import { IReadable } from '../api/IReadable'
 import IReader from './IReader'
-import { mapSeries } from 'bluebird'
-import IDynamicContext from './util/IDynamicContext'
+import { createWorkContext } from './util/createWorkContext'
+import { OutgoingHttpHeaders } from 'http'
 import { combine } from './util/combine'
+import { isPromiseLike } from '../util/isPromiseLike'
+import IDynamicContext from './util/IDynamicContext'
+import { Writable } from 'ts-stream'
 
-function readFixedSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader<any>, limit: number = undefined) {
-  let leftOver = null
-  let count = 0
-  return inStream.forEach((data: Uint8Array) => {
-    let end = reader.minSize
-    let start = 0
-    if (leftOver !== null) {
-      data = combine([leftOver, data])
-    }
-    let entries: any[]
-    while (end <= data.length && (limit === undefined || count < limit)) {
-      if (entries === undefined) {
-        entries = []
-      }
-      count += 1
-      entries.push(reader.read(new DataView(data.buffer), start))
-      start = end
-      end += reader.minSize
-    }
-    if (end === data.length) {
-      leftOver = null
-    } else {
-      leftOver = data.subarray(start)
-    }
-    if (entries === undefined) {
-      return
-    }
-    return mapSeries(entries, entry => out.write(entry))
-  }).then(() => leftOver)
-}
+type NextReader<Out> = ((context: IDynamicContext) => IReader<Out> | null | undefined)
+export type ParseReader<Out> = IReader<Out> | NextReader<Out>
 
-const workContext: IDynamicContext = {
-  byteOffset: 0,
-  size: 0,
-  data: null
-}
-
-function readDynamicSize (out: Stream<any>, inStream: ReadableStream<Uint8Array>, reader: IReader<any>, limit: number = undefined) {
-  let leftOver = null
-  const context = {
-    byteOffset: 0
+function parseAll<Out> (
+  input: IReadable<Uint8Array>,
+  parseReader: ParseReader<Out>,
+  readItem: (item: Out) => PromiseLike<void> | void,
+  ender: (error?: Error) => void,
+  aborter: (error: Error) => void
+) {
+  let nextReader: NextReader<Out>
+  if (typeof parseReader === 'function') {
+    nextReader = parseReader
+  } else {
+    nextReader = () => parseReader
   }
-  let count = 0
-  return inStream.forEach((data: Uint8Array) => {
-    workContext.byteOffset = 0
-    if (leftOver !== null) {
-      data = combine([leftOver, data])
-    }
-    let entries: any[]
-    if (data.byteLength >= reader.minSize) {
-      let nextMinSize = 0
-      const view = new DataView(data.buffer)
-      while (nextMinSize <= view.byteLength && (limit === undefined || count < limit)) {
-        if (entries === undefined) {
-          entries = []
-        }
-        if (!reader.readDynamic(view, workContext)) {
-          break
-        }
-        count += 1
-        entries.push(workContext.data)
-        nextMinSize = workContext.byteOffset + workContext.size + reader.minSize
+  const context = createWorkContext()
+  let leftOver: Uint8Array = null
+  let reader = nextReader(context)
+  return input.forEach(
+    data => {
+      if (reader === null || reader === undefined) {
+        // Further data will be ignored
+        return
       }
-      if (nextMinSize === data.length) {
-        leftOver = null
-      } else {
-        leftOver = data.subarray(workContext.byteOffset)
+      context.byteOffset = 0
+      if (leftOver !== null) {
+        data = combine([leftOver, data])
       }
-    } else {
+      if (data.byteLength >= reader.minSize) {
+        const view = new DataView(data.buffer)
+        if (reader.readDynamic(view, context)) {
+          if (data.byteLength === context.size) {
+            leftOver = null
+          } else {
+            leftOver = data.slice(context.size)
+          }
+          reader = nextReader(context)
+          return readItem(context.data)
+        }
+      }
       leftOver = data
-    }
-    if (entries === undefined) {
-      return
-    }
-    return mapSeries(entries, entry => out.write(entry))
-  }).then(() => leftOver)
+    },
+    (error?: Error) => {
+      if (!error && leftOver !== null && reader) {
+        error = new Error(`There is some left-over data in the stream!`)
+      }
+      ender(error)
+    },
+    aborter
+  )
 }
 
-export default function readFromStream <T> (inStream: ReadableStream<Uint8Array>, reader: IReader<T>, limit: number = undefined): ReadableStream<T> {
-  const out = new Stream<any>()
-  let process = reader.fixedSize
-    ? readFixedSize(out, inStream, reader, limit)
-    : readDynamicSize(out, inStream, reader, limit)
+export function readFromStreamTo<Out> (input: IReadable<Uint8Array>, parseReader: ParseReader<Out>, byos: Writable<Out>) {
+  return parseAll(
+    input,
+    parseReader,
+    item => byos.write(item),
+    (error?: Error) => error && byos.end(error),
+    (error: Error) => byos.abort(error)
+  )
+}
 
-  process
-    .then((leftOver) => out.end(null, leftOver))
-    .catch((reason: Error) => out.end(reason))
-  return out
+export function readFromStream<Out> (input: IReadable<Uint8Array>, parseReader: ParseReader<Out>): IReadable<Out> {
+  return {
+    abort: (reason?: Error) => input.abort(reason),
+    aborted: () => input.aborted(),
+    result: () => input.result(),
+    forEach (
+      readItem: (item: Out) => PromiseLike<void> | void,
+      ender: (error?: Error) => void,
+      aborter: (error: Error) => void
+    ) {
+      return parseAll(input, parseReader, readItem, ender, aborter)
+    }
+  }
 }

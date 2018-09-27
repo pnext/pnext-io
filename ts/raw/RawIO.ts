@@ -73,15 +73,15 @@ class TreeInfo implements ITree {
   }
 }
 
-export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
-  pointData: IPoint[][]
+export default class RawIO<Point extends IPoint> extends AbstractSingleTreeIO<TreeInfo, INode, Point> {
+  pointData: Point[][]
   nodes: INode[]
   ids: number[]
 
-  constructor (id: string, pointData: IPoint[][]) {
+  constructor (id: string, pointData: Point[][]) {
     super(Promise.resolve(new TreeInfo(id, pointData)))
     this.pointData = pointData
-    this.ids = pointData.map((value: IPoint[], index: number) => index)
+    this.ids = pointData.map((value: Point[], index: number) => index)
     this.nodes = pointData.map((pointArray, index): INode => {
       return {
         id: index.toString(),
@@ -98,10 +98,10 @@ export default class RawIO extends AbstractSingleTreeIO implements IPNextIO {
     }
   }
 
-  async _getPoints (stream: Stream<IPointData>, node: INodeWithTree) {
-    await stream.write({
+  async _getPoints (node: INode, tree: TreeInfo): Promise<IPointData<Point>> {
+    return {
       node,
-      points: this.pointData[node.id]
-    })
+      points: Stream.from(this.pointData[node.id])
+    }
   }
 }

@@ -3,6 +3,7 @@ import { test } from 'tap'
 import RawIO from '../../ts/raw/RawIO'
 import FeatureType, { Double } from '../../ts/api/FeatureType'
 import { ReadableStream } from 'ts-stream'
+import { getAll } from '../../ts/util/getAll'
 
 const x = { type: Double, name: 'x' }
 const r = { type: FeatureType.uint32, name: 'r' }
@@ -19,7 +20,7 @@ function toArray<T> (stream: ReadableStream<T>): Promise<T[]> {
 
 test('Simple tree info', async t => {
   const io = new RawIO('abc', [[]])
-  const trees = await io.getTrees().toArray()
+  const trees = await getAll(io.getTrees())
   t.equals(trees.length, 1)
   const tree = trees[0]
   t.equals(tree.id, 'abc')
@@ -69,7 +70,7 @@ test('bounds for multiple points', async t => {
 
 test('getting nodes', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
-  const nodes = await io.getNodes().toArray()
+  const nodes = await getAll(io.getNodes())
   t.equals(nodes.length, 1, 'One node should be returned for one array')
   const node = nodes[0]
   t.equals(node.treeId, 'abc', 'TreeId fits the input ID')
@@ -81,24 +82,24 @@ test('getting nodes', async t => {
 test('fetching nodes with trees', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
   const tree = await io.getTree('abc')
-  const nodes = await io.getNodesWithTrees().toArray()
+  const nodes = await getAll(io.getNodesWithTrees())
   t.equals(nodes.length, 1, 'Also with trees it should stay 1')
   t.equals(nodes[0].tree, tree, 'The tree is the one we expect.')
 })
 
 test('fetching points', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
-  const points = await io.getPoints().toArray()
+  const points = await getAll(io.getPoints())
   t.equals(points.length, 1)
-  t.equals(points[0].points[0], POINT_ZERO)
+  t.equals((await getAll(points[0].points))[0], POINT_ZERO)
 })
 
 test('fetching with features should be able to return points with more properties than requested.', async t => {
   const io = new RawIO('abc', [[POINT_ZERO]])
-  const points = await io.getPoints({
+  const points = await getAll(io.getPoints({
     schema: [x]
-  }).toArray()
-  t.equals(points[0].points[0], POINT_ZERO)
+  }))
+  t.equals((await getAll(points[0].points))[0], POINT_ZERO)
 })
 
 /*
