@@ -1,28 +1,51 @@
 import IReader from '../IReader'
-import createFixedReader from './createFixedReader'
-import createDynamicReader from './createDynamicReader'
+import { createFixedSimpleReader, createFixedObjectReader } from './createFixedReader'
+import { createDynamicObjectReader, createDynamicSimpleReader } from './createDynamicReader'
 import IDynamicContext from './IDynamicContext'
 import FeatureType from '../../api/FeatureType'
 import IFeature from '../../api/IFeature'
+import { createWorkContext } from './createWorkContext'
 
-export function createDynamicPostOp<Before> (reader: IReader<Before>, type: FeatureType | { [key: string]: FeatureType }, op: (data: any) => any) {
-  return createDynamicReader(reader.minSize, type, (view: DataView, context: IDynamicContext) => {
-    const result = reader.readDynamic(view, context)
-    if (!result) {
-      return false
+export function postOpSimple<Before, After> (
+  reader: IReader<Before, FeatureType>,
+  type: FeatureType,
+  op: (before: Before) => After
+) {
+  if (reader.fixedSize) {
+    return createFixedSimpleReader(reader.minSize, type, (view: DataView, byteOffset: number) => op(reader.read(view, byteOffset)))
+  }
+  const workContext = createWorkContext()
+  return createDynamicSimpleReader(reader.minSize, type, (view: DataView, context: IDynamicContext) => {
+    workContext.from(context)
+    if (reader.readDynamic(view, workContext)) {
+      const data = context.data
+      workContext.to(context)
+      return true
     }
-    context.data = op(context.data)
-    return true
+    return false
   })
 }
 
-export function createFixedPostOp<Before> (reader: IReader<Before>, type: FeatureType | { [key: string]: FeatureType }, op: (data: any) => any) {
-  return createFixedReader(reader.minSize, type, (view: DataView, byteOffset: number) => op(reader.read(view, byteOffset)))
-}
-
-export default function postOp<Before> (reader: IReader<Before>, type: FeatureType | { [key: string]: FeatureType }, op: (data: any) => any): IReader<any> {
+export function postOpObject<Before, After> (
+  reader: IReader<Before, { [key: string]: FeatureType }>,
+  type: { [key: string]: FeatureType },
+  op: (temp: Before, after: { [key: string]: any }) => void
+) {
+  const temp = {}
   if (reader.fixedSize) {
-    return createFixedPostOp<Before>(reader, type, op)
+    return createFixedObjectReader(reader.minSize, type, (view: DataView, byteOffset: number, target: { [key: string]: any }) => {
+      reader.readTo(view, byteOffset, temp)
+      return op(temp as Before, target)
+    })
   }
-  return createDynamicPostOp<Before>(reader, type, op)
+  const workContext = createWorkContext()
+  return createDynamicObjectReader(reader.minSize, type, (view: DataView, context: IDynamicContext, target: { [key: string]: any }) => {
+    workContext.from(context)
+    if (reader.readDynamicTo(view, workContext, temp)) {
+      op(temp as Before, target)
+      workContext.to(context)
+      return true
+    }
+    return false
+  })
 }

@@ -5,7 +5,7 @@ import unsignedShort from '../../../reader/type/uint16LE'
 import char from '../../../reader/type/int8'
 import bits from '../../../reader/util/bits'
 import unsignedChar from '../../../reader/type/uint8'
-import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
+import { INamedReader, readerForFixedFeatures } from '../../../reader/readerForReaders'
 import IPoint from '../../../api/IPoint'
 
 export const pdrf6Parts: INamedReader[] =
@@ -119,6 +119,6 @@ export const pdrf6Parts: INamedReader[] =
   .concat(bottom)
   .concat(gpsTime)
 
-export default readerForReaders<IPoint>(
+export default readerForFixedFeatures<IPoint>(
   pdrf6Parts
 )

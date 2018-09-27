@@ -1,21 +1,13 @@
 import IReader from '../IReader'
 import IDynamicContext from './IDynamicContext'
-import createDynamicReader from './createDynamicReader'
 import FeatureType from '../../api/FeatureType'
+import { createWorkContext } from './createWorkContext'
+import { createDynamicSimpleReader, createDynamicObjectReader } from './createDynamicReader'
 
-const contextA: IDynamicContext = {
-  data: null,
-  size: 0,
-  byteOffset: 0
-}
+const contextA = createWorkContext()
+const contextB = createWorkContext()
 
-const contextB: IDynamicContext = {
-  data: null,
-  size: 0,
-  byteOffset: 0
-}
-
-function readPartB (partB: IReader<any>, view: DataView, context: IDynamicContext) {
+function readPartB <B> (partB: IReader<B>, view: DataView, context: IDynamicContext) {
   const minSize = contextA.byteOffset + partB.minSize
   if (minSize > view.byteLength) {
     return false
@@ -25,18 +17,17 @@ function readPartB (partB: IReader<any>, view: DataView, context: IDynamicContex
     context.size = contextA.size + partB.minSize
     context.byteOffset = contextA.byteOffset + partB.minSize
   } else {
-    contextB.byteOffset = contextA.byteOffset
+    contextB.from(contextA)
     if (!partB.readDynamic(view, contextB)) {
       return false
     }
-    context.size = contextA.size + contextB.size
-    context.byteOffset = contextB.byteOffset
-    context.data = contextB.data
+    contextB.to(context)
+    context.size += contextA.size
   }
   return true
 }
 
-function fixedSizeImpl (partA: IReader<any>, template: (readerResult) => IReader<any>, type: FeatureType) {
+function fixedSizeImpl <A, B, T> (partA: IReader<A>, template: (readerResult: A) => IReader<B>) {
   return (view: DataView, context: IDynamicContext) => {
     const afterPartA = view.byteOffset + partA.minSize
     contextA.data = partA.read(view, context.byteOffset)
@@ -46,7 +37,7 @@ function fixedSizeImpl (partA: IReader<any>, template: (readerResult) => IReader
   }
 }
 
-function dynamicImpl (partA: IReader<any>, template: (readerResult) => IReader<any>, type: FeatureType) {
+function dynamicImpl <A, B, T> (partA: IReader<A>, template: (readerResult: A) => IReader<B>) {
   return (view: DataView, context: IDynamicContext) => {
     contextA.byteOffset = context.byteOffset
     if (!partA.readDynamic(view, contextA)) {
@@ -56,17 +47,34 @@ function dynamicImpl (partA: IReader<any>, template: (readerResult) => IReader<a
   }
 }
 
-function getReaderImpl (partA: IReader<any>, template: (readerResult) => IReader<any>, type: FeatureType) {
+function getReaderImpl <A, B, T> (partA: IReader<A>, template: (readerResult: A) => IReader<B>, type: T) {
   if (partA.fixedSize) {
-    return fixedSizeImpl(partA, template, type)
+    return fixedSizeImpl<A, B, T>(partA, template)
   }
-  return dynamicImpl(partA, template, type)
+  return dynamicImpl<A, B, T>(partA, template)
 }
 
-export default function twoPartReader <AType, TemplateType = any> (partA: IReader<AType>, template: (readerResult: AType) => IReader<TemplateType>, type: FeatureType) {
-  return createDynamicReader(
+export function twoPartSimpleReader <A, B> (
+  partA: IReader<A>,
+  template: (readerResult: A) => IReader<B, FeatureType>,
+  type: FeatureType
+): IReader<B, FeatureType> {
+  return createDynamicSimpleReader<B>(
     partA.minSize,
     type,
-    getReaderImpl(partA, template, type)
+    getReaderImpl<A, B, FeatureType>(partA, template, type)
+  )
+}
+
+export function twoPartObjectReader <A, B> (
+  partA: IReader<A>,
+  template: (readerResult: A) => IReader<B>,
+  type: { [key: string]: FeatureType }
+): IReader<B, { [key: string]: FeatureType }> {
+
+  return createDynamicObjectReader<B>(
+    partA.minSize,
+    type,
+    getReaderImpl<A, B, { [key: string]: FeatureType }>(partA, template, type)
   )
 }

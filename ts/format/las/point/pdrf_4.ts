@@ -1,6 +1,6 @@
 import { pdrf0Parts } from './pdrf_0'
 import { gpsTime } from './pdrf_1'
-import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
+import { INamedReader, readerForFixedFeatures } from '../../../reader/readerForReaders'
 import unsignedChar from '../../../reader/type/uint8'
 import unsignedLong from '../../../reader/type/uint32LE'
 import unsignedLongLong from '../../../reader/type/uint64LE'
@@ -66,7 +66,7 @@ export const extended: INamedReader[] = [
   { reader: float, name: 'zt' }
 ]
 
-export default readerForReaders<IPoint>(
+export default readerForFixedFeatures<IPoint>(
   pdrf0Parts
     .concat(gpsTime)
     .concat(extended)

@@ -1,4 +1,4 @@
-import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
+import { INamedReader, readerForFixedFeatures } from '../../../reader/readerForReaders'
 import long from '../../../reader/type/int32LE'
 import char from '../../../reader/type/int8'
 import unsignedShort from '../../../reader/type/uint16LE'
@@ -124,4 +124,4 @@ export const pdrf0Parts = base.concat([
   { reader: char, name: 'scanAngle' }
 ]).concat(bottom)
 
-export default readerForReaders<IPoint>(pdrf0Parts)
+export default readerForFixedFeatures<IPoint>(pdrf0Parts)

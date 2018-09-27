@@ -2,23 +2,20 @@ import IDynamicContext from './IDynamicContext'
 import IReader, { DEFAULT_FIELD } from '../IReader'
 import FeatureType from '../../api/FeatureType'
 import IFeature from '../../api/IFeature'
+import { createWorkContext } from './createWorkContext'
 
-const helperContext: IDynamicContext = {
-  data: null,
-  byteOffset: 0,
-  size: 0
-}
+const workerContext = createWorkContext()
 
 export function createDynamicSimpleReader<T> (
   minSize: number,
   type: FeatureType,
   readDynamic: (view: DataView, context: IDynamicContext) => boolean
-): IReader<T> {
+): IReader<T, FeatureType> {
   const read = (view: DataView, byteOffset: number) => {
-    helperContext.byteOffset = byteOffset
-    helperContext.data = undefined
-    readDynamic(view, helperContext)
-    return helperContext.data
+    workerContext.byteOffset = byteOffset
+    workerContext.data = undefined
+    readDynamic(view, workerContext)
+    return workerContext.data
   }
   return {
     fixedSize: false,
@@ -44,12 +41,12 @@ export function createDynamicObjectReader <T extends { [key: string]: any } = { 
   minSize: number,
   type: { [key: string]: FeatureType },
   readDynamicTo: (view: DataView, context: IDynamicContext, target: { [key: string]: any }) => boolean
-): IReader<T> {
+): IReader<T, { [key: string]: FeatureType }> {
   const readTo = (view: DataView, byteOffset: number, target: { [key: string]: any }) => {
-    helperContext.byteOffset = byteOffset
-    helperContext.data = undefined
-    readDynamicTo(view, helperContext, target)
-    return helperContext.data
+    workerContext.byteOffset = byteOffset
+    workerContext.data = undefined
+    readDynamicTo(view, workerContext, target)
+    return workerContext.data
   }
   return {
     fixedSize: false,
@@ -60,15 +57,4 @@ export function createDynamicObjectReader <T extends { [key: string]: any } = { 
     readTo,
     read: (view: DataView, byteOffset: number) => readTo(view, byteOffset, {})
   }
-}
-
-export default function createDynamicReader <T> (
-  minSize: number,
-  type: FeatureType | { [key: string]: FeatureType },
-  readDynamic: (view: DataView, context: IDynamicContext, target?: { [key: string]: any }) => boolean
-): IReader<any> {
-  if (typeof type === 'object') {
-    return createDynamicObjectReader<T>(minSize, type, readDynamic)
-  }
-  return createDynamicSimpleReader<T>(minSize, type, readDynamic)
 }

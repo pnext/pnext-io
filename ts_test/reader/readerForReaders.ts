@@ -45,3 +45,57 @@ test('static, static, dynamic, static', async t => {
     r: 3
   }, 'The resulting data is as expected.')
 })
+
+test('remapping of an object reader', async t => {
+  const reader = readerForReaders([
+    { reader: uint8, name: 'x' },
+    { reader: readerForReaders([
+      { reader: uint8, name: 'x' },
+      { reader: uint8, name: 'y' },
+      { reader: uint8, name: 'z' }
+    ]), name: 'point_' }
+  ])
+  const target = {}
+  const nums = [1, 2, 3, 4]
+  const view = new DataView(new Uint8Array(nums).buffer, 0)
+  t.equals(reader.fixedSize, true, 'All features are fixed-size, the result should be fixed-size')
+  t.deepEquals(reader.type, {
+    x: FeatureType.uint8,
+    point_x: FeatureType.uint8,
+    point_y: FeatureType.uint8,
+    point_z: FeatureType.uint8
+  }, 'The new type has all types prefixed')
+  t.deepEquals(reader.read(view, 0), {
+    x: 1,
+    point_x: 2,
+    point_y: 3,
+    point_z: 4
+  }, 'The data is read in order as expected')
+})
+
+test('remapping of a dynamic stream', async t => {
+  const reader = readerForReaders([
+    { reader: string, name: 'disc' },
+    { reader: readerForReaders([
+      { reader: string, name: 'disc' }
+    ]), name: 'sub_' },
+    { reader: uint8, name: 'x' }
+  ])
+  const target = {}
+  const nums = []
+    .concat(chars('Hello'))
+    .concat(chars('World'))
+    .concat(1)
+  const view = new DataView(new Uint8Array(nums).buffer, 0)
+  t.equals(reader.fixedSize, false, 'Some features are dynamic, the output should be dynamic')
+  t.deepEquals(reader.type, {
+    disc: FeatureType.string,
+    sub_disc: FeatureType.string,
+    x: FeatureType.uint8
+  }, 'The new type has all types prefixed')
+  t.deepEquals(reader.read(view, 0), {
+    x: 1,
+    disc: 'Hello',
+    sub_disc: 'World'
+  }, 'The data is read in order as expected')
+})

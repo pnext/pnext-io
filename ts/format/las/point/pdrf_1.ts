@@ -1,6 +1,5 @@
+import { INamedReader, readerForFixedFeatures } from '../../../reader/readerForReaders'
 import { pdrf0Parts } from './pdrf_0'
-import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
-import postOp from '../../../reader/util/postOp'
 import double from '../../../reader/type/double'
 import IPoint from '../../../api/IPoint'
 
@@ -12,7 +11,7 @@ import IPoint from '../../../api/IPoint'
 */
 export const gpsTime: INamedReader<any> = { reader: double, name: 'time' }
 
-export default readerForReaders<IPoint>(
+export default readerForFixedFeatures<IPoint>(
   pdrf0Parts
     .concat(gpsTime)
 )

@@ -1,10 +1,9 @@
 #!/usr/bin/env node --require ts-node/register
 import { test } from 'tap'
-import twoPartReader from '../../../ts/reader/util/twoPartReader'
+import { twoPartSimpleReader } from '../../../ts/reader/util/twoPartReader'
 import uint32 from '../../../ts/reader/type/uint32'
 import varuint32 from '../../../ts/reader/type/varuint32'
 import fixedString from '../../../ts/reader/type/fixedString'
-import IDynamicContext from '../../../ts/reader/util/IDynamicContext'
 import IReader from '../../../ts/reader/IReader'
 import FeatureType from '../../../ts/api/FeatureType'
 
@@ -31,7 +30,7 @@ function createRead (reader: IReader<any>) {
 }
 
 test('fixed, fixed', async t => {
-  const reader = twoPartReader(uint32, fixedString, FeatureType.string)
+  const reader = twoPartSimpleReader(uint32, fixedString, FeatureType.string)
   t.equals(reader.fixedSize, false)
   t.equals(reader.minSize, 4, 'minSize should be equal partA minSize')
 
@@ -41,7 +40,7 @@ test('fixed, fixed', async t => {
 })
 
 test('fixed, dynamic', async t => {
-  const reader = twoPartReader(uint32, num => {
+  const reader = twoPartSimpleReader(uint32, num => {
     t.equals(num, 4, 'former number properly read')
     return varuint32
   }, FeatureType.uint32)
@@ -55,7 +54,7 @@ test('fixed, dynamic', async t => {
 })
 
 test('dynamic, fixed', async t => {
-  const reader = twoPartReader(varuint32, fixedString, FeatureType.string)
+  const reader = twoPartSimpleReader(varuint32, fixedString, FeatureType.string)
   t.equals(reader.fixedSize, false, 'isnt fixed size')
   t.equals(reader.minSize, 1, 'minsize should be equal partA minSize')
 
@@ -67,7 +66,7 @@ test('dynamic, fixed', async t => {
 })
 
 test('dynamic, dynamic', async t => {
-  const reader = twoPartReader(varuint32, num => {
+  const reader = twoPartSimpleReader(varuint32, num => {
     return varuint32
   }, FeatureType.uint32)
   t.equals(reader.fixedSize, false, 'isnt fixed size')

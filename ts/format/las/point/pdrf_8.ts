@@ -1,5 +1,5 @@
 import { pdrf7Parts } from './pdrf_7'
-import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
+import { INamedReader, readerForFixedFeatures } from '../../../reader/readerForReaders'
 import unsignedShort from '../../../reader/type/uint16LE'
 import IPoint from '../../../api/IPoint'
 
