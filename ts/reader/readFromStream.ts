@@ -6,9 +6,9 @@ import { combine } from './util/combine'
 import { isPromiseLike } from '../util/isPromiseLike'
 import IDynamicContext from './util/IDynamicContext'
 import { Writable } from 'ts-stream'
+import { isIterable } from '../util/isIterable'
 
-type NextReader<Out> = ((context: IDynamicContext) => IReader<Out> | null | undefined)
-export type ParseReader<Out> = IReader<Out> | NextReader<Out>
+export type ParseReader<Out> = IReader<Out> | Iterable<IReader<Out>>
 
 function parseAll<Out> (
   input: IReadable<Uint8Array>,
@@ -17,18 +17,15 @@ function parseAll<Out> (
   ender: (error?: Error) => void,
   aborter: (error: Error) => void
 ) {
-  let nextReader: NextReader<Out>
-  if (typeof parseReader === 'function') {
-    nextReader = parseReader
-  } else {
-    nextReader = () => parseReader
-  }
+  const iterator = isIterable(parseReader)
+    ? parseReader[Symbol.iterator]()
+    : { next: () => ({ done: false, value: parseReader }) }
   const context = createWorkContext()
   let leftOver: Uint8Array = null
-  let reader = nextReader(context)
+  let readerTuple = iterator.next()
   return input.forEach(
     data => {
-      if (reader === null || reader === undefined) {
+      if (readerTuple.done) {
         // Further data will be ignored
         return
       }
@@ -36,22 +33,22 @@ function parseAll<Out> (
       if (leftOver !== null) {
         data = combine([leftOver, data])
       }
-      if (data.byteLength >= reader.minSize) {
+      if (data.byteLength >= readerTuple.value.minSize) {
         const view = new DataView(data.buffer)
-        if (reader.readDynamic(view, context)) {
+        if (readerTuple.value.readDynamic(view, context)) {
           if (data.byteLength === context.size) {
             leftOver = null
           } else {
             leftOver = data.slice(context.size)
           }
-          reader = nextReader(context)
+          readerTuple = iterator.next(context)
           return readItem(context.data)
         }
       }
       leftOver = data
     },
     (error?: Error) => {
-      if (!error && leftOver !== null && reader) {
+      if (!error && leftOver !== null && !readerTuple.done) {
         error = new Error(`There is some left-over data in the stream!`)
       }
       ender(error)
