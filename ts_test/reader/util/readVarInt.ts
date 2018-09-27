@@ -1,7 +1,6 @@
 #!/usr/bin/env node --require ts-node/register
 import { test } from 'tap'
 import readVarInt from '../../../ts/reader/util/readVarInt'
-import IDynamicContext from '../../../ts/reader/util/IDynamicContext'
 
 function dArr (arr: number[]): DataView {
   const buff = new Uint8Array(arr)
