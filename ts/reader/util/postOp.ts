@@ -10,7 +10,7 @@ export function postOpSimple<Before, After> (
   reader: IReader<Before, FeatureType>,
   type: FeatureType,
   op: (before: Before) => After
-) {
+): IReader<After, FeatureType> {
   if (reader.fixedSize) {
     return createFixedSimpleReader(reader.minSize, type, (view: DataView, byteOffset: number) => op(reader.read(view, byteOffset)))
   }
