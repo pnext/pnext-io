@@ -3,8 +3,9 @@ import { isPromiseLike } from './isPromiseLike'
 import { IDuplex } from '../api/IDuplex'
 import { Writable } from 'ts-stream'
 
-export function mapStreamTo<In, Out> (input: IReadable<In>, op: (input: In) => PromiseLike<Out> | Out, output: Writable<Out>) {
+export function mapStreamTo<In, Out> (input: IReadable<In>, op: (input: In) => PromiseLike<Out> | Out, output: Writable<Out>, autoEnd: boolean = true) {
   const stream = mapStream(input, op)
+  input.aborted().catch(err => stream.abort(err))
   return stream.forEach(
     item => {
       if (!isPromiseLike(item)) {
@@ -13,7 +14,9 @@ export function mapStreamTo<In, Out> (input: IReadable<In>, op: (input: In) => P
       return item
         .then(result => output.write(result))
         .then(() => { /* return void */ })
-    }
+    },
+    () => autoEnd && output.end(),
+    (reason: Error) => output.abort(reason)
   )
 }
 
