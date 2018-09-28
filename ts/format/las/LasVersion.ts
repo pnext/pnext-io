@@ -5,3 +5,20 @@ export enum LasVersion {
   V1_3 = '1.3',
   V1_4 = '1.4'
 }
+
+export const LasVersions = Object.values(LasVersion)
+
+export function gteVersion (smaller: LasVersion, bigger: LasVersion): boolean {
+  if (smaller === bigger) {
+    return true
+  }
+  for (const current of LasVersions) {
+    if (current === bigger) {
+      return true
+    }
+    if (current === smaller) {
+      return false
+    }
+  }
+  return false
+}
