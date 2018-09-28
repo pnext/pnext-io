@@ -11,6 +11,6 @@ export const pdrf8Parts: INamedReader[] =
   pdrf7Parts
     .concat(NIR)
 
-export default readerForReaders<IPoint>(
+export default readerForFixedFeatures<IPoint>(
   pdrf8Parts
 )
