@@ -97,7 +97,7 @@ function collectTypes (readers: IReader<{ [key: string]: any }, { [key: string]:
   return featuresByName
 }
 
-function readerForDynamicFeatures <T extends { [key: string]: any }> (namedReaders: INamedReader[]): IReader<T> {
+function readerForDynamicFeatures <T extends { [key: string]: any }> (namedReaders: INamedReader[]): IReader<T, { [key: string]: FeatureType }> {
   const { minSize, readers } = convertToObjectReaders(namedReaders)
   return createDynamicObjectReader(
     minSize,
@@ -130,7 +130,7 @@ function readerForDynamicFeatures <T extends { [key: string]: any }> (namedReade
   )
 }
 
-export function readerForFixedFeatures <T> (namedReaders: INamedReader[]): IReader<T> {
+export function readerForFixedFeatures <T> (namedReaders: INamedReader[]): IReader<T, { [key: string]: FeatureType }> {
   if (!isFixedSize(namedReaders)) {
     throw new Error('Readers arnt fixed in size.')
   }
@@ -152,7 +152,7 @@ function isFixedSize (namedReaders: INamedReader[]): boolean {
   return namedReaders.find(({ reader }) => !reader.fixedSize) === undefined
 }
 
-export default function readerForReaders <T extends { [key: string]: any } = { [key: string]: any }> (namedReaders: INamedReader[]): IReader<T> {
+export default function readerForReaders <T extends { [key: string]: any } = { [key: string]: any }> (namedReaders: INamedReader[]) {
   if (isFixedSize(namedReaders)) {
     return readerForFixedFeatures<T>(namedReaders)
   }
