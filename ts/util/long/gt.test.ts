@@ -1,14 +1,16 @@
-#!/usr/bin/env node --require ts-node/register
-import { test } from 'tap'
-import { gt } from '../../../ts/util/long/gt'
+import { gt } from './gt'
 import Long from 'long'
 
-test('Basic tests', async t => {
+test('Basic tests', () => {
   function isGT (a, b) {
-    t.ok(gt(a, b), `${a}[${typeof a}] is greater ${b}[${typeof b}]`)
+    if (!gt(a, b)) {
+      throw new Error(`${a}[${typeof a}] is expected to be greater ${b}[${typeof b}]`)
+    }
   }
   function isLTE (a, b) {
-    t.ok(!gt(a, b), `${a}[${typeof a}] is lower or equals ${b}[${typeof b}]`)
+    if (gt(a, b)) {
+      throw new Error(`${a}[${typeof a}] is expected to be lower or equals ${b}[${typeof b}]`)
+    }
   }
   // Greater numbers
   isGT(1, 0)

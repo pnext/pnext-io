@@ -1,14 +1,12 @@
-#!/usr/bin/env node --require ts-node/register
-import { test } from 'tap'
 import Stream from 'ts-stream'
-import { IReadable } from '../../ts/api/IReadable'
-import IReader from '../../ts/reader/IReader'
-import { readFromStream, readFromStreamTo } from '../../ts/reader/readFromStream'
-import readerForReaders from '../../ts/reader/readerForReaders'
-import fixedString from '../../ts/reader/type/fixedString'
-import string from '../../ts/reader/type/string'
-import uint8 from '../../ts/reader/type/uint8'
-import { getAll } from '../../ts/util/getAll'
+import { IReadable } from '../api/IReadable'
+import IReader from './IReader'
+import { readFromStream, readFromStreamTo } from './readFromStream'
+import readerForReaders from './readerForReaders'
+import fixedString from './type/fixedString'
+import string from './type/string'
+import uint8 from './type/uint8'
+import { getAll } from '../util/getAll'
 
 function toNum (buf: Buffer): number[] {
   const num = []
@@ -32,7 +30,7 @@ function fromStream<T> (stream: IReadable<Uint8Array>, reader: IReader<T>) {
   return getAll(readFromStream(stream, reader))
 }
 
-test('reading simple stream of features', async t => {
+test('reading simple stream of features', async () => {
   const data = [1, 2]
     .concat(fixChars('abc'))
     .concat([3, 4])
@@ -51,13 +49,13 @@ test('reading simple stream of features', async t => {
     ])
   )
 
-  t.deepEquals(points, [
+  expect(points).toMatchObject([
     { x: 1, y: 2, desc: 'abc' },
     { x: 3, y: 4, desc: 'def' }
   ])
 })
 
-test('reading dynamic simple stream of features', async t => {
+test('reading dynamic simple stream of features', async () => {
   const data = [1, 2]
     .concat(chars('abc'))
     .concat([3, 5, 6 ])
@@ -82,13 +80,13 @@ test('reading dynamic simple stream of features', async t => {
     new Uint8Array(data.slice(14))
   ]), reader)
 
-  t.deepEquals(points, [
+  expect(points).toMatchObject([
     { x: 1, y: 2, z: 3, desc: 'abc' },
     { x: 5, y: 6, z: 7, desc: 'de' }
   ])
 })
 
-test('reading dynamic simple stream of features to a stream', async t => {
+test('reading dynamic simple stream of features to a stream', async () => {
   const data = [1, 2]
     .concat(chars('abc'))
     .concat([3, 5, 6 ])
@@ -114,11 +112,11 @@ test('reading dynamic simple stream of features to a stream', async t => {
     new Uint8Array(data.slice(reader.minSize, 14)),
     new Uint8Array(data.slice(14))
   ]), reader, out)
-  t.equals(out.isEnded(), false, 'The stream shouldnt be ended after all was passed')
+  expect(out.isEnded()).toBeFalsy() // The stream shouldnt be ended after all was passed
   await out.end()
   const points = await all
 
-  t.deepEquals(points, [
+  expect(points).toMatchObject([
     { x: 1, y: 2, z: 3, desc: 'abc' },
     { x: 5, y: 6, z: 7, desc: 'de' }
   ])

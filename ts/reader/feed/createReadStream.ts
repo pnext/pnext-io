@@ -82,8 +82,12 @@ function createBackPressure (): BackPressure {
   }
 }
 
-class RangeError extends Error {
-  code = 'ERANGE'
+export class RangeError extends Error {
+  code: string
+  constructor (message: string) {
+    super(message)
+    this.code = 'ERANGE'
+  }
 }
 
 function validateRange (range: IFeedRange) {

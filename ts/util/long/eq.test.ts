@@ -1,16 +1,17 @@
-#!/usr/bin/env node --require ts-node/register
-import { test } from 'tap'
-import { eq } from '../../../ts/util/long/eq'
+import { eq } from './eq'
 import Long from 'long'
 
-test('Basic tests', async t => {
-
+test('Basic tests', () => {
   function ok (a, b) {
-    t.ok(eq(a, b), `Equals ${a}[${typeof a}] == ${b}[${typeof b}]`)
+    if (!eq(a, b)) {
+      throw new Error(`Equals ${a}[${typeof a}] == ${b}[${typeof b}]`)
+    }
   }
 
   function not (a, b) {
-    t.ok(!eq(a, b), `!Not! Equals ${a}[${typeof a}] != ${b}[${typeof b}]`)
+    if (eq(a, b)) {
+      throw new Error(`!Not! Equals ${a}[${typeof a}] != ${b}[${typeof b}]`)
+    }
   }
   ok(0, 0)
   ok(Long.fromNumber(1), 1)

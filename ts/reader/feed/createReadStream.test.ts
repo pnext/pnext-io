@@ -1,10 +1,8 @@
-#!/usr/bin/env node --require ts-node/register
-import { test } from 'tap'
-import { createReadStream } from '../../../ts/reader/feed/createReadStream'
-import { IFeedFS } from '../../../ts/reader/feed/IFeedFS'
+import { createReadStream, RangeError } from './createReadStream'
+import { IFeedFS } from './IFeedFS'
 import { streamToString } from './streamToString'
-import { getAll } from '../../../ts/util/getAll'
-import { combine } from '../../../ts/reader/util/combine'
+import { getAll } from '../../util/getAll'
+import { combine } from '../util/combine'
 
 function dummyFS (opts: {
   data?: { [location: string]: Uint8Array },
@@ -59,53 +57,37 @@ async function range (fs: IFeedFS, location: string, start: number, end?: number
   return combine(await getAll(createReadStream(fs, location, { start, end }, Buffer.allocUnsafe)))
 }
 
-test('A simple stream', async t => {
+test('A simple stream', async () => {
   const fs = dummyFS({ data: {
     x: new Uint8Array([1])
   } })
-  t.deepEquals(await range(fs, 'x', 0), Buffer.from([1]), 'Simply reading data should work')
+  expect(await range(fs, 'x', 0)).toMatchObject(new Uint8Array([1])) // Simply reading data should work
 })
 
-test('A stream of a null range', async t => {
+test('A stream of a null range', async () => {
   const fs = dummyFS({ data: {
     x: new Uint8Array([1, 2])
   } })
-  t.deepEquals(await range(fs, 'x', 0, 0), Buffer.from([]), 'Length of 0 means empty range')
-  t.deepEquals(await range(fs, 'x', 1, 1), Buffer.from([]), '... even with an offset')
-  t.deepEquals(await range(fs, 'x', 2), Buffer.from([]), 'Also outside the datarange')
+  expect(await range(fs, 'x', 0, 0)).toMatchObject(new Uint8Array([])) // Length of 0 means empty range
+  expect(await range(fs, 'x', 1, 1)).toMatchObject(new Uint8Array([])) // ... even with an offset
+  expect(await range(fs, 'x', 2)).toMatchObject(new Uint8Array([])) // Also outside the datarange
 })
 
-test('Erroneous requests', async t => {
+test('Erroneous requests', async () => {
   const fs = dummyFS({ data: {
     x: new Uint8Array([1])
   } })
-  try {
-    await range(fs, 'x', -1, 0)
-    t.fail('passed without error')
-  } catch (err) {
-    t.equals(err.message, 'start(-1) needs to be bigger zero', 'start < 0')
-  }
-  try {
-    await range(fs, 'x', Number.MAX_SAFE_INTEGER + 4)
-    t.fail('passed without error')
-  } catch (err) {
-    t.equals(err.message, 'start(9007199254740996) is too big, max: 9007199254740991', 'start > Number.MAX.SAFE_INTEGER')
-  }
-  try {
-    await range(fs, 'x', 0, Number.MAX_SAFE_INTEGER + 4)
-    t.fail('passed without error')
-  } catch (err) {
-    t.equals(err.message, 'end(9007199254740996) is too big, max: 9007199254740991', 'end > Number.MAX.SAFE_INTEGER')
-  }
-  try {
-    await range(fs, 'x', 1, 0)
-    t.fail('passed without error')
-  } catch (err) {
-    t.equals(err.message, 'end(0) needs to be before the start(1)', 'end >= start')
-  }
+  await expect(range(fs, 'x', -1, 0))
+    .rejects.toMatchObject(new RangeError('start(-1) needs to be bigger zero')) // start < 0
+  await expect(range(fs, 'x', Number.MAX_SAFE_INTEGER + 4))
+    .rejects.toMatchObject(new RangeError('start(9007199254740996) is too big, max: 9007199254740991')) // start > Number.MAX.SAFE_INTEGER
+  await expect(range(fs, 'x', 0, Number.MAX_SAFE_INTEGER + 4))
+    .rejects.toMatchObject(new RangeError('end(9007199254740996) is too big, max: 9007199254740991')) // end > Number.MAX.SAFE_INTEGER
+  await expect(range(fs, 'x', 1, 0))
+    .rejects.toMatchObject(new RangeError('end(0) needs to be before the start(1)')) // end >= start
 })
 
-test('Aborting of a stream', async t => {
+test('Aborting of a stream', async () => {
   const fs = dummyFS({
     data: {
       x: new Uint8Array([1])
@@ -115,58 +97,44 @@ test('Aborting of a stream', async t => {
   const stream = createReadStream(fs, 'x', { start: 0 }, Buffer.allocUnsafe)
   const testError = new Error('test-error')
   const streamDone = stream.forEach(
-    () => t.fail('Item received even though the stream should have been closed.'),
-    () => t.fail('Ender called even though the stream was aborted'),
+    () => { throw new Error('Item received even though the stream should have been closed.') },
+    () => { throw new Error('Ender called even though the stream was aborted') },
     (error) => {
-      t.equals(error, testError, 'Same error passed to aborter')
+      expect(error).toBe(testError) // Same error passed to aborter
     }
   )
   stream.abort(testError)
+  await expect(stream.aborted()).rejects.toBe(testError)
 })
 
-test('Errors on open', async t => {
+test('Errors on open', async () => {
   const fs = dummyFS({
     data: {
       x: new Uint8Array([1])
     },
     openErr: true
   })
-  try {
-    await range(fs, 'x', 0, 1)
-    t.fail('error not occurred')
-  } catch (err) {
-    t.equals(err.message, 'open-error', 'Error was passed through')
-  }
+  await expect(range(fs, 'x', 0, 1)).rejects.toMatchObject(new Error('open-error')) // Error was passed through
 })
 
-test('Errors on close', async t => {
+test('Errors on close', async () => {
   const fs = dummyFS({
     data: {
       x: new Uint8Array([1])
     },
     closeErr: true
   })
-  try {
-    await range(fs, 'x', 0)
-    t.fail('error not occurred')
-  } catch (err) {
-    t.equals(err.message, 'close-error', 'Error was passed through')
-  }
+  await expect(range(fs, 'x', 0)).rejects.toMatchObject(new Error('close-error')) // Error was passed through
 })
 
-test('Errors on read', async t => {
+test('Errors on read', async () => {
   const fs = dummyFS({
     data: {
       x: new Uint8Array([1])
     },
     readErr: true
   })
-  try {
-    await range(fs, 'x', 0)
-    t.fail('error not occurred')
-  } catch (err) {
-    t.equals(err.message, 'read-error', 'Error was passed through')
-  }
+  await expect(range(fs, 'x', 0)).rejects.toMatchObject(new Error('read-error')) // Error was passed through
 })
 
 /*

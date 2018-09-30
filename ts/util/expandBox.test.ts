@@ -1,7 +1,6 @@
 #!/usr/bin/env node --require ts-node/register
-import { test } from 'tap'
-import expandBox from '../../ts/util/expandBox'
-import IBox3 from '../../ts/api/IBox3'
+import expandBox from './expandBox'
+import IBox3 from '..//api/IBox3'
 
 function createBox (): IBox3 {
   return {
@@ -10,14 +9,14 @@ function createBox (): IBox3 {
   }
 }
 
-test('expanding a box returns a new box', async t => {
+test('expanding a box returns a new box', async () => {
   const a = createBox()
   const b = createBox()
   const expanded = expandBox(a, b)
-  t.notEquals(expanded, a)
+  expect(expanded).not.toBe(a)
 })
 
-test('expanding a box returns a new box', async t => {
+test('expanding a box returns a new box', async () => {
   const a = createBox()
   a.max.x = 1
   a.min.y = -2
@@ -27,7 +26,7 @@ test('expanding a box returns a new box', async t => {
   b.max.y = 2
   b.min.z = -3
   const expanded = expandBox(a, b)
-  t.deepEquals(expanded, {
+  expect(expanded).toMatchObject({
     min: { x: -1, y: -2, z: -3 },
     max: { x: 1, y: 2, z: 3 }
   })

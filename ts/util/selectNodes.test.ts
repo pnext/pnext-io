@@ -1,12 +1,10 @@
-#!/usr/bin/env node --require ts-node/register
-import { test } from 'tap'
 import { Box3, PerspectiveCamera, Vector3 } from 'three'
-import INode from '../../ts/api/INode'
-import INodeQuery from '../../ts/api/INodeQuery'
-import IVector3 from '../../ts/api/IVector3'
-import INodeTree from '../../ts/util/INodeTree'
-import getBoundingSphere from '../../ts/util/getBoundingSphere'
-import selectNodes from '../../ts/util/selectNodes'
+import INode from '../api/INode'
+import INodeQuery from '../api/INodeQuery'
+import IVector3 from '../api/IVector3'
+import INodeTree from './INodeTree'
+import getBoundingSphere from './getBoundingSphere'
+import selectNodes from './selectNodes'
 
 function createNode (name, points: IVector3[]) {
   const bounds = new Box3()
@@ -54,7 +52,7 @@ function box3 (a: IVector3, b: IVector3): Box3 {
   )
 }
 
-test('select everything on an empty list should just end', async t => {
+test('select everything on an empty list should just end', async () => {
   await selectNodes([], {
     isEndingOrEnded: () => false,
     write (node: INode): void {
@@ -83,33 +81,33 @@ async function selectInABNodes (list: INode[], query: INodeQuery): Promise<INode
   return output
 }
 
-test('select everything on a full list should return every entry, unsorted', async t => {
+test('select everything on a full list should return every entry, unsorted', async () => {
   const { a, b } = createABNodes()
   const output = await selectInABNodes([b, a, b], {})
-  t.deepEquals(output, [b, a, b], 'Nodes returned like before')
+  expect(output).toMatchObject([b, a, b]) // Nodes returned like before
 })
 
-test('selecting a point range should only return points within the range', async t => {
+test('selecting a point range should only return points within the range', async () => {
   const { a, b } = createABNodes()
   const output = await selectInABNodes([b, a, b], {
     pointRange: {
       max: 7
     }
   })
-  t.deepEquals(output, [b, a], 'limited to the first two blocks')
+  expect(output).toMatchObject([b, a]) // limited to the first two blocks
 })
 
-test('the max range larger than the first node, should return empty set', async t => {
+test('the max range larger than the first node, should return empty set', async () => {
   const { a, b } = createABNodes()
   const output = await selectInABNodes([b, a, b], {
     pointRange: {
       max: 1
     }
   })
-  t.deepEquals(output, [], 'empty set returned')
+  expect(output).toMatchObject([]) // empty set returned
 })
 
-test('using minimum point range to limit the points', async t => {
+test('using minimum point range to limit the points', async () => {
   const { a, b } = createABNodes()
   const output = await selectInABNodes([b, a, b], {
     pointRange: {
@@ -117,10 +115,10 @@ test('using minimum point range to limit the points', async t => {
       max: 3
     }
   })
-  t.deepEquals(output, [b])
+  expect(output).toMatchObject([b])
 })
 
-test('the minimum point range is lower equal', async t => {
+test('the minimum point range is lower equal', async () => {
   const { a, b } = createABNodes()
   const output = await selectInABNodes([b, a, b], {
     pointRange: {
@@ -128,20 +126,20 @@ test('the minimum point range is lower equal', async t => {
       max: 9
     }
   })
-  t.deepEquals(output, [a, b])
+  expect(output).toMatchObject([a, b])
 })
 
-test('Only points in the cut should be returned', async t => {
+test('Only points in the cut should be returned', async () => {
   const { a, b, c, d, e } = createABNodes()
   const output = await selectInABNodes([e, d, c, b, a], {
     cut: [
       box3({ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 })
     ]
   })
-  t.deepEquals(output, [b, a])
+  expect(output).toMatchObject([b, a])
 })
 
-test('With multiple cuts, nodes that cut any of those should be returned', async t => {
+test('With multiple cuts, nodes that cut any of those should be returned', async () => {
   const { a, b, c, d, e } = createABNodes()
   const output = await selectInABNodes([e, d, c, b, a], {
     cut: [
@@ -149,13 +147,13 @@ test('With multiple cuts, nodes that cut any of those should be returned', async
       box3({ x: 9.0, y: 9.0, z: 9.0 }, { x: 10.0, y: 10.0, z: 10.0 })
     ]
   })
-  t.deepEquals(output, [e, d, b, a])
+  expect(output).toMatchObject([e, d, b, a])
 })
 
-test('Only points in any of the multiple cut should be returned', async t => {
+test('Only points in any of the multiple cut should be returned', async () => {
   const { a, b, c, d, e } = createABNodes()
   const output = await selectInABNodes([e, d, c, b, a], {
     display: [{ cam: new PerspectiveCamera() }]
   })
-  t.deepEquals(output, [a, b])
+  expect(output).toMatchObject([a, b])
 })
