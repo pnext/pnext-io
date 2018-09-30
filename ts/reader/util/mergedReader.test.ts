@@ -3,6 +3,7 @@ import uint8 from '../type/uint8'
 import varint32 from '../type/varint32'
 import { createWorkContext } from './createWorkContext'
 import { mergedReader } from './mergedReader'
+import { dArr } from './_test/dArr'
 
 interface XY {
   x: number,
@@ -32,11 +33,6 @@ const z = readerForReaders<Z>([
 const xyzType = {
   ...xy.type,
   ...z.type
-}
-
-function dArr (arr: number[]) {
-  const buff = new Uint8Array(arr)
-  return new DataView(buff.buffer)
 }
 
 function testReader (reader, target) {

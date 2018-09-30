@@ -1,9 +1,5 @@
 import readVarInt from './readVarInt'
-
-function dArr (arr: number[]): DataView {
-  const buff = new Uint8Array(arr)
-  return new DataView(buff.buffer)
-}
+import { dArr } from './_test/dArr'
 
 function read (...arr: number[]) {
   const c = { byteOffset: 0, size: 0, data: null }
