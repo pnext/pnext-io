@@ -35,6 +35,8 @@ export const Double: FeatureType[] = [ FeatureType.float, FeatureType.double ].c
 /* Number Space of floating point numbers that might require "Long" numbers */
 export const LongDouble: FeatureType[] = Double.concat([ FeatureType.int64, FeatureType.uint64 ])
 
+export type FeatureObject = { [key: string]: FeatureType }
+
 export default FeatureType
 
 export function parseFeatureString (type: string): FeatureType {
