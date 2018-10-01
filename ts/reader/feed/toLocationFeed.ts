@@ -2,8 +2,10 @@ import { IFeed } from './IFeed'
 import { ILocationFeed } from './ILocationFeed'
 import { IFeedRange } from './IFeedRange'
 
-export function toLocationFeed (stream: IFeed, location: string): ILocationFeed {
+export function toLocationFeed (feed: IFeed, location: string): ILocationFeed {
   return {
-    createReadStream: range => stream.createReadStream(location, range)
+    location,
+    feed,
+    createReadStream: range => feed.createReadStream(location, range)
   }
 }
