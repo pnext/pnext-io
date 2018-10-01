@@ -9,7 +9,7 @@ import IPoint from '../api/IPoint'
 import IPointData from '../api/IPointData'
 import ITree from '../api/ITree'
 import IVector3 from '../api/IVector3'
-import AbstractSingleTreeIO from '../util/AbstractSingleTreeIO'
+import { AbstractSingleTreeIO } from '../util/AbstractSingleTreeIO'
 import expandBox from '../util/expandBox'
 
 function createBox (): IBox3 {

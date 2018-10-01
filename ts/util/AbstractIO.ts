@@ -28,7 +28,7 @@ export function processStream <T> (byos: IDuplex<T> | undefined | null, template
   return byos
 }
 
-export default abstract class AbstractIO<
+export abstract class AbstractIO<
   Tree extends ITree,
   Node extends INode,
   Point extends IPoint = IPoint

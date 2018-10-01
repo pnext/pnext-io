@@ -1,11 +1,11 @@
 import Long from 'long'
-import { IDuplex } from '../api/IDuplex'
 import INode from '../api/INode'
 import INodeQuery from '../api/INodeQuery'
 import IPoint from '../api/IPoint'
 import IPointData from '../api/IPointData'
 import ITree from '../api/ITree'
-import AbstractSingleTreeIO from './AbstractSingleTreeIO'
+import { IDuplex } from '../api/IDuplex'
+import { AbstractSingleTreeIO } from './AbstractSingleTreeIO'
 import { add, gt, sub } from './long'
 
 function ignoreError () {
@@ -18,7 +18,7 @@ export interface IRange {
 }
 
 export interface INodeLimit {
-  nodeLimit: number
+  nodeLimit: number // Number of points per node
 }
 
 export type RangeMap = { [nodeId: string]: IRange }
@@ -65,7 +65,7 @@ export function calculateEqualNodes <Tree extends ITree> (tree: Tree, limit: num
   return { ranges, nodes }
 }
 
-export default abstract class AbstractVirtualNodesIO<
+export abstract class AbstractVirtualNodesIO<
   Tree extends ITree & INodeLimit,
   Point extends IPoint = IPoint,
 > extends AbstractSingleTreeIO<Tree, INode, Point> {

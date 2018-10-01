@@ -6,14 +6,14 @@ import INodeWithTree from '../api/INodeWithTree'
 import IPoint from '../api/IPoint'
 import ITree from '../api/ITree'
 import ITreeQuery from '../api/ITreeQuery'
-import AbstractIO from '../util/AbstractIO'
+import { AbstractIO } from '../util/AbstractIO'
 import { mapStreamTo } from './mapStream'
 
 function ignoreError () {
   return
 }
 
-export default abstract class AbstractSingleTreeIO<
+export abstract class AbstractSingleTreeIO<
   Tree extends ITree,
   Node extends INode,
   Point extends IPoint

@@ -15,7 +15,7 @@ export interface IStreamRange<Point extends IPoint> extends ILocationRange {
 
 export type StreamRangeMap<Point extends IPoint> = { [nodeId: string]: IStreamRange<Point> }
 
-export default abstract class AbstractStreamIO<
+export abstract class AbstractStreamIO<
   Tree extends ITree & INodeLimit,
   Point extends IPoint = IPoint
 > extends AbstractVirtualNodesIO<Tree, Point> {
@@ -26,18 +26,21 @@ export default abstract class AbstractStreamIO<
   constructor (feed: IFeed, treeP: PromiseLike<Tree>) {
     super(treeP)
     this.feed = feed
-    this.sectionsP = Promise.all([this.rangesAndNodesP, treeP]).then(([{ ranges, nodes }, tree]) => this._prepareSections(tree, nodes, ranges))
+    this.sectionsP = Promise.all([this.rangesAndNodesP, treeP]).then(
+      ([{ ranges, nodes }, tree]) => this._prepareSections(tree, nodes, ranges)
+    )
   }
 
   async _getPoints (node: INode, tree: Tree): Promise<IPointData<Point>> {
     const section = (await this.sectionsP)[node.id]
+    console.log(section)
     const points = readFromStream(this.feed.createReadStream(section.location, section), section.reader)
-    return {
-      node,
-      points
-    }
+    return { node, points }
   }
 
+  _getRangePoints (node: INode, range: IRange) {
+    return Promise.reject(new Error('Not required in virtual nodes id'))
+  }
 
   abstract _prepareSections (tree: Tree, nodes: INode[], ranges: RangeMap): PromiseLike<StreamRangeMap<Point>>
 }
