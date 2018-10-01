@@ -111,7 +111,7 @@ test('reading dynamic simple stream of features to a stream', async () => {
     new Uint8Array(data.slice(0, reader.minSize)),
     new Uint8Array(data.slice(reader.minSize, 14)),
     new Uint8Array(data.slice(14))
-  ]), reader, out)
+  ]), reader, out, { isAborted: false })
   expect(out.isEnded()).toBeFalsy() // The stream shouldnt be ended after all was passed
   await out.end()
   const points = await all
@@ -120,4 +120,42 @@ test('reading dynamic simple stream of features to a stream', async () => {
     { x: 1, y: 2, z: 3, desc: 'abc' },
     { x: 5, y: 6, z: 7, desc: 'de' }
   ])
+})
+
+test('aborting a readstream within a block', async () => {
+  const stream = readFromStream(Stream.from([new Uint8Array([1, 2, 3])]), uint8)
+  const err = new Error('stopping')
+  let order = 0
+  stream.forEach(
+    item => {
+      expect(item).toBe(1)
+      stream.abort(err)
+    },
+    (err) => {
+      expect(order++).toBe(1)
+      expect(err).toBe(err)
+    },
+    (reason: Error) => {
+      expect(order++).toBe(0)
+      expect(reason).toBe(err)
+    }
+  )
+  await expect(stream.aborted()).rejects.toBe(err)
+  await expect(stream.result()).rejects.toBe(err)
+})
+
+test('Using an iterator of readers', async () => {
+  const stream = readFromStream(Stream.from([new Uint8Array([1, 2, 3])]), [uint8, uint8])
+  const items = []
+  const err = new Error('stopping')
+  await stream.forEach(
+    item => {
+      items.push(item)
+    },
+    (err?: Error) => {
+      expect(items).toMatchObject([1, 2])
+      expect(err).toBe(undefined)
+    },
+    (reason: Error) => expect(reason).toBe(err)
+  )
 })
