@@ -33,6 +33,10 @@ function prefixType (type: { [key: string]: FeatureType }, prefix: string) {
 }
 
 function mapObjectReader<T> (name: string, reader: IReader<{ [key: string]: any }, { [key: string]: FeatureType }>) {
+  if (name === '') {
+    // No mapping required
+    return reader
+  }
   const temp = {}
   const { newType, map } = prefixType(reader.type, name)
   if (reader.fixedSize) {
@@ -111,6 +115,9 @@ function readerForDynamicFeatures <T extends { [key: string]: any }> (namedReade
       workContext.byteOffset = context.byteOffset
       for (const reader of readers) {
         if (reader.fixedSize) {
+          if (view.byteLength - workContext.byteOffset < reader.minSize) {
+            return false
+          }
           reader.readTo(view, workContext.byteOffset, target)
           workContext.byteOffset += reader.minSize
           size += reader.minSize
