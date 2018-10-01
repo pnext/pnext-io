@@ -31,9 +31,8 @@ export abstract class AbstractStreamIO<
     )
   }
 
-  async _getPoints (node: INode, tree: Tree): Promise<IPointData<Point>> {
+  async _getPoints (node: INode, tree: Tree): Promise<IPointData<Point, INode>> {
     const section = (await this.sectionsP)[node.id]
-    console.log(section)
     const points = readFromStream(this.feed.createReadStream(section.location, section), section.reader)
     return { node, points }
   }

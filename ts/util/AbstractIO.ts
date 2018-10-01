@@ -43,7 +43,7 @@ export abstract class AbstractIO<
 
   abstract _getTrees (output: IDuplex<Tree>, query?: ITreeQuery): PromiseLike<void>
   abstract _getNodes (output: IDuplex<Node>, query?: INodeQuery): PromiseLike<void>
-  abstract _getPoints (node: Node, tree: Tree): PromiseLike<IPointData<Point>>
+  abstract _getPoints (node: Node, tree: Tree): PromiseLike<IPointData<Point, Node>>
 
   _getNodesWithTrees (output: IDuplex<INodeWithTree<Node, Tree>>, query?: INodeQuery): PromiseLike<void> {
     const trees: { [key: string]: Tree } = {}
@@ -77,10 +77,10 @@ export abstract class AbstractIO<
     )
   }
 
-  getPoints (query?: IPointQuery, byos?: IDuplex<IPointData<Point>>) {
+  getPoints (query?: IPointQuery, byos?: IDuplex<IPointData<Point, Node>>) {
     const filter = filterForQuery<Tree, Node>(query)
     // TODO: check the query for schema
-    return processStream(byos, (output: IDuplex<IPointData<Point>>) => {
+    return processStream(byos, (output: IDuplex<IPointData<Point, Node>>) => {
       let nodeWithTreeS = this.getNodesWithTrees()
       if (filter !== null) {
         nodeWithTreeS = filterStream(nodeWithTreeS, filter)
@@ -93,7 +93,7 @@ export abstract class AbstractIO<
     })
   }
 
-  async _getAllPoints (output: IDuplex<IPointData<Point>>, nodesWithTrees: INodeWithTree<Node, Tree>[]) {
+  async _getAllPoints (output: IDuplex<IPointData<Point, Node>>, nodesWithTrees: INodeWithTree<Node, Tree>[]) {
     return this.getPoints(null, output)
   }
 

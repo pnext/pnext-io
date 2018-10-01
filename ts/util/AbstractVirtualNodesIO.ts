@@ -87,11 +87,11 @@ export abstract class AbstractVirtualNodesIO<
     }
   }
 
-  async _getPoints (node: INode, tree: Tree): Promise<IPointData<Point>> {
+  async _getPoints (node: INode, tree: Tree): Promise<IPointData<Point, INode>> {
     const ranges = (await this.rangesAndNodesP).ranges
     const data = await this._getRangePoints(node, ranges[node.id])
     return data
   }
 
-  abstract _getRangePoints (node: INode, range: IRange): PromiseLike<IPointData<Point>>
+  abstract _getRangePoints (node: INode, range: IRange): PromiseLike<IPointData<Point, INode>>
 }

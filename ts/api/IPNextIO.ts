@@ -39,5 +39,5 @@ export default interface IPNextIO<
   /**
    * Requesting the actual node data from the server.
    */
-  getPoints (query?: IPointQuery, byos?: IDuplex<IPointData<Point>>): IReadable<IPointData<Point>>
+  getPoints (query?: IPointQuery, byos?: IDuplex<IPointData<Point, Node>>): IReadable<IPointData<Point, Node>>
 }
