@@ -155,6 +155,7 @@ export function createReadStream (fs: IFeedFS, location: string, range: IFeedRan
       isOpened = true
       isAborted = true
       aborted.reject(reason)
+      result.reject(reason)
     },
     aborted: () => aborted,
     result: () => result,

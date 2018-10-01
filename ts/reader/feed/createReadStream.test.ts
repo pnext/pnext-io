@@ -96,10 +96,15 @@ test('Aborting of a stream', async () => {
   })
   const stream = createReadStream(fs, 'x', { start: 0 }, Buffer.allocUnsafe)
   const testError = new Error('test-error')
+  let order = 0
   const streamDone = stream.forEach(
     () => { throw new Error('Item received even though the stream should have been closed.') },
-    () => { throw new Error('Ender called even though the stream was aborted') },
     (error) => {
+      expect(order++).toBe(1)
+      expect(error).toBe(testError)
+    },
+    (error) => {
+      expect(order++).toBe(0)
       expect(error).toBe(testError) // Same error passed to aborter
     }
   )
