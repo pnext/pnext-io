@@ -20,3 +20,11 @@ export function fixedArray <T> (reader: IReader<T, FeatureType>, count: number):
     }
   })
 }
+
+export function unfixArray<T> (prefix: string, obj: { [key: string]: any }, count: number): { [value: number]: T } {
+  const result = {}
+  for (let i = 0; i < count; i++) {
+    result[i] = obj[`${prefix}${i}`]
+  }
+  return result
+}
