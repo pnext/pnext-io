@@ -47,4 +47,6 @@ export default interface ITree {
    * classifications that exceed the common classification map.
    */
   classificationMap?: { [classification: number]: PointClass }
+
+  createdAt?: Date
 }
