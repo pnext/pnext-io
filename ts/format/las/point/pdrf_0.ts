@@ -80,7 +80,7 @@ export const pdrf0Parts = base.concat([
       */
       7: 'edge'
     }),
-    name: 'mixed'
+    name: ''
   },
   /*
     This field represents the “class” attributes of a point. If a point has never

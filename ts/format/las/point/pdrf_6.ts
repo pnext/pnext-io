@@ -34,7 +34,7 @@ export const pdrf6Parts: INamedReader[] =
         6: 'numberOfReturns',
         7: 'numberOfReturns'
       }),
-      name: 'mixedA'
+      name: ''
     },
     {
       reader: bits({
@@ -100,7 +100,7 @@ export const pdrf6Parts: INamedReader[] =
         */
         7: 'edge'
       }),
-      name: 'mixedB'
+      name: ''
     },
     { reader: unsignedChar, name: 'classification' },
     /*
