@@ -6,12 +6,14 @@ import IReader from '../reader/IReader'
 import { IFeed } from '../reader/feed/IFeed'
 import { ILocationRange } from '../reader/feed/ILocationRange'
 import { readFromStream, ParseReader } from '../reader/readFromStream'
-import AbstractVirtualNodesIO, { INodeLimit, IRange } from './AbstractVirtualNodesIO'
+import { AbstractVirtualNodesIO, INodeLimit, IRange, RangeMap } from './AbstractVirtualNodesIO'
 import IDynamicContext from '../reader/util/IDynamicContext'
 
 export interface IStreamRange<Point extends IPoint> extends ILocationRange {
   reader: ParseReader<Point>
 }
+
+export type StreamRangeMap<Point extends IPoint> = { [nodeId: string]: IStreamRange<Point> }
 
 export default abstract class AbstractStreamIO<
   Tree extends ITree & INodeLimit,
@@ -36,5 +38,6 @@ export default abstract class AbstractStreamIO<
     }
   }
 
-  abstract _prepareSections (tree: Tree, nodes: INode[], ranges: { [nodeId: string]: IRange }): PromiseLike<{ [nodeId: string]: IStreamRange<Point> }>
+
+  abstract _prepareSections (tree: Tree, nodes: INode[], ranges: RangeMap): PromiseLike<StreamRangeMap<Point>>
 }

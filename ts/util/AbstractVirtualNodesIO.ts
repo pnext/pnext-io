@@ -21,9 +21,11 @@ export interface INodeLimit {
   nodeLimit: number
 }
 
+export type RangeMap = { [nodeId: string]: IRange }
+
 interface IRangesAndNodes {
   nodes: INode[]
-  ranges: { [nodeId: string]: IRange }
+  ranges: RangeMap
 }
 
 export function calculateEqualNodes <Tree extends ITree> (tree: Tree, limit: number = Number.MAX_SAFE_INTEGER): IRangesAndNodes {
@@ -34,7 +36,7 @@ export function calculateEqualNodes <Tree extends ITree> (tree: Tree, limit: num
     throw new Error('Limit needs to be a positive number.')
   }
   const nodes: INode[] = []
-  const ranges: { [nodeId: string]: IRange } = {}
+  const ranges: RangeMap = {}
   let start: number | Long = 0
 
   function addNode (numPoints) {
