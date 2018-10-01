@@ -1,4 +1,4 @@
-import LasPointFormat from '../LasPointFormat'
+import { LasPointFormat } from '../LasPointFormat'
 import IReader from '../../../reader/IReader'
 import pdrf_0 from './pdrf_0'
 import pdrf_1 from './pdrf_1'
@@ -12,8 +12,9 @@ import pdrf_8 from './pdrf_8'
 import pdrf_9 from './pdrf_9'
 import pdrf_10 from './pdrf_10'
 import IPoint from '../../../api/IPoint'
+import { FeatureObject } from '../../../api/FeatureType'
 
-const readerByFormat: { [ format: number ]: IReader<IPoint> } = {
+const readerByFormat: { [ format: number ]: IReader<IPoint, FeatureObject> } = {
   [ LasPointFormat.PDRF_0 ]: pdrf_0,
   [ LasPointFormat.PDRF_1 ]: pdrf_1,
   [ LasPointFormat.PDRF_2 ]: pdrf_2,

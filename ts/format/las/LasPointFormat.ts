@@ -1,6 +1,6 @@
-import LasVersion from './LasVersion'
+import { LasVersion } from './LasVersion'
 
-enum LasPointFormat {
+export enum LasPointFormat {
   PDRF_0 = 0,
   PDRF_1 = 1,
   PDRF_2 = 2,
@@ -42,5 +42,3 @@ export const formatByVersion: { [version: string]: number[] } = {
   [ LasVersion.V1_3 ]: V1_3_FORMATS,
   [ LasVersion.V1_4 ]: V1_4_FORMATS
 }
-
-export default LasPointFormat
