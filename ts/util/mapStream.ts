@@ -15,7 +15,7 @@ export function mapStreamTo<In, Out> (input: IReadable<In>, op: (input: In) => P
         .then(result => output.write(result))
         .then(() => { /* return void */ })
     },
-    () => autoEnd && output.end(),
+    (error?: Error) => autoEnd && output.end(error),
     (reason: Error) => output.abort(reason)
   )
 }
