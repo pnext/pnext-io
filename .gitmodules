@@ -1,0 +1,4 @@
+[submodule "ts/format/las/_test/RandomSample"]
+	path = ts/format/las/_test/RandomSample
+	url = git@github.com:pnext/samples.git
+	branch = RandomSample
