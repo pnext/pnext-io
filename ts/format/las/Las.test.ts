@@ -51,12 +51,7 @@ for (const ver of [
     expect(sets.length).toBe(1)
     for (const set of sets) {
       expect(set.node.numPoints).toBe(10)
-      try {
-        await getAll(set.points)
-      } catch(e) {
-        console.log('error')
-        console.log(e)
-      }
+      await getAll(set.points)
     }
   })
 }
