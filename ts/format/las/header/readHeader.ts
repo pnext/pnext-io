@@ -120,9 +120,9 @@ const Las14Ext = readerForReaders(
     // Start of first Extended Variable Length Record - ulonglong
     { name: 'firstExtVarLenRecord', reader: unsignedLongLong },
     // Number of Extended Variable Length Records - ulonglong
-    { name: 'numberExtVarLenRecord', reader: unsignedLongLong },
+    { name: 'numberExtVarLenRecord', reader: unsignedLong },
     // Number of point records - ulong
-    { name: 'pointRecords', reader: unsignedLong },
+    { name: 'pointRecords', reader: unsignedLongLong },
     // Number of points by return - ulonglong[15]
     { name: 'numberOfPointsByReturn_', reader: unsignedLongLongArray(15) }
   ])
