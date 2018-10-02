@@ -192,7 +192,7 @@ export function createReadStream (fs: IFeedFS, location: string, range: IFeedRan
             return
           }
           const toRead = Math.min(
-            end - start + 1,
+            end - start,
             pool.buffer.length - pool.used,
             highWaterMark
           )

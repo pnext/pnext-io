@@ -10,12 +10,12 @@ test('Simple File stream abstracted', async () => {
   function range (start, end) {
     return feed.createReadStream(location, { start, end })
   }
-  expect(await toString(range(0, 12))).toBe('1 abcdef\n2 gh') // simply reading
-  expect(await toString(range(11, 14))).toBe('ghij') // second reading works
-  expect(await toString(range(14, 15))).toBe('jk') // and even though not idle we can read
+  expect(await toString(range(0, 12))).toBe('1 abcdef\n2 g') // simply reading
+  expect(await toString(range(11, 14))).toBe('ghi') // second reading works
+  expect(await toString(range(14, 15))).toBe('j') // and even though not idle we can read
   const [a, b] = await Promise.all([
-    toString(range(0, 2)),
-    toString(range(3, 5))
+    toString(range(0, 3)),
+    toString(range(3, 6))
   ])
   expect(`${a}-${b}`).toBe('1 a-bcd') // parallel streams
 })
