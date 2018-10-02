@@ -3,10 +3,10 @@ import Long from 'long'
 import FeatureType from '../../api/FeatureType'
 
 export default createFixedSimpleReader<number | Long>(8, FeatureType.int64, (view: DataView, byteOffset: number) => {
-  const low = view.getInt32(byteOffset, false)
-  const high = view.getInt32(byteOffset, false)
-  if (high === 0) {
-    return low
+  const arr: any = new Uint8Array(view.buffer.slice(byteOffset, byteOffset + 8))
+  const long = Long.fromBytesBE(arr, false)
+  if (long.lte(Number.MAX_SAFE_INTEGER) && long.gte(Number.MIN_SAFE_INTEGER)) {
+    return long.toNumber()
   }
-  return new Long(low, high, false)
+  return long
 })
