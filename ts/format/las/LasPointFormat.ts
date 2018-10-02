@@ -14,31 +14,24 @@ export enum LasPointFormat {
   PDRF_10 = 10
 }
 
-export const V1_0_FORMATS = [
+export const ALL_FORMATS = [
   LasPointFormat.PDRF_0,
-  LasPointFormat.PDRF_1
-]
-export const V1_1_FORMATS = V1_0_FORMATS
-export const V1_2_FORMATS = V1_1_FORMATS.concat([
+  LasPointFormat.PDRF_1,
   LasPointFormat.PDRF_2,
-  LasPointFormat.PDRF_3
-])
-export const V1_3_FORMATS = V1_2_FORMATS.concat([
+  LasPointFormat.PDRF_3,
   LasPointFormat.PDRF_4,
-  LasPointFormat.PDRF_5
-])
-export const V1_4_FORMATS = V1_3_FORMATS.concat([
+  LasPointFormat.PDRF_5,
   LasPointFormat.PDRF_6,
   LasPointFormat.PDRF_7,
   LasPointFormat.PDRF_8,
   LasPointFormat.PDRF_9,
   LasPointFormat.PDRF_10
-])
+]
 
 export const formatByVersion: { [version: string]: number[] } = {
-  [ LasVersion.V1_0 ]: V1_0_FORMATS,
-  [ LasVersion.V1_1 ]: V1_1_FORMATS,
-  [ LasVersion.V1_2 ]: V1_2_FORMATS,
-  [ LasVersion.V1_3 ]: V1_3_FORMATS,
-  [ LasVersion.V1_4 ]: V1_4_FORMATS
+  [ LasVersion.V1_0 ]: ALL_FORMATS,
+  [ LasVersion.V1_1 ]: ALL_FORMATS,
+  [ LasVersion.V1_2 ]: ALL_FORMATS,
+  [ LasVersion.V1_3 ]: ALL_FORMATS,
+  [ LasVersion.V1_4 ]: ALL_FORMATS
 }
