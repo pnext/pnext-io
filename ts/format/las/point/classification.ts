@@ -1,4 +1,4 @@
-import LasPointFormat from '../LasPointFormat'
+import { LasPointFormat } from '../LasPointFormat'
 import PointClass from '../../../api/PointClass'
 
 export const LidarPointClasses1 = {
