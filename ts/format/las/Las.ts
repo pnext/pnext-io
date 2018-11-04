@@ -19,6 +19,19 @@ export class Las extends AbstractStreamIO<ILasTree, IPoint> {
   async _prepareSections (tree: ILasTree, nodes: INode[], ranges: RangeMap) {
     const map: StreamRangeMap<IPoint> = {}
     const reader = tree.pointReader
+    if (tree.compression) {
+      console.error('Warning: LAZ reader not yet implemented!')
+      for (const node of nodes) {
+        const range = ranges[node.id]
+        map[node.id] = {
+          location: this.location,
+          reader,
+          start: 0,
+          end: 0
+        }
+      }
+      return map
+    }
     for (const node of nodes) {
       const range = ranges[node.id]
       const start = assertNumber(add(tree.pointOffset, mul(range.start, reader.minSize)))

@@ -6,6 +6,7 @@ import { INodeLimit } from '../../../util/AbstractVirtualNodesIO'
 import IPoint from '../../../api/IPoint'
 import { FeatureObject } from '../../../api/FeatureType'
 import { IVarLengthRecord } from './IVarLengthRecord'
+import { ICompression } from './ICompression'
 
 export interface ILasTree extends ITree, INodeLimit {
   version: LasVersion
@@ -13,4 +14,5 @@ export interface ILasTree extends ITree, INodeLimit {
   pointsByReturn: PointsByReturn
   pointOffset: number | Long
   varLenRecords: IVarLengthRecord[]
+  compression: ICompression
 }
