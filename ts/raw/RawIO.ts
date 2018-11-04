@@ -3,8 +3,6 @@ import FeatureType from '../api/FeatureType'
 import IBox3 from '../api/IBox3'
 import INode from '../api/INode'
 import INodeQuery from '../api/INodeQuery'
-import INodeWithTree from '../api/INodeWithTree'
-import IPNextIO from '../api/IPNextIO'
 import IPoint from '../api/IPoint'
 import IPointData from '../api/IPointData'
 import ITree from '../api/ITree'
@@ -98,7 +96,7 @@ export default class RawIO<Point extends IPoint> extends AbstractSingleTreeIO<Tr
     }
   }
 
-  async _getPoints (node: INode, tree: TreeInfo): Promise<IPointData<Point>> {
+  async _getPoints (node: INode, tree: TreeInfo): Promise<IPointData<Point, INode>> {
     return {
       node,
       points: Stream.from(this.pointData[node.id])
