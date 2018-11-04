@@ -4,6 +4,7 @@ import { Las } from './Las'
 import { FSFeed } from '../../reader/feed/FSFeed'
 import { getAll } from '../../util/getAll'
 import { LasVersion } from './LasVersion'
+import { toLocationFeed } from '../../reader/feed/toLocationFeed'
 
 const DIR = `${__dirname}/_test/RandomSample/las`
 
@@ -30,7 +31,7 @@ for (const ver of [
 ]) {
   test(`Reading a ${ver.name} file`, async () => {
     const feed = new FSFeed(fs, Buffer.allocUnsafe)
-    const las = new Las(feed, path.normalize(`${DIR}/${ver.name}`))
+    const las = new Las(toLocationFeed(feed, path.normalize(`${DIR}/${ver.name}`)))
     const tree = await las.getTree(null)
     expect(tree.version).toBe(ver.version)
     expect(tree.metadata.pdFormatId).toBe(ver.pd)

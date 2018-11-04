@@ -15,9 +15,9 @@ export class Las extends AbstractStreamIO<ILasTree, IPoint> {
 
   location: string
 
-  constructor (feed: IFeed, location: string, nodeLimit?: number) {
-    super(feed, readTree(feed, location, nodeLimit))
-    this.location = location
+  constructor (feed: ILocationFeed, nodeLimit?: number) {
+    super(feed.feed, readTree(feed, nodeLimit))
+    this.location = feed.location
   }
 
   async _prepareSections (tree: ILasTree, nodes: INode[], ranges: RangeMap) {
