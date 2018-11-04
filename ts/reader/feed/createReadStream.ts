@@ -137,7 +137,7 @@ function ignore () { /* ... */ }
 export function createReadStream (fs: IFeedFS, location: string, range: IFeedRange, alloc: (size: number) => Uint8Array, highWaterMark: number = 64 * 1024): IReadable<Uint8Array> {
   let isOpened = false
   let isAborted = false
-  const aborted = createLazyPromise<void>()
+  const aborted = createLazyPromise<never>()
   const fdP = open(fs, location)
   const result = createLazyPromise<void>(() => fdP.then(fd => {
     return close(fs, fd)

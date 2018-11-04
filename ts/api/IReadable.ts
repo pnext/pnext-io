@@ -1,3 +1,3 @@
-import { Readable, Common } from 'ts-stream'
+import { Readable } from 'ts-stream'
 
-export interface IReadable<T> extends Readable<T>, Common<T> {}
+export interface IReadable<T> extends Readable<T> {}

@@ -59,6 +59,6 @@
     "long": "^4.0.0",
     "protobufjs": "^6.8.8",
     "three": "^0.98.0",
-    "ts-stream": "^1.0.1"
+    "ts-stream": "^2.0.0"
   }
 }
