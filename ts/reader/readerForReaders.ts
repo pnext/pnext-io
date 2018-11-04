@@ -54,7 +54,7 @@ function mapObjectReader<T> (name: string, reader: IReader<{ [key: string]: any 
   })
 }
 
-function convertToObjectReader<T> (name: string, reader: IReader<T>): IReader<{ [key: string]: any }, { [key: string]: FeatureType }> {
+export function convertToObjectReader<T> (name: string, reader: IReader<T>): IReader<{ [key: string]: any }, { [key: string]: FeatureType }> {
   if (typeof reader.type === 'object') {
     return mapObjectReader(name, reader as IReader<T, { [key: string]: FeatureType }>)
   }
