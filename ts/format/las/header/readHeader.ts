@@ -15,6 +15,7 @@ import { signature } from '../../../reader/util/signature'
 import { getOne } from '../../../util/getOne'
 import { LasVersion, gteVersion } from '../LasVersion'
 import { IFeed } from '../../../reader/feed/IFeed'
+import { ILocationFeed } from '../../../reader/feed/ILocationFeed'
 
 function unsignedLongArray (length: number) {
   return fixedArray(unsignedLong, length)
@@ -160,10 +161,10 @@ const headerReader: IReader<ILasHeader, FeatureObject> = mergedReader<ILasHeader
   ...Las14Ext.type
 })
 
-export function readHeader (feed: IFeed, location: string): Promise<ILasHeader> {
+export function readHeader (feed: ILocationFeed): Promise<ILasHeader> {
   return getOne(
     readFromStream<ILasHeader>(
-      feed.createReadStream(location, { start: 0 }),
+      feed.createReadStream({ start: 0 }),
       headerReader
     )
   )
