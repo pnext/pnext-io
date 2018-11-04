@@ -10,8 +10,6 @@ import { ILasTree } from './ILasTree'
 import { IVarLengthRecord } from './IVarLengthRecord'
 import { ICompression } from './ICompression'
 import { getCompression } from './getCompression'
-import { assertNumber } from '../../../util/long';
-import { getOne } from '../../../util/getOne';
 
 export type PointsByReturn = { [pointReturn: number]: number | Long }
 
