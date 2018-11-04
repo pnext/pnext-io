@@ -1,14 +1,10 @@
 import INode from '../../api/INode'
 import IPoint from '../../api/IPoint'
-import IReader from '../../reader/IReader'
-import readerByFormat from './point/readerByFormat'
 import { ILocationFeed } from '../../reader/feed/ILocationFeed'
-import { AbstractStreamIO, StreamRangeMap, IStreamRange } from '../../util/AbstractStreamIO'
+import { AbstractStreamIO, StreamRangeMap } from '../../util/AbstractStreamIO'
 import { RangeMap } from '../../util/AbstractVirtualNodesIO'
+import { add, assertNumber, mul } from '../../util/long'
 import { ILasTree } from './header/ILasTree'
-import { IFeed } from '../../reader/feed/IFeed'
-import { FeatureObject } from '../../api/FeatureType'
-import { add, mul, assertNumber } from '../../util/long'
 import { readTree } from './header/readTree'
 
 export class Las extends AbstractStreamIO<ILasTree, IPoint> {

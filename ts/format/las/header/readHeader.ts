@@ -1,8 +1,9 @@
 import Long from 'long'
 import { FeatureObject } from '../../../api/FeatureType'
+import { ILocationFeed } from '../../../reader/feed/ILocationFeed'
 import IReader from '../../../reader/IReader'
-import { readFromStream } from '../../../reader/readFromStream'
 import readerForReaders, { INamedReader } from '../../../reader/readerForReaders'
+import { readFromStream } from '../../../reader/readFromStream'
 import double from '../../../reader/type/double'
 import char from '../../../reader/type/fixedTrimmedString'
 import unsignedShort from '../../../reader/type/uint16LE'
@@ -13,9 +14,7 @@ import { fixedArray } from '../../../reader/util/fixedArray'
 import { mergedReader } from '../../../reader/util/mergedReader'
 import { signature } from '../../../reader/util/signature'
 import { getOne } from '../../../util/getOne'
-import { LasVersion, gteVersion } from '../LasVersion'
-import { IFeed } from '../../../reader/feed/IFeed'
-import { ILocationFeed } from '../../../reader/feed/ILocationFeed'
+import { gteVersion, LasVersion } from '../LasVersion'
 
 function unsignedLongArray (length: number) {
   return fixedArray(unsignedLong, length)
