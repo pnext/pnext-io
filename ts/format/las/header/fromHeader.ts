@@ -11,6 +11,7 @@ import IPoint from '../../../api/IPoint'
 import { unfixArray } from '../../../reader/util/fixedArray'
 import { INodeLimit } from '../../../util/AbstractVirtualNodesIO'
 import { ILasTree } from './ILasTree'
+import { IVarLengthRecord } from './IVarLengthRecord'
 
 export type PointsByReturn = { [pointReturn: number]: number | Long }
 
@@ -40,9 +41,14 @@ function toFeatureArray (types: FeatureObject): IFeature[] {
   return arr
 }
 
-export function fromHeader (header: ILasHeader, location: string, nodeLimit: number = 1024): ILasTree {
-  const { versionMajor, versionMinor, pdFormatId } = header
-  const versionRaw = `V${header.versionMajor}_${header.versionMinor}`
+export async function fromHeader (
+  rawHeader: ILasHeader,
+  varLenRecords: IVarLengthRecord[],
+  location: string,
+  nodeLimit?: number
+): Promise<ILasTree> {
+  const { versionMajor, versionMinor, pdFormatId } = rawHeader
+  const versionRaw = `V${rawHeader.versionMajor}_${rawHeader.versionMinor}`
   const version = LasVersion[versionRaw]
   if (version === undefined) {
     throw new Error(`Unsupported LAS version: ${versionRaw}`)
@@ -52,39 +58,39 @@ export function fromHeader (header: ILasHeader, location: string, nodeLimit: num
     throw new Error(`LAS version ${version} doesn't support type format: ${pdFormatId}`)
   }
   const pointReader = readerByFormat[pdFormatId]
-  const pointsByReturn = unfixArray<number | Long>('numberOfPointsByReturn_', header, 15)
+  const pointsByReturn = unfixArray<number | Long>('numberOfPointsByReturn_', rawHeader, 15)
   return {
     id: `${location} - [LAS ${versionRaw}]`,
-    bounds: boundsFromHeader(header),
-    scale: { x: header.xScale, y: header.yScale, z: header.zScale },
-    offset: { x: header.xOffset, y: header.yOffset, z: header.zOffset },
-    numPoints: header.pointRecords,
+    bounds: boundsFromHeader(rawHeader),
+    scale: { x: rawHeader.xScale, y: rawHeader.yScale, z: rawHeader.zScale },
+    offset: { x: rawHeader.xOffset, y: rawHeader.yOffset, z: rawHeader.zOffset },
+    numPoints: rawHeader.pointRecords,
     schema: toFeatureArray(pointReader.type),
     nodeLimit,
     metadata: {
       pdFormatId,
       versionMajor,
       versionMinor,
-      generatingSoftware: header.generatingSoftware,
-      systemIdentifier: header.systemIdentifier,
+      generatingSoftware: rawHeader.generatingSoftware,
+      systemIdentifier: rawHeader.systemIdentifier,
       pointsByReturn,
-      guid1: header.guid1,
-      guid2: header.guid2,
-      guid3: header.guid3,
-      guid4: header.guid4,
-      flightDateJulian: header.flightDateJulian,
-      year: header.year,
-      headerSize: header.headerSize,
-      offsetToData: header.offsetToData,
-      numberOfVarRecords: header.numberOfExtVarRecords,
-      pdRecordLength: header.pdRecordLength,
-      waveFormStart: header.waveFormStart,
-      firstExtVarLenRecord: header.firstExtVarLenRecord,
-      numberOfExtVarRecords: header.numberOfExtVarRecords
+      guid1: rawHeader.guid1,
+      guid2: rawHeader.guid2,
+      guid3: rawHeader.guid3,
+      guid4: rawHeader.guid4,
+      flightDateJulian: rawHeader.flightDateJulian,
+      year: rawHeader.year,
+      headerSize: rawHeader.headerSize,
+      offsetToData: rawHeader.offsetToData,
+      pdRecordLength: rawHeader.pdRecordLength,
+      waveFormStart: rawHeader.waveFormStart,
+      firstExtVarLenRecord: rawHeader.firstExtVarLenRecord,
+      numberOfExtVarRecords: rawHeader.numberOfExtVarRecords
     },
     version,
     pointReader,
     pointsByReturn,
-    pointOffset: header.offsetToData
+    pointOffset: rawHeader.offsetToData,
+    varLenRecords
   }
 }
