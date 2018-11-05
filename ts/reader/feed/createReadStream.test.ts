@@ -1,6 +1,5 @@
-import { createReadStream, RangeError } from './createReadStream'
+import { createReadStream, RangeError, createMemManager } from './createReadStream'
 import { IFeedFS } from './IFeedFS'
-import { streamToString } from './streamToString'
 import { getAll } from '../../util/getAll'
 import { combine } from '../util/combine'
 
@@ -54,7 +53,7 @@ function dummyFS (opts: {
 }
 
 async function range (fs: IFeedFS, location: string, start: number, end?: number) {
-  return combine(await getAll(createReadStream(fs, location, { start, end }, Buffer.allocUnsafe)))
+  return combine(await getAll(createReadStream(fs, location, { start, end }, createMemManager(Buffer.allocUnsafe))))
 }
 
 test('A simple stream', async () => {
@@ -94,7 +93,7 @@ test('Aborting of a stream', async () => {
     },
     readTimeout: 100
   })
-  const stream = createReadStream(fs, 'x', { start: 0 }, Buffer.allocUnsafe)
+  const stream = createReadStream(fs, 'x', { start: 0 }, createMemManager(Buffer.allocUnsafe))
   const testError = new Error('test-error')
   let order = 0
   const streamDone = stream.forEach(

@@ -1,7 +1,7 @@
 import path from 'path'
 import { IFeedFS } from './IFeedFS'
 import { IFeedRange } from './IFeedRange'
-import { createReadStream } from './createReadStream'
+import { createReadStream, createMemManager, IMemManager } from './createReadStream'
 
 export interface FolderFeedOptions {
   max?: number
@@ -13,11 +13,11 @@ export interface FolderFeedOptions {
 export class FSFeed {
   options: FolderFeedOptions
   fs: IFeedFS
-  alloc: (size: number) => Uint8Array
+  memManager: IMemManager
 
   constructor (fs: IFeedFS, alloc: (size: number) => Uint8Array, options?: FolderFeedOptions) {
     this.fs = fs
-    this.alloc = alloc
+    this.memManager = createMemManager(alloc)
     this.options = Object.assign({
       max: 5,
       maxAge: 1000,
@@ -27,6 +27,6 @@ export class FSFeed {
   }
 
   createReadStream (location: string, range: IFeedRange) {
-    return createReadStream(this.fs, path.normalize(`${this.options.prefix}${location}`), range, this.alloc)
+    return createReadStream(this.fs, path.normalize(`${this.options.prefix}${location}`), range, this.memManager)
   }
 }

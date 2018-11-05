@@ -6,50 +6,51 @@ import { createLazyPromise } from '../../util/createLazyPromise'
 
 type BackPressure = (next: (() => PromiseLike<void> | void)) => PromiseLike<void> | void
 
-const kMinPoolSpace = 128
-
 class IPool {
   buffer: Uint8Array
   used: number
 }
 
-function sliceFromPool (pool: IPool, start: number, expectedEnd: number, actualEnd: number): Uint8Array {
-  // Now that we know how much data we have actually read, re-wind the
-  // 'used' field if we can, and otherwise allow the remainder of our
-  // reservation to be used as a new pool later.
-  if (expectedEnd === pool.used) {
-    pool.used = start
-  } else if (expectedEnd - actualEnd > kMinPoolSpace) {
-    poolFragments.push(pool.buffer.slice(actualEnd, expectedEnd))
-  }
-  return pool.buffer.slice(start, actualEnd)
+export interface IMemManager {
+  highWaterMark: number
+  createOrGetPool (): IPool
+  sliceFromPool (pool: IPool, start: number, expectedEnd: number, actualEnd: number): Uint8Array
 }
 
-let pool: IPool = undefined
-let poolFragments: Uint8Array[] = []
+export function createMemManager (alloc: (size: number) => Uint8Array, highWaterMark: number = 64 * 1024, kMinPoolSpace: number = 128): IMemManager {
+  let pool: IPool = undefined
+  let poolFragments: Uint8Array[] = []
 
-function createPool (buffer: Uint8Array) {
-  pool = {
-    buffer,
-    used: 0
-  }
-}
-
-function createOrGetPool (highWaterMark: number, alloc: (size: number) => Uint8Array): IPool {
-  if (pool === undefined || pool.buffer.length - pool.used < kMinPoolSpace) {
-    // discard the old pool.
-    if (poolFragments.length > 0) {
-      createPool(poolFragments.pop())
-    } else {
-      createPool(alloc(highWaterMark))
+  return {
+    highWaterMark,
+    createOrGetPool (): IPool {
+      if (pool === undefined || pool.buffer.length - pool.used < kMinPoolSpace) {
+        // discard the old pool.
+        pool = {
+          buffer: poolFragments.length > 0
+            ? poolFragments.pop()
+            : alloc(highWaterMark),
+          used: 0
+        }
+      }
+      return pool
+    },
+    sliceFromPool (pool: IPool, start: number, expectedEnd: number, actualEnd: number): Uint8Array {
+      // Now that we know how much data we have actually read, re-wind the
+      // 'used' field if we can, and otherwise allow the remainder of our
+      // reservation to be used as a new pool later.
+      if (expectedEnd === pool.used) {
+        pool.used = start
+      } else if (expectedEnd - actualEnd > kMinPoolSpace) {
+        poolFragments.push(pool.buffer.slice(actualEnd, expectedEnd))
+      }
+      return pool.buffer.slice(start, actualEnd)
     }
   }
-  return pool
 }
 
 function createBackPressure (): BackPressure {
   let processing: PromiseLike<void> | null
-  let working: boolean = false
   let error: Error = null
 
   function handleNext (next: () => PromiseLike<void> | null) {
@@ -134,7 +135,7 @@ function close (fs: IFeedFS, fd: number) {
 
 function ignore () { /* ... */ }
 
-export function createReadStream (fs: IFeedFS, location: string, range: IFeedRange, alloc: (size: number) => Uint8Array, highWaterMark: number = 64 * 1024): IReadable<Uint8Array> {
+export function createReadStream (fs: IFeedFS, location: string, range: IFeedRange, memManager: IMemManager): IReadable<Uint8Array> {
   let isOpened = false
   let isAborted = false
   const aborted = createLazyPromise<never>()
@@ -186,7 +187,7 @@ export function createReadStream (fs: IFeedFS, location: string, range: IFeedRan
       }
       const backPressure = createBackPressure()
       fdP.then(fd => {
-        const pool = createOrGetPool(highWaterMark, alloc)
+        const pool = memManager.createOrGetPool()
         function readNext () {
           if (isAborted) {
             return
@@ -194,7 +195,7 @@ export function createReadStream (fs: IFeedFS, location: string, range: IFeedRan
           const toRead = Math.min(
             end - start,
             pool.buffer.length - pool.used,
-            highWaterMark
+            memManager.highWaterMark
           )
           if (toRead === 0) {
             return backPressure(() => result.resolve())
@@ -212,7 +213,7 @@ export function createReadStream (fs: IFeedFS, location: string, range: IFeedRan
             if (bytesRead === 0) {
               return backPressure(() => result.resolve())
             }
-            const data = sliceFromPool(pool, poolStart, poolEnd, poolStart + bytesRead)
+            const data = memManager.sliceFromPool(pool, poolStart, poolEnd, poolStart + bytesRead)
             const res = backPressure(() => reader(data))
             // If the backPressure is busy, wait until next work is done.
             isPromiseLike(res)
