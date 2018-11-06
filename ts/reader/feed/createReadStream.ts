@@ -1,10 +1,7 @@
 import { IFeedFS } from './IFeedFS'
 import { IFeedRange } from './IFeedRange'
 import { IReadable } from '../../api/IReadable'
-import { isPromiseLike } from '../../util/isPromiseLike'
-import { createLazyPromise } from '../../util/createLazyPromise'
-
-type BackPressure = (next: (() => PromiseLike<void> | void)) => PromiseLike<void> | void
+import { StreamState } from './StreamState'
 
 class IPool {
   buffer: Uint8Array
@@ -46,40 +43,6 @@ export function createMemManager (alloc: (size: number) => Uint8Array, highWater
       }
       return pool.buffer.slice(start, actualEnd)
     }
-  }
-}
-
-function createBackPressure (): BackPressure {
-  let processing: PromiseLike<void> | null
-  let error: Error = null
-
-  function handleNext (next: () => PromiseLike<void> | null) {
-    // We return null, but keep the processing reference.
-    processing = next()
-    if (processing) {
-      processing
-        .then(() => {
-          // We clear the processing immediately after this is done.
-          processing = null
-        }, err => {
-          // We can not do anything here, the error needs to be processed
-          // when closing the stream.
-          error = err
-        })
-    }
-  }
-
-  return (next: () => PromiseLike<void> | null): PromiseLike<void> | null => {
-    if (error) {
-      // If an error occured, just return that. Further processing aint needed
-      return Promise.reject(error)
-    }
-    if (processing) {
-      return processing.then(() => {
-        handleNext(next)
-      })
-    }
-    handleNext(next)
   }
 }
 
@@ -133,100 +96,60 @@ function close (fs: IFeedFS, fd: number) {
   )
 }
 
-function ignore () { /* ... */ }
-
 export function createReadStream (fs: IFeedFS, location: string, range: IFeedRange, memManager: IMemManager): IReadable<Uint8Array> {
-  let isOpened = false
-  let isAborted = false
-  const aborted = createLazyPromise<never>()
   const fdP = open(fs, location)
-  const result = createLazyPromise<void>(() => fdP.then(fd => {
-    return close(fs, fd)
-  }))
-  result.catch(ignore)
-  aborted.catch(ignore)
-  fdP.catch(ignore)
-  let { start, end, rangeError } = validateRange(range)
-  return {
-    abort (reason: Error): void {
-      if (isAborted) {
-        // Todo: should this throw an error?
-        return
-      }
-      isOpened = true
-      isAborted = true
-      aborted.reject(reason)
-      result.reject(reason)
-    },
-    aborted: () => aborted,
-    result: () => result,
-    forEach: (
-      reader: (item: Uint8Array) => PromiseLike<void> | void,
-      ender?: (error?: Error) => void,
-      aborter?: (error: Error) => void
-    ): Promise<void> => {
-      if (aborter) {
-        aborted.catch(aborter)
-      }
-      if (ender) {
-        result.then(() => ender(), ender)
-      }
-      if (isOpened) {
-        return Promise.reject(new Error('Can be opened only once!'))
-      }
-      isOpened = true
-      if (rangeError) {
-        isAborted = true
-        result.reject(rangeError)
-        return result
-      }
-      if (end === start) {
-        // We are done!
-        result.resolve()
-        return result
-      }
-      const backPressure = createBackPressure()
-      fdP.then(fd => {
+  const state = new StreamState<Uint8Array>(
+    (error?: Error) =>
+      fdP
+        .then(fd => close(fs, fd))
+        .then(() => error && Promise.reject(error))
+  )
+  state.next(() => {
+    let { start, end, rangeError } = validateRange(range)
+    if (rangeError !== undefined) {
+      return state.end(rangeError)
+    }
+    if (end === start) {
+      // We are done!
+      return state.end()
+    }
+    fdP.then(
+      fd => {
         const pool = memManager.createOrGetPool()
         function readNext () {
-          if (isAborted) {
-            return
-          }
           const toRead = Math.min(
             end - start,
             pool.buffer.length - pool.used,
             memManager.highWaterMark
           )
           if (toRead === 0) {
-            return backPressure(() => result.resolve())
+            return state.end()
           }
           const poolStart = pool.used
           const poolEnd = poolStart + toRead
           pool.used = poolEnd
           fs.read(fd, pool.buffer, poolStart, toRead, start, (err: Error, bytesRead: number) => {
-            if (isAborted) {
+            if (state.done) {
               return
             }
             if (err) {
-              return backPressure(() => result.reject(err))
+              return state.end(err)
             }
             if (bytesRead === 0) {
-              return backPressure(() => result.resolve())
+              return state.end()
             }
             const data = memManager.sliceFromPool(pool, poolStart, poolEnd, poolStart + bytesRead)
-            const res = backPressure(() => reader(data))
-            // If the backPressure is busy, wait until next work is done.
-            isPromiseLike(res)
-              ? res.then(readNext, result.reject)
-              : readNext()
+            state.push(data)
+            state.next(readNext)
           })
           if (start !== undefined) {
             start += toRead
           }
         }
         readNext()
-      }, err => result.reject(err))
-      return result
-    }
-  }
+      },
+      err => state.end(err)
+    )
+  })
+  return state
 }

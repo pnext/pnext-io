@@ -3,6 +3,8 @@ import { IFeedFS } from './IFeedFS'
 import { getAll } from '../../util/getAll'
 import { combine } from '../util/combine'
 
+const memManager = createMemManager(Buffer.allocUnsafe)
+
 function dummyFS (opts: {
   data?: { [location: string]: Uint8Array },
   openErr?: boolean,
@@ -53,7 +55,7 @@ function dummyFS (opts: {
 }
 
 async function range (fs: IFeedFS, location: string, start: number, end?: number) {
-  return combine(await getAll(createReadStream(fs, location, { start, end }, createMemManager(Buffer.allocUnsafe))))
+  return combine(await getAll(createReadStream(fs, location, { start, end }, memManager)))
 }
 
 test('A simple stream', async () => {
