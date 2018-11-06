@@ -1,5 +1,4 @@
 import IDynamicContext from './util/IDynamicContext'
-import IFeature from '../api/IFeature'
 import FeatureType from '../api/FeatureType'
 
 export const DEFAULT_FIELD = 'IReader.default_field'

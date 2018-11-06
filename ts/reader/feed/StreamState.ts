@@ -1,4 +1,4 @@
-import { LazyPromise, createLazyPromise, lazyInitLazyPromise } from '../../util/createLazyPromise'
+import { LazyPromise, lazyInitLazyPromise } from '../../util/createLazyPromise'
 
 export interface IStreamState {
   aborted (): PromiseLike<never>
