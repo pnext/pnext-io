@@ -26,7 +26,7 @@ export class FSFeed {
     }, options)
   }
 
-  createReadStream (location: string, range: IFeedRange) {
+  createReadStream (location: string, range?: IFeedRange) {
     return createReadStream(this.fs, path.normalize(`${this.options.prefix}${location}`), range, this.memManager)
   }
 }

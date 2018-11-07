@@ -65,7 +65,7 @@ function close (fs: IFeedFS, fd: number) {
   )
 }
 
-export function createReadStream (fs: IFeedFS, location: string, range: IFeedRange, memManager: IMemManager): IReadable<Uint8Array> {
+export function createReadStream (fs: IFeedFS, location: string, range: IFeedRange = { start: 0 }, memManager: IMemManager): IReadable<Uint8Array> {
   const fdP = open(fs, location)
   const state = new StreamState<Uint8Array>(
     (error?: Error) =>
