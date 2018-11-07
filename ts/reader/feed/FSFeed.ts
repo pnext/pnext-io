@@ -2,6 +2,7 @@ import path from 'path'
 import { IFeedFS } from './IFeedFS'
 import { IFeedRange } from './IFeedRange'
 import { createReadStream, createMemManager, IMemManager } from './createReadStream'
+import { ILocationFeed } from './ILocationFeed'
 
 export interface FolderFeedOptions {
   max?: number
@@ -24,6 +25,14 @@ export class FSFeed {
       interval: 100,
       prefix: ''
     }, options)
+  }
+
+  createLocationFeed (location: string): ILocationFeed {
+    return {
+      feed: this,
+      location,
+      createReadStream: (range?: IFeedRange) => this.createReadStream(location, range)
+    }
   }
 
   createReadStream (location: string, range?: IFeedRange) {
