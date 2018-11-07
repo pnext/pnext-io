@@ -16,7 +16,15 @@ function ignore () { /* ignore */ }
 
 export class StreamState <Output> implements IStreamState {
   reader: (data: Output) => PromiseLike<void> | void
+  aborted: () => LazyPromise<never>
+  result: () => LazyPromise<void>
   done: boolean = false
+  _current: PromiseLike<void>
+  _next: (() => PromiseLike<void> | void)[]
+
+  // If set to true, the processing of next is suspended,
+  // new "next" requests are added to the next list.
+  _nextLock: boolean = true
 
   constructor (ender?: () => PromiseLike<void> | void) {
     this.aborted = lazyInitLazyPromise()
@@ -26,11 +34,6 @@ export class StreamState <Output> implements IStreamState {
       }
     })
   }
-
-  aborted: () => LazyPromise<never>
-  result: () => LazyPromise<void>
-  _current: PromiseLike<void>
-  _next: (() => PromiseLike<void> | void)[]
 
   abort (reason: Error) {
     if (this.done === true) {
@@ -69,11 +72,17 @@ export class StreamState <Output> implements IStreamState {
       this.aborted().catch(aborter)
     }
     setImmediate(() => {
-      if (this._next !== undefined && this._next.length !== 0) {
-        this.next(this._next.shift())
-      }
+      this.releaseNextLock()
     })
     return this.result()
+  }
+
+  releaseNextLock () {
+    this._nextLock = false
+    if (this._next !== undefined && this._next.length > 0) {
+      const nextFn = this._next.shift()
+      this.next(nextFn)
+    }
   }
 
   next (fn: () => PromiseLike<void> | void) {
@@ -81,7 +90,7 @@ export class StreamState <Output> implements IStreamState {
       // If its aborted or finished: don't start another task
       return
     }
-    if (this._current !== undefined || this.reader === undefined) {
+    if (this._current !== undefined || this._nextLock === true) {
       if (this._next === undefined) {
         this._next = [fn]
         return
@@ -89,6 +98,7 @@ export class StreamState <Output> implements IStreamState {
       this._next.push(fn)
       return
     }
+    this._nextLock = true
     let current
     try {
       current = fn()
@@ -96,29 +106,24 @@ export class StreamState <Output> implements IStreamState {
       return this.result().reject(err)
     }
     if (!current) {
+      this.releaseNextLock()
       return
     }
     current.then(() => {
       this._current = undefined
-      if (this._next !== undefined && this._next.length > 0) {
-        const nextFn = this._next.shift()
-        this.next(nextFn)
-      }
+      this.releaseNextLock()
     }, err => this.result().reject(err))
     this._current = current
   }
 
   end (error?: Error) {
-    if (this.done === true) {
-      return
-    }
     this.next(() => {
+      this.done = true
       if (error) {
         this.result().reject(error)
       } else {
         this.result().resolve()
       }
     })
-    this.done = true
   }
 }
