@@ -1,4 +1,5 @@
-import { createReadStream, RangeError, createMemManager } from './createReadStream'
+import { createReadStream, createMemManager } from './createReadStream'
+import { RangeError } from './validateRange'
 import { IFeedFS } from './IFeedFS'
 import { getAll } from '../../util/getAll'
 import { combine } from '../util/combine'
@@ -79,13 +80,13 @@ test('Erroneous requests', async () => {
     x: new Uint8Array([1])
   } })
   await expect(range(fs, 'x', -1, 0))
-    .rejects.toMatchObject(new RangeError('start(-1) needs to be bigger zero')) // start < 0
+    .rejects.toMatchObject(new RangeError('start(-1) needs to be bigger zero', -1, 0)) // start < 0
   await expect(range(fs, 'x', Number.MAX_SAFE_INTEGER + 4))
-    .rejects.toMatchObject(new RangeError('start(9007199254740996) is too big, max: 9007199254740991')) // start > Number.MAX.SAFE_INTEGER
+    .rejects.toMatchObject(new RangeError('start(9007199254740996) is too big, max: 9007199254740991', Number.MAX_SAFE_INTEGER + 4, undefined)) // start > Number.MAX.SAFE_INTEGER
   await expect(range(fs, 'x', 0, Number.MAX_SAFE_INTEGER + 4))
-    .rejects.toMatchObject(new RangeError('end(9007199254740996) is too big, max: 9007199254740991')) // end > Number.MAX.SAFE_INTEGER
+    .rejects.toMatchObject(new RangeError('end(9007199254740996) is too big, max: 9007199254740991', 0, Number.MAX_SAFE_INTEGER + 4)) // end > Number.MAX.SAFE_INTEGER
   await expect(range(fs, 'x', 1, 0))
-    .rejects.toMatchObject(new RangeError('end(0) needs to be before the start(1)')) // end >= start
+    .rejects.toMatchObject(new RangeError('end(0) needs to be before the start(1)', 1, 0)) // end >= start
 })
 
 test('Aborting of a stream', async () => {

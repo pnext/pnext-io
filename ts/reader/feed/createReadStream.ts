@@ -2,6 +2,7 @@ import { IFeedFS } from './IFeedFS'
 import { IFeedRange } from './IFeedRange'
 import { IReadable } from '../../api/IReadable'
 import { StreamState } from './StreamState'
+import { validateRange } from './validateRange'
 
 class IPool {
   buffer: Uint8Array
@@ -46,38 +47,6 @@ export function createMemManager (alloc: (size: number) => Uint8Array, highWater
   }
 }
 
-export class RangeError extends Error {
-  code: string
-  constructor (message: string) {
-    super(message)
-    this.code = 'ERANGE'
-  }
-}
-
-function validateRange (range: IFeedRange) {
-  let start = range.start
-  let end = range.end
-  let rangeError: RangeError
-  if (start === null || start === undefined) {
-    start = 0
-  } else if (start < 0) {
-    rangeError = new RangeError(`start(${start}) needs to be bigger zero`)
-  } else if (start > Number.MAX_SAFE_INTEGER) {
-    rangeError = new RangeError(`start(${start}) is too big, max: ${Number.MAX_SAFE_INTEGER}`)
-  } else if (end === undefined) {
-    end = Infinity
-  } else if (end < start) {
-    rangeError = new RangeError(`end(${end}) needs to be before the start(${start})`)
-  } else if (end > Number.MAX_SAFE_INTEGER) {
-    rangeError = new RangeError(`end(${end}) is too big, max: ${Number.MAX_SAFE_INTEGER}`)
-  }
-  return {
-    start,
-    end,
-    rangeError
-  }
-}
-
 const R_OK: number = 4
 
 function open (fs: IFeedFS, location: string) {
@@ -106,6 +75,9 @@ export function createReadStream (fs: IFeedFS, location: string, range: IFeedRan
   )
   state.next(() => {
     let { start, end, rangeError } = validateRange(range)
+    if (end === undefined) {
+      end = Infinity
+    }
     if (rangeError !== undefined) {
       return state.end(rangeError)
     }
