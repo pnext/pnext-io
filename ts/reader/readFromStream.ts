@@ -1,10 +1,7 @@
 import { IReadable } from '../api/IReadable'
 import IReader from './IReader'
 import { createWorkContext } from './util/createWorkContext'
-import { OutgoingHttpHeaders } from 'http'
 import { combine } from './util/combine'
-import { isPromiseLike } from '../util/isPromiseLike'
-import IDynamicContext from './util/IDynamicContext'
 import { Writable } from 'ts-stream'
 import { isIterable } from '../util/isIterable'
 
