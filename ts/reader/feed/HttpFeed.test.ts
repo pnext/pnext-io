@@ -93,3 +93,57 @@ test('Range request on server that supports ranges', async () => {
   const feed = new HttpFeed({}, host)
   expect(await streamToString(feed.createReadStream('/icon.ico', { start: 2, end: 5 }))).toBe('llo')
 })
+
+/*
+
+function sleep (time: number) {
+  return new Promise<void>(resolve => setTimeout(resolve, time))
+}
+Doesn't work yet!
+test('Cancelling an open request', async () => {
+  let closeCalled = false
+  handleRequest = (request: IncomingMessage, response: ServerResponse) => {
+    let closed = false
+    response.on('close', () => {
+      console.log('response closed???')
+    })
+    request.on('close', () => {
+      console.log('close called')
+      closeCalled = true
+      closed = true
+    })
+    let count = 0
+    function writeNext () {
+      if (closed) {
+        response.end()
+        return
+      }
+      count++
+      console.log('writing')
+      response.write(`response #${count}`)
+      setTimeout(writeNext, 50)
+    }
+    writeNext()
+  }
+  const feed = new HttpFeed({}, host)
+  const stream = feed.createReadStream('')
+  const received = []
+  let outputEnded = false
+  stream.forEach(
+    (value: Uint8Array) => {
+      received.push(value)
+    },
+    () => {
+      outputEnded = true
+    }
+  ).catch()
+  await sleep(10)
+  console.log('now aborting')
+  stream.abort(new Error('fun!'))
+  expect(outputEnded).toBe(true)
+  console.log('next')
+  // lets make sure that the server had some time to finish
+  await sleep(10)
+  expect(closeCalled).toBe(true)
+})
+*/
