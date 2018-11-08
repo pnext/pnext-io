@@ -40,14 +40,14 @@ export class StreamState <Output> implements IStreamState {
       // No need to abort after we are done
       return
     }
-    this.done = true
+    this.aborted().reject(reason)
     if (this._current !== undefined) {
       // It is aborted: we can drop all the other operations
       // in the queue.
       this._next = [() => this.abort(reason)]
       return
     }
-    this.aborted().reject(reason)
+    this.done = true
     this.aborted().catch(ignore)
     this.result().reject(reason)
   }
